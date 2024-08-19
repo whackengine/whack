@@ -158,8 +158,43 @@ impl DirectiveSubverifier {
         }
     }
 
-    fn verify_var_fn(verifier: &mut Subverifier, drtv: &Rc<Directive>, defn: &VariableDefinition) -> Result<(), DeferError> {
-        fixme;
+    fn verify_var_defn(verifier: &mut Subverifier, drtv: &Rc<Directive>, defn: &VariableDefinition) -> Result<(), DeferError> {
+        let phase = verifier.lazy_init_drtv_phase(drtv, VerifierPhase::Alpha);
+        if phase == VerifierPhase::Finished {
+            return Ok(());
+        }
+
+        // Check the "static" attribute to know where the output name goes in exactly.
+        let is_static = Attribute::find_static(&defn.attributes).is_some();
+        let mut var_scope = verifier.scope();
+        var_scope = if is_static { var_scope.search_hoist_scope() } else { var_scope };
+        let var_parent = if var_scope.is::<ClassScope>() || var_scope.is::<EnumScope>() {
+            var_scope.class()
+        } else {
+            var_scope
+        };
+        let var_out = var_parent.properties(&verifier.host);
+
+        fixme();
+
+        match phase {
+            VerifierPhase::Alpha => {
+                fixme();
+            },
+            VerifierPhase::Beta => {
+                fixme();
+            },
+            VerifierPhase::Delta => {
+                fixme();
+            },
+            VerifierPhase::Epsilon => {
+                fixme();
+            },
+            VerifierPhase::Omega => {
+                fixme();
+            },
+            _ => panic!(),
+        }
     }
 
     fn verify_package_concat_drtv(verifier: &mut Subverifier, drtv: &Rc<Directive>, pckgcat: &PackageConcatDirective) -> Result<(), DeferError> {
@@ -360,9 +395,12 @@ impl DirectiveSubverifier {
         if phase == VerifierPhase::Finished {
             return Ok(());
         }
+
+        // Import alias
         if impdrtv.alias.is_some() {
             return Self::verify_import_alias_directive(verifier, drtv, impdrtv);
         }
+
         let host = verifier.host.clone();
         let imp = host.lazy_node_mapping(drtv, || {
             match &impdrtv.import_specifier {

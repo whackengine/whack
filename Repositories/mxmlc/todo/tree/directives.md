@@ -118,6 +118,7 @@ Never ever let getters and setters have the wrong signature assigned to them; if
 Handle conflicting definitions properly, only moving forward in verification if the resulting slot is a method slot and not something else (it could be a variable slot or a class, for example).
 
 - Remember: `[FLEX::EXTERNAL]`
+- Remember: do not allow shadowing properties from in base classes
 
 ## Getters/setters
 
