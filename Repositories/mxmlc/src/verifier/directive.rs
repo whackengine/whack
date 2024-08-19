@@ -170,10 +170,16 @@ impl DirectiveSubverifier {
         var_scope = if is_static { var_scope.search_hoist_scope() } else { var_scope };
         let var_parent = if var_scope.is::<ClassScope>() || var_scope.is::<EnumScope>() {
             var_scope.class()
+        } else if var_scope.is::<InterfaceScope>() {
+            var_scope.interface()
         } else {
             var_scope
         };
-        let var_out = var_parent.properties(&verifier.host);
+        let var_out = if var_scope.is::<FixtureScope>() && (!is_static || var_parent.is::<InterfaceType>()) {
+            var_parent.prototype(&verifier.host)
+        } else {
+            var_parent.properties(&verifier.host)
+        };
 
         fixme();
 
