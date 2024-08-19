@@ -1,0 +1,10 @@
+[book]
+authors = ["Matheus Dias de Souza <hydroperfox@gmail.com>"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Hydroper Flex"
+
+[output.html]
+copy-fonts = false
+fold = { enable = true }

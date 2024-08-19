@@ -1,0 +1,26 @@
+/* Open Sans is licensed under the Apache License, Version 2.0. See http://www.apache.org/licenses/LICENSE-2.0 */
+/* Courier Prime is licensed under the Open Font License. */
+
+/* opensans */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 100 700;
+  src: url("OpenSans-VariableFont_wdth,wght.ttf");
+}
+
+/* opensans-italic */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 100 700;
+  src: url("OpenSans-Italic-VariableFont_wdth,wght.ttf");
+}
+
+/* courierprime-regular */
+@font-face {
+  font-family: "Courier Prime";
+  font-style: normal;
+  font-weight: 400;
+  src: url("CourierPrime-Regular.ttf");
+}
