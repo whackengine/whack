@@ -10,6 +10,13 @@ const xnode = $.construct($.xmlclass, `
 
 const a_ns = $.construct($.namespaceclass, "a", "a");
 
+let i = 0;
+for (const child_xn of $.valueiterator(xnode))
+{
+    console.log("child_xn[" + i + "].nodeKind() =", $.callproperty(child_xn, null, "nodeKind"));
+    i++;
+}
+
 const datael = $.getproperty($.getproperty(xnode, a_ns, "data"), null, 0);
 console.log("<a:data/>.nodeKind() =", $.callproperty(datael, null, "nodeKind"));
 console.log("<a:data/>.@val =", $.getattribute(datael, null, "val"));
