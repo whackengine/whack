@@ -166,6 +166,18 @@ export class Name
             return this.name;
         }
     }
+
+    fullpackagename()
+    {
+        if (this.ns instanceof Systemns && this.ns.parent instanceof Package && this.ns.parent.name != "")
+        {
+            return this.ns.parent.name + "." + this.name;
+        }
+        else
+        {
+            return this.name;
+        }
+    }
 }
 
 export function name(ns, name)
@@ -412,11 +424,7 @@ export function defineclass(name, options, items)
 {
     assert(!globalnames.hasnsname(name.ns, name.name), "Name conflict: " + name.toString());
 
-    let finalname = "";
-    if (name.ns instanceof Systemns && name.ns.parent instanceof Package)
-    {
-        finalname = name.ns.parent.name + "." + name.name;
-    }
+    const finalname = name.fullpackagename();
 
     const class1 = new Class(finalname, options.final ?? false, options.dynamic ?? false, options.metadata ?? [], options.ctor ?? function() {});
 
@@ -537,11 +545,7 @@ export function defineinterface(name, options, items)
 {
     assert(!globalnames.hasnsname(name.ns, name.name), "Name conflict: " + name.toString());
 
-    let finalname = "";
-    if (name.ns instanceof Systemns && name.ns.parent instanceof Package)
-    {
-        finalname = name.ns.parent.name + "." + name.name;
-    }
+    const finalname = name.fullpackagename();
 
     const itrfc = new Interface(finalname, options.metadata ?? []);
 
@@ -620,11 +624,7 @@ export function definensalias(propertyns, propertyname, options)
 {
     assert(!globalnames.hasnsname(propertyns, propertyname), "Name conflict: " + new Name(propertyns, propertyname).toString());
 
-    let finalname = "";
-    if (propertyns instanceof Systemns && propertyns.parent instanceof Package)
-    {
-        finalname = propertyns.parent.name + "." + propertyname;
-    }
+    const finalname = new Name(propertyns, propertyname).fullpackagename();
     const trait = nsalias(options);
     trait.name = finalname;
     globalnames.setnsname(propertyns, propertyname, trait);
@@ -668,11 +668,7 @@ export function definevar(ns, name, options)
 {
     assert(!globalnames.hasnsname(ns, name), "Name conflict: " + new Name(ns, name).toString());
 
-    let finalname = "";
-    if (ns instanceof Systemns && ns.parent instanceof Package)
-    {
-        finalname = ns.parent.name + "." + name;
-    }
+    const finalname = new Name(ns, name).fullpackagename();
     const trait = variable(options);
     trait.name = finalname;
     globalnames.setnsname(ns, name, trait);
@@ -719,11 +715,7 @@ export function definevirtualvar(ns, name, options)
 {
     assert(!globalnames.hasnsname(ns, name), "Name conflict: " + new Name(ns, name).toString());
 
-    let finalname = "";
-    if (ns instanceof Systemns && ns.parent instanceof Package)
-    {
-        finalname = ns.parent.name + "." + name;
-    }
+    const finalname = new Name(ns, name).fullpackagename();
     const trait = virtualvar(options);
     trait.name = finalname;
     globalnames.setnsname(ns, name, trait);
@@ -765,11 +757,7 @@ export function definemethod(ns, name, options)
 {
     assert(!globalnames.hasnsname(ns, name), "Name conflict: " + new Name(ns, name).toString());
 
-    let finalname = "";
-    if (ns instanceof Systemns && ns.parent instanceof Package)
-    {
-        finalname = ns.parent.name + "." + name;
-    }
+    const finalname = new Name(ns, name).fullpackagename();
     const trait = method(options);
     trait.name = finalname;
     globalnames.setnsname(ns, name, trait);
