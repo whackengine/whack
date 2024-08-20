@@ -9799,6 +9799,8 @@ $setPrototypeNow = true;
 
 // Globals: set values
 
+$publicns = packagens("");
+
 setglobal($publicns, "undefined", undefined);
 
 setglobal($publicns, "NaN", NaN);
