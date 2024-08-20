@@ -1844,11 +1844,14 @@ export function deleteattribute(base, qual, name)
 function w3cnodedescendants(node)
 {
     const r = [];
-    for (let i = 0; i < node.childNodes.length; i++)
+    if (node.childNodes)
     {
-        const child = node.childNodes[i];
-        r.push(child);
-        r.push(...w3cnodedescendants(child));
+        for (let i = 0; i < node.childNodes.length; i++)
+        {
+            const child = node.childNodes[i];
+            r.push(child);
+            r.push(...w3cnodedescendants(child));
+        }
     }
     return r;
 }
