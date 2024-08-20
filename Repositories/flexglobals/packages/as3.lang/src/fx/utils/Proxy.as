@@ -1,4 +1,4 @@
-package fx.utils
+package flex.utils
 {
     [FLEX::EXTERNAL(slots="2")]
     public class Proxy

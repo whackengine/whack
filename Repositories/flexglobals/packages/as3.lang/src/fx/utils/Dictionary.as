@@ -1,4 +1,4 @@
-package fx.utils
+package flex.utils
 {
     /**
      * A collection of key-value pairs.

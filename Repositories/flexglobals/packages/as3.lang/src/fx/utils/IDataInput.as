@@ -1,4 +1,4 @@
-package fx.utils
+package flex.utils
 {
     [FX::EXTERNAL]
     public interface IDataInput

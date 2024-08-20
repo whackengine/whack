@@ -1,4 +1,4 @@
-package fx.utils
+package flex.utils
 {
     /**
      * Defines constants that define the byte order used when

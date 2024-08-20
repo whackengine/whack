@@ -1,11 +1,11 @@
 # Creating a theme
 
-A theme defines a cascading style sheet that may be applied to the Flex application. A theme is logical, therefore it is an AS file defining a class that extends `fx.skins.Theme`.
+A theme defines a cascading style sheet that may be applied to the Flex application. A theme is logical, therefore it is an AS file defining a class that extends `flex.skins.Theme`.
 
 ```as3
 package
 {
-    import fx.skins.*;
+    import flex.skins.*;
     public class HelloWorldTheme extends Theme
     {
     }
@@ -19,7 +19,7 @@ A theme may link a cascading style sheet file for expressing the user interface 
 ```as3
 package
 {
-    import fx.skins.*;
+    import flex.skins.*;
     [Stylesheet(source="style.css")]
     public class HelloWorldTheme extends Theme
     {

@@ -9237,7 +9237,7 @@ export const verifyerrorclass = defineclass(name($publicns, "VerifyError"),
     ]
 );
 
-$publicns = packagens("fx.utils");
+$publicns = packagens("flex.utils");
 
 export const DICTIONARY_PROPERTIES_INDEX = 2;
 export const dictionaryclass = defineclass(name($publicns, "Dictionary"),

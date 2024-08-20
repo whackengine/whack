@@ -1,4 +1,4 @@
-package fx.utils
+package flex.utils
 {
     [FX::EXTERNAL(slots="3")]
     public class ByteArray implements IDataInput, IDataOutput

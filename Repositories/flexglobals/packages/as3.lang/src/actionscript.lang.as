@@ -1,6 +1,6 @@
 package
 {
-    import fx.externals.js.lex;
+    import flex.externals.js.lex;
 
     [FLEX::EXTERNAL]
     public namespace AS3 = "http://hydroper.com/AS3/2024/builtin";
@@ -19,37 +19,37 @@ package
      */
     public function trace(...values : [*]):void
     {
-        fx.externals.js.lex("console").log(values.join("  "));
+        flex.externals.js.lex("console").log(values.join("  "));
     }
 
     public function decodeURI(str:String):String
     {
-        return fx.externals.js.lex("decodeURI")(str);
+        return flex.externals.js.lex("decodeURI")(str);
     }
 
     public function decodeURIComponent(str:String):String
     {
-        return fx.externals.js.lex("decodeURIComponent")(str);
+        return flex.externals.js.lex("decodeURIComponent")(str);
     }
 
     public function encodeURI(str:String):String
     {
-        return fx.externals.js.lex("encodeURI")(str);
+        return flex.externals.js.lex("encodeURI")(str);
     }
 
     public function encodeURIComponent(str:String):String
     {
-        return fx.externals.js.lex("encodeURIComponent")(str);
+        return flex.externals.js.lex("encodeURIComponent")(str);
     }
 
     public function isFinite(val:Number):Boolean
     {
-        return fx.externals.js.lex("isFinite")(val);
+        return flex.externals.js.lex("isFinite")(val);
     }
 
     public function isNaN(val:Number):Boolean
     {
-        return fx.externals.js.lex("isNaN")(val);
+        return flex.externals.js.lex("isNaN")(val);
  
     }
 
@@ -58,11 +58,11 @@ package
 
     public function parseFloat(str:String):Number
     {
-        return fx.externals.js.lex("parseFloat")(str);
+        return flex.externals.js.lex("parseFloat")(str);
     }
 
     public function parseInt(str:String, radix:uint = 0):Number
     {
-        return fx.externals.js.lex("parseInt")(str, radix);
+        return flex.externals.js.lex("parseInt")(str, radix);
     }
 }

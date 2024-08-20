@@ -5,12 +5,12 @@ ActionScript is converted into JavaScript code during compilation step in a hybr
 The following example invokes a JavaScript closure by passing a string parameter to it and assigning its resulting object into a variable:
 
 ```
-import fx.externals.js.iifee;
+import flex.externals.js.iifee;
 
 var msg:String = "Hello, world!";
 
 // Immediately invoked function expression
-var obj:* = fx.externals.js.iife(<![CDATA[
+var obj:* = flex.externals.js.iife(<![CDATA[
     alert(msg);
     return {x: 0, y: 0};
 ]]>, msg);
@@ -22,28 +22,28 @@ trace(obj.x, obj.y);
 The following example accesses the global `Math` object:
 
 ```
-import fx.externals.js.lex;
-trace(fx.externals.js.lex("Math").random());
+import flex.externals.js.lex;
+trace(flex.externals.js.lex("Math").random());
 ```
 
 The following snippet accesses a property using common JavaScript operators:
 
 ```
-import fx.externals.js.get;
-import fx.externals.js.set;
+import flex.externals.js.get;
+import flex.externals.js.set;
 
 // get
-const $ = fx.externals.js.get(o, k);
+const $ = flex.externals.js.get(o, k);
 // set
-fx.externals.js.set(o, k, v);
+flex.externals.js.set(o, k, v);
 
-fx.externals.js.callkey(o, k, arg1, arg2);
+flex.externals.js.callkey(o, k, arg1, arg2);
 ```
 
 The following snippet results into the JavaScript `new` operator:
 
 ```
-import fx.externals.js.construct;
+import flex.externals.js.construct;
 construct(o, arg1, arg2);
 ```
 

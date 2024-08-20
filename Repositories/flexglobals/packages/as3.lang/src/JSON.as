@@ -1,10 +1,10 @@
 package
 {
-    import fx.externals.js.*;
+    import flex.externals.js.*;
 
     public final class JSON
     {
-        private static const m_ns:* = fx.externals.js.lex("JSON");
+        private static const m_ns:* = flex.externals.js.lex("JSON");
 
         public function JSON()
         {
@@ -84,7 +84,7 @@ package
             const ctor = getas3constructor(val);
             if (ctor === Array)
             {
-                const r = fx.externals.js.newarray();
+                const r = flex.externals.js.newarray();
                 for each (var v in val)
                 {
                     r.push(as3jsontojsjson(v));
@@ -93,7 +93,7 @@ package
             }
             else if (ctor === Object)
             {
-                const r = fx.externals.js.newplainobj();
+                const r = flex.externals.js.newplainobj();
                 for (var k in val)
                 {
                     r[k] = as3jsontojsjson(val[k]);

@@ -1,3 +1,3 @@
 # JavaScript insertion
 
-Process the `fx.externals.js` functions in a special way.
+Process the `flex.externals.js` functions in a special way.
