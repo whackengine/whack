@@ -1256,7 +1256,27 @@ export function callglobal(qual, name, ...args)
     throw constructerror(referenceerrorclass, "Call to undefined property " + name + ".");
 }
 
-export function preincreaseglobal(qual, name, incVal)
+export function preincrementglobal(qual, name)
+{
+    return preincreaseglobal(qual, name, 1);
+}
+
+export function predecrementglobal(qual, name)
+{
+    return preincreaseglobal(qual, name, -1);
+}
+
+export function postincrementglobal(qual, name)
+{
+    return postincreaseglobal(qual, name, 1);
+}
+
+export function postdecrementglobal(qual, name)
+{
+    return postincreaseglobal(qual, name, -1);
+}
+
+function preincreaseglobal(qual, name, incVal)
 {
     const trait = globalnames.getname(qual, name);
     // variable
@@ -1316,7 +1336,7 @@ export function preincreaseglobal(qual, name, incVal)
     throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
 }
 
-export function postincreaseglobal(qual, name, incVal)
+function postincreaseglobal(qual, name, incVal)
 {
     const trait = globalnames.getname(qual, name);
     // variable
@@ -3130,10 +3150,30 @@ export function callproperty(base, qual, name, ...args)
     throw constructerror(referenceerrorclass, "Cannot read property of undefined.");
 }
 
+export function preincrementproperty(base, qual, name)
+{
+    return preincreaseproperty(base, qual, name, 1);
+}
+
+export function predecrementproperty(base, qual, name)
+{
+    return preincreaseproperty(base, qual, name, -1);
+}
+
+export function postincrementproperty(base, qual, name)
+{
+    return postincreaseproperty(base, qual, name, 1);
+}
+
+export function postdecrementproperty(base, qual, name)
+{
+    return postincreaseproperty(base, qual, name, -1);
+}
+
 /**
  * Increases a number property by `incVal` and returns its new value.
  */
-export function preincreaseproperty(base, qual, name, incVal)
+function preincreaseproperty(base, qual, name, incVal)
 {
     // instance
     if (base instanceof Array)
@@ -3475,7 +3515,7 @@ export function preincreaseproperty(base, qual, name, incVal)
 /**
  * Increases a number property by `incVal` and returns its new value.
  */
-export function postincreaseproperty(base, qual, name, incVal)
+function postincreaseproperty(base, qual, name, incVal)
 {
     // instance
     if (base instanceof Array)
