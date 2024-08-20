@@ -10,7 +10,7 @@
   "scripts": {
     "build": "rollup --config",
     "doc": "npx typedoc --options typedoc.json",
-    "test": "node --experimental-modules test/test.js"
+    "test": "node test/test.mjs"
   },
   "repository": {
     "type": "git",
