@@ -23,6 +23,14 @@ Output `ecmatypeof(v)` instead of `typeof v`.
 
 ## Increment/decrement
 
-Increment/decrement in a property must output `preincreaseproperty(obj, qual, name, increaseVal)` or `postincreaseproperty(obj, qual, name, increaseVal)` with an `increaseVal` of either +1 or -1.
+Increment/decrement in a property must output `pre[increment/decrement]property(obj, qual, name)` or `post[increment|decrement]property(obj, qual, name)` with an `increaseVal` of either +1 or -1.
 
-For global properties use `preincreaseglobal(ns, name, increaseVal)` and `postincreaseglobal(ns, name, increaseVal)`.
+For global properties use `pre[increment|decrement]global(ns, name)` and `post[increment|decrement]global(ns, name)`.
+
+## Try/catch statement
+
+The catch clause must invoke `fromjserror(errorval)` for any parameter.
+
+## Throw statement
+
+The throw statement must invoke `tojserror(errorval)` before passing the error to JavaScript.

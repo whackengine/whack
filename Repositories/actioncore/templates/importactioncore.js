@@ -137,5 +137,6 @@ import {
     tostring,
     reflectclass,
     reflectnamespace,
-    constructerror,
+    fromjserror,
+    tojserror,
 } from "./actioncore.js";

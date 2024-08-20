@@ -221,7 +221,7 @@ export class Names
             {
                 if (found)
                 {
-                    throw constructerror(referenceerrorclass, "Ambiguous reference to " + name + ".");
+                    throw new ReferenceError("Ambiguous reference to " + name + ".");
                 }
                 found = true;
             }
@@ -242,7 +242,7 @@ export class Names
                 {
                     if (found)
                     {
-                        throw constructerror(referenceerrorclass, "Ambiguous reference to " + name + ".");
+                        throw new ReferenceError("Ambiguous reference to " + name + ".");
                     }
                     found = true;
                 }
@@ -859,7 +859,7 @@ export function inobject(base, name)
             const mm = base[DICTIONARY_PROPERTIES_INDEX];
             if (mm instanceof WeakMap && !(name instanceof Array))
             {
-                throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                throw new ReferenceError("Weak key must be a managed Object.");
             }
             if (mm.has(name))
             {
@@ -1057,7 +1057,7 @@ export function hasownproperty(base, name)
             const mm = base[DICTIONARY_PROPERTIES_INDEX];
             if (mm instanceof WeakMap && !(name instanceof Array))
             {
-                throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                throw new ReferenceError("Weak key must be a managed Object.");
             }
             return mm.has(name);
         }
@@ -1154,7 +1154,7 @@ export function getglobal(qual, name)
         const getter = trait.getter;
         if (getter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot read write-only property.");
+            throw new ReferenceError("Cannot read write-only property.");
         }
         return getter.exec.apply(undefined, []);
     }
@@ -1177,7 +1177,7 @@ export function getglobal(qual, name)
     {
         throw new Error("Internal error");
     }
-    throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+    throw new ReferenceError("Access of undefined property " + name + ".");
 }
 
 export function setglobal(qual, name, value)
@@ -1187,11 +1187,11 @@ export function setglobal(qual, name, value)
     {
         if (trait.readonly && globalvarvals.has(trait))
         {
-            throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+            throw new ReferenceError("Cannot assign to read-only property.");
         }
         if (!istype(value, trait.type))
         {
-            throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+            throw new TypeError("Cannot assign incompatible value.");
         }
         globalvarvals.set(trait, coerce(value, trait.type));
         return;
@@ -1201,28 +1201,28 @@ export function setglobal(qual, name, value)
         const setter = trait.setter;
         if (setter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+            throw new ReferenceError("Cannot assign to read-only property.");
         }
         if (!istype(value, trait.type))
         {
-            throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+            throw new TypeError("Cannot assign incompatible value.");
         }
         setter.exec.apply(undefined, [coerce(value, trait.type)]);
         return;
     }
     if (trait instanceof Method)
     {
-        throw constructerror(referenceerrorclass, "Cannot assign to read-only method.");
+        throw new ReferenceError("Cannot assign to read-only method.");
     }
     if (trait instanceof Nsalias)
     {
-        throw constructerror(referenceerrorclass, "Cannot assign to read-only namespace.");
+        throw new ReferenceError("Cannot assign to read-only namespace.");
     }
     if (trait)
     {
         throw new Error("Internal error");
     }
-    throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+    throw new ReferenceError("Access of undefined property " + name + ".");
 }
 
 export function callglobal(qual, name, ...args)
@@ -1237,7 +1237,7 @@ export function callglobal(qual, name, ...args)
         const getter = trait.getter;
         if (getter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot read write-only property.");
+            throw new ReferenceError("Cannot read write-only property.");
         }
         return call(getter.exec.apply(undefined, []), ...args);
     }
@@ -1247,13 +1247,13 @@ export function callglobal(qual, name, ...args)
     }
     if (trait instanceof Nsalias)
     {
-        throw constructerror(typeerrorclass, "Value is not a function.");
+        throw new TypeError("Value is not a function.");
     }
     if (trait)
     {
         throw new Error("Internal error");
     }
-    throw constructerror(referenceerrorclass, "Call to undefined property " + name + ".");
+    throw new ReferenceError("Call to undefined property " + name + ".");
 }
 
 export function preincrementglobal(qual, name)
@@ -1284,12 +1284,12 @@ function preincreaseglobal(qual, name, incVal)
     {
         if (trait.readonly && globalvarvals.has(trait))
         {
-            throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+            throw new ReferenceError("Cannot assign to read-only property.");
         }
         let v = globalvarvals.get(trait);
         if (typeof v !== "number")
         {
-            throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+            throw new TypeError("Cannot increment or decrement a non numeric value.");
         }
         v += incVal;
         v = coerce(v, trait.type);
@@ -1302,17 +1302,17 @@ function preincreaseglobal(qual, name, incVal)
         const getter = trait.getter;
         if (getter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement a write-only property.");
+            throw new ReferenceError("Cannot increment or decrement a write-only property.");
         }
         const setter = trait.setter;
         if (setter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement a read-only property.");
+            throw new ReferenceError("Cannot increment or decrement a read-only property.");
         }
         let v = getter.exec.call(undefined);
         if (typeof v !== "number")
         {
-            throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+            throw new TypeError("Cannot increment or decrement a non numeric value.");
         }
         v += incVal;
         v = coerce(v, trait.type);
@@ -1322,18 +1322,18 @@ function preincreaseglobal(qual, name, incVal)
     // method
     if (trait instanceof Method)
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from method.");
+        throw new TypeError("Cannot increment or decrement from method.");
     }
     // namespace
     if (trait instanceof Nsalias)
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from namespace.");
+        throw new TypeError("Cannot increment or decrement from namespace.");
     }
     if (trait)
     {
-        throw constructerror(referenceerrorclass, "Internal error");
+        throw new ReferenceError("Internal error");
     }
-    throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+    throw new ReferenceError("Access of undefined property " + name + ".");
 }
 
 function postincreaseglobal(qual, name, incVal)
@@ -1344,12 +1344,12 @@ function postincreaseglobal(qual, name, incVal)
     {
         if (trait.readonly && globalvarvals.has(trait))
         {
-            throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+            throw new ReferenceError("Cannot assign to read-only property.");
         }
         let v = globalvarvals.get(trait);
         if (typeof v !== "number")
         {
-            throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+            throw new TypeError("Cannot increment or decrement a non numeric value.");
         }
         globalvarvals.set(trait, coerce(v + incVal, trait.type));
         return v;
@@ -1360,17 +1360,17 @@ function postincreaseglobal(qual, name, incVal)
         const getter = trait.getter;
         if (getter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement a write-only property.");
+            throw new ReferenceError("Cannot increment or decrement a write-only property.");
         }
         const setter = trait.setter;
         if (setter === null)
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement a read-only property.");
+            throw new ReferenceError("Cannot increment or decrement a read-only property.");
         }
         let v = getter.exec.call(undefined);
         if (typeof v !== "number")
         {
-            throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+            throw new TypeError("Cannot increment or decrement a non numeric value.");
         }
         setter.exec.call(undefined, coerce(v + incVal, trait.type));
         return v;
@@ -1378,18 +1378,18 @@ function postincreaseglobal(qual, name, incVal)
     // method
     if (trait instanceof Method)
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from method.");
+        throw new TypeError("Cannot increment or decrement from method.");
     }
     // namespace
     if (trait instanceof Nsalias)
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from namespace.");
+        throw new TypeError("Cannot increment or decrement from namespace.");
     }
     if (trait)
     {
-        throw constructerror(referenceerrorclass, "Internal error");
+        throw new ReferenceError("Internal error");
     }
-    throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+    throw new ReferenceError("Access of undefined property " + name + ".");
 }
 
 export function nameiterator(obj)
@@ -1417,7 +1417,7 @@ export function nameiterator(obj)
             const m = obj[DICTIONARY_PROPERTIES_INDEX];
             if (m instanceof WeakMap)
             {
-                throw constructerror(referenceerrorclass, "Cannot enumerate entries of a weak Dictionary.");
+                throw new ReferenceError("Cannot enumerate entries of a weak Dictionary.");
             }
             return m.keys();
         }
@@ -1450,7 +1450,7 @@ export function nameiterator(obj)
     {
         return [][Symbol.iterator]();
     }
-    return constructerror(typeerrorclass, "Value is not iterable.");
+    return new TypeError("Value is not iterable.");
 }
 
 export function valueiterator(obj)
@@ -1477,7 +1477,7 @@ export function valueiterator(obj)
         {
             if (obj[DICTIONARY_PROPERTIES_INDEX] instanceof WeakMap)
             {
-                throw constructerror(typeerrorclass, "Cannot iterate a Dictionary of weak keys.");
+                throw new TypeError("Cannot iterate a Dictionary of weak keys.");
             }
             return obj[DICTIONARY_PROPERTIES_INDEX].values();
         }
@@ -1510,7 +1510,7 @@ export function valueiterator(obj)
     {
         return [][Symbol.iterator]();
     }
-    return constructerror(typeerrorclass, "Value is not iterable.");
+    return new TypeError("Value is not iterable.");
 }
 
 function *es3nameiterator(obj)
@@ -1551,7 +1551,7 @@ function *nameiterator_assumeProxy(obj)
     const nextNamev = getproperty(obj, flexproxyns, "nextName");
     if (!(istype(nextNameIndexv, functionclass) && istype(nextNamev, functionclass)))
     {
-        throw constructerror(typeerrorclass, "Cannot iterate an incorrectly implemented proxy.");
+        throw new TypeError("Cannot iterate an incorrectly implemented proxy.");
     }
 
     const nextNameIndex = nextNameIndexv[FUNCTION_FUNCTION_INDEX];
@@ -1576,7 +1576,7 @@ function *valueiterator_assumeProxy(obj)
     const nextValuev = getproperty(obj, flexproxyns, "nextValue");
     if (!(istype(nextNameIndexv, functionclass) && istype(nextValuev, functionclass)))
     {
-        throw constructerror(typeerrorclass, "Cannot iterate an incorrectly implemented proxy.");
+        throw new TypeError("Cannot iterate an incorrectly implemented proxy.");
     }
 
     const nextNameIndex = nextNameIndexv[FUNCTION_FUNCTION_INDEX];
@@ -1691,34 +1691,34 @@ export function getattribute(base, qual, name)
             }
             else
             {
-                throw constructerror(referenceerrorclass, "Cannot read attribute of unsupported node type.");
+                throw new ReferenceError("Cannot read attribute of unsupported node type.");
             }
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        throw constructerror(referenceerrorclass, "Cannot read attribute of unsupported type " + ctor.name + ".");
+        throw new ReferenceError("Cannot read attribute of unsupported type " + ctor.name + ".");
     }
     if (typeof base === "number")
     {
-        throw constructerror(referenceerrorclass, "Cannot read attribute of Number.");
+        throw new ReferenceError("Cannot read attribute of Number.");
     }
     if (typeof base === "boolean")
     {
-        throw constructerror(referenceerrorclass, "Cannot read attribute of Boolean.");
+        throw new ReferenceError("Cannot read attribute of Boolean.");
     }
     if (typeof base === "string")
     {
-        throw constructerror(referenceerrorclass, "Cannot read attribute of String.");
+        throw new ReferenceError("Cannot read attribute of String.");
     }
     if (base instanceof Class || base instanceof Interface)
     {
-        throw constructerror(referenceerrorclass, "Cannot read attribute of a class static object.");
+        throw new ReferenceError("Cannot read attribute of a class static object.");
     }
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot read attribute of null.");
+        throw new ReferenceError("Cannot read attribute of null.");
     }
-    throw constructerror(referenceerrorclass, "Cannot read attribute of undefined.");
+    throw new ReferenceError("Cannot read attribute of undefined.");
 }
 
 /**
@@ -1753,34 +1753,34 @@ export function setattribute(base, qual, name, value)
             }
             else
             {
-                throw constructerror(referenceerrorclass, "Cannot set attribute of unsupported node type.");
+                throw new ReferenceError("Cannot set attribute of unsupported node type.");
             }
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        throw constructerror(referenceerrorclass, "Cannot set attribute of unsupported type " + ctor.name + ".");
+        throw new ReferenceError("Cannot set attribute of unsupported type " + ctor.name + ".");
     }
     if (typeof base === "number")
     {
-        throw constructerror(referenceerrorclass, "Cannot set attribute of Number.");
+        throw new ReferenceError("Cannot set attribute of Number.");
     }
     if (typeof base === "boolean")
     {
-        throw constructerror(referenceerrorclass, "Cannot set attribute of Boolean.");
+        throw new ReferenceError("Cannot set attribute of Boolean.");
     }
     if (typeof base === "string")
     {
-        throw constructerror(referenceerrorclass, "Cannot set attribute of String.");
+        throw new ReferenceError("Cannot set attribute of String.");
     }
     if (base instanceof Class || base instanceof Interface)
     {
-        throw constructerror(referenceerrorclass, "Cannot set attribute of a class static object.");
+        throw new ReferenceError("Cannot set attribute of a class static object.");
     }
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot set attribute of null.");
+        throw new ReferenceError("Cannot set attribute of null.");
     }
-    throw constructerror(referenceerrorclass, "Cannot set attribute of undefined.");
+    throw new ReferenceError("Cannot set attribute of undefined.");
 }
 
 /**
@@ -1823,34 +1823,34 @@ export function deleteattribute(base, qual, name)
             }
             else
             {
-                throw constructerror(referenceerrorclass, "Cannot delete attribute of unsupported node type.");
+                throw new ReferenceError("Cannot delete attribute of unsupported node type.");
             }
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        throw constructerror(referenceerrorclass, "Cannot delete attribute of unsupported type " + ctor.name + ".");
+        throw new ReferenceError("Cannot delete attribute of unsupported type " + ctor.name + ".");
     }
     if (typeof base === "number")
     {
-        throw constructerror(referenceerrorclass, "Cannot delete attribute of Number.");
+        throw new ReferenceError("Cannot delete attribute of Number.");
     }
     if (typeof base === "boolean")
     {
-        throw constructerror(referenceerrorclass, "Cannot delete attribute of Boolean.");
+        throw new ReferenceError("Cannot delete attribute of Boolean.");
     }
     if (typeof base === "string")
     {
-        throw constructerror(referenceerrorclass, "Cannot delete attribute of String.");
+        throw new ReferenceError("Cannot delete attribute of String.");
     }
     if (base instanceof Class || base instanceof Interface)
     {
-        throw constructerror(referenceerrorclass, "Cannot delete attribute of a class static object.");
+        throw new ReferenceError("Cannot delete attribute of a class static object.");
     }
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot delete attribute of null.");
+        throw new ReferenceError("Cannot delete attribute of null.");
     }
-    throw constructerror(referenceerrorclass, "Cannot delete attribute of undefined.");
+    throw new ReferenceError("Cannot delete attribute of undefined.");
 }
 
 function w3cnodedescendants(node)
@@ -1923,7 +1923,7 @@ export function getdescendants(base, qual, name)
             const getDescendantsv = getproperty(base, flexproxyns, "getDescendants");
             if (!istype(getDescendantsv, functionclass))
             {
-                throw constructerror(typeerrorclass, "Incorrect Proxy#getDescendants() method.");
+                throw new TypeError("Incorrect Proxy#getDescendants() method.");
             }
             let namearg = null;
             if (qual)
@@ -1938,29 +1938,29 @@ export function getdescendants(base, qual, name)
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        throw constructerror(referenceerrorclass, "Cannot get descendants of unsupported type " + ctor.name + ".");
+        throw new ReferenceError("Cannot get descendants of unsupported type " + ctor.name + ".");
     }
     if (typeof base === "number")
     {
-        throw constructerror(referenceerrorclass, "Cannot get descendants of Number.");
+        throw new ReferenceError("Cannot get descendants of Number.");
     }
     if (typeof base === "boolean")
     {
-        throw constructerror(referenceerrorclass, "Cannot get descendants of Boolean.");
+        throw new ReferenceError("Cannot get descendants of Boolean.");
     }
     if (typeof base === "string")
     {
-        throw constructerror(referenceerrorclass, "Cannot get descendants of String.");
+        throw new ReferenceError("Cannot get descendants of String.");
     }
     if (base instanceof Class || base instanceof Interface)
     {
-        throw constructerror(referenceerrorclass, "Cannot get descendants of a class static object.");
+        throw new ReferenceError("Cannot get descendants of a class static object.");
     }
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot get descendants of null.");
+        throw new ReferenceError("Cannot get descendants of null.");
     }
-    throw constructerror(referenceerrorclass, "Cannot get descendants of undefined.");
+    throw new ReferenceError("Cannot get descendants of undefined.");
 }
 
 export function hasmethod(base, qual, name)
@@ -2035,7 +2035,7 @@ export function hasmethod(base, qual, name)
                     return false;
                 }
                 
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             
             // instance ecmaprototype
@@ -2103,7 +2103,7 @@ export function hasmethod(base, qual, name)
                 {
                     return false;
                 }
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             c1 = c1.baseclass;
         }
@@ -2228,7 +2228,7 @@ export function getproperty(base, qual, name)
                 const mm = base[DICTIONARY_PROPERTIES_INDEX];
                 if (mm instanceof WeakMap && !(name instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 return mm.get(name);
             }
@@ -2247,7 +2247,7 @@ export function getproperty(base, qual, name)
                 let i = name >> 0;
                 if (i < 0 || i >= base[VECTOR_SUBARRAY_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
                 }
                 return base[VECTOR_SUBARRAY_INDEX][i];
             }
@@ -2256,7 +2256,7 @@ export function getproperty(base, qual, name)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 return base[VECTOR_SUBARRAY_INDEX].get(i);
             }
@@ -2265,7 +2265,7 @@ export function getproperty(base, qual, name)
                 let i = name >> 0;
                 if (i < 0 || i >= base[BYTEARRAY_BA_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[BYTEARRAY_BA_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[BYTEARRAY_BA_INDEX].length + ").");
                 }
                 return base[BYTEARRAY_BA_INDEX].get(i);
             }
@@ -2290,7 +2290,7 @@ export function getproperty(base, qual, name)
                     const getter = itrait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot read write-only property.");
+                        throw new ReferenceError("Cannot read write-only property.");
                     }
                     return getter.exec.call(base);
                 }
@@ -2317,7 +2317,7 @@ export function getproperty(base, qual, name)
                     return reflectnamespace(itrait.ns);
                 }
                 
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             
             // instance ecmaprototype
@@ -2350,7 +2350,7 @@ export function getproperty(base, qual, name)
         {
             return undefined;
         }
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     // class static
     if (base instanceof Class)
@@ -2376,7 +2376,7 @@ export function getproperty(base, qual, name)
                     const getter = trait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot read write-only property.");
+                        throw new ReferenceError("Cannot read write-only property.");
                     }
                     return getter.exec.apply(undefined, []);
                 }
@@ -2397,7 +2397,7 @@ export function getproperty(base, qual, name)
                 {
                     return reflectnamespace(trait.ns);
                 }
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             c1 = c1.baseclass;
         }
@@ -2405,7 +2405,7 @@ export function getproperty(base, qual, name)
         {
             return reflectclass(classclass);
         }
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     if (typeof base === "object" || typeof base === "symbol")
     {
@@ -2433,10 +2433,10 @@ export function getproperty(base, qual, name)
     // null
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot read property of null.");
+        throw new ReferenceError("Cannot read property of null.");
     }
     // undefined
-    throw constructerror(referenceerrorclass, "Cannot read property of undefined.");
+    throw new ReferenceError("Cannot read property of undefined.");
 }
 
 /**
@@ -2467,7 +2467,7 @@ export function setproperty(base, qual, name, value)
             }
             else
             {
-                throw constructerror(referenceerrorclass, "Cannot assign to a XML tag.");
+                throw new ReferenceError("Cannot assign to a XML tag.");
             }
         }
 
@@ -2481,7 +2481,7 @@ export function setproperty(base, qual, name, value)
             }
             else
             {
-                throw constructerror(referenceerrorclass, "Cannot assign value to a tag in XMLList.");
+                throw new ReferenceError("Cannot assign value to a tag in XMLList.");
             }
         }
 
@@ -2496,7 +2496,7 @@ export function setproperty(base, qual, name, value)
                 const mm = base[DICTIONARY_PROPERTIES_INDEX];
                 if (mm instanceof WeakMap && !(name instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 mm.set(name, value);
                 return;
@@ -2512,7 +2512,7 @@ export function setproperty(base, qual, name, value)
                 let i = name >> 0;
                 if (i < 0 || i >= base[VECTOR_SUBARRAY_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
                 }
                 base[VECTOR_SUBARRAY_INDEX][i] = value;
                 return;
@@ -2522,11 +2522,11 @@ export function setproperty(base, qual, name, value)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 if (typeof value !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                    throw new TypeError("Cannot assign incompatible value.");
                 }
                 base[VECTOR_SUBARRAY_INDEX].set(i, value);
                 return;
@@ -2536,11 +2536,11 @@ export function setproperty(base, qual, name, value)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 if (typeof value !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                    throw new TypeError("Cannot assign incompatible value.");
                 }
                 base[VECTOR_SUBARRAY_INDEX].set(i, value >> 0);
                 return;
@@ -2550,11 +2550,11 @@ export function setproperty(base, qual, name, value)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 if (typeof value !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                    throw new TypeError("Cannot assign incompatible value.");
                 }
                 base[VECTOR_SUBARRAY_INDEX].set(i, value >>> 0);
                 return;
@@ -2564,7 +2564,7 @@ export function setproperty(base, qual, name, value)
                 let i = name >> 0;
                 if (i < 0 || i >= base[BYTEARRAY_BA_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[BYTEARRAY_BA_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[BYTEARRAY_BA_INDEX].length + ").");
                 }
                 base[BYTEARRAY_BA_INDEX].set(i, value);
                 return;
@@ -2584,11 +2584,11 @@ export function setproperty(base, qual, name, value)
                     const i = ctor.prototypevarslots.indexOf(itrait);
                     if (itrait.readonly && typeof base[SLOT_FIXTURE_START + i] !== "undefined")
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     if (!istype(value, itrait.type))
                     {
-                        throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                        throw new TypeError("Cannot assign incompatible value.");
                     }
                     base[SLOT_FIXTURE_START + i] = coerce(value, itrait.type);
                     return;
@@ -2599,11 +2599,11 @@ export function setproperty(base, qual, name, value)
                     const setter = itrait.setter;
                     if (setter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     if (!istype(value, itrait.type))
                     {
-                        throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                        throw new TypeError("Cannot assign incompatible value.");
                     }
                     setter.exec.call(base, coerce(value, itrait.type));
                     return;
@@ -2611,14 +2611,14 @@ export function setproperty(base, qual, name, value)
                 // bound method
                 if (itrait instanceof Method)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot assign to read-only method.");
+                    throw new ReferenceError("Cannot assign to read-only method.");
                 }
                 if (itrait instanceof Nsalias)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot assign to read-only namespace.");
+                    throw new ReferenceError("Cannot assign to read-only namespace.");
                 }
                 
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
 
             c1 = c1.baseclass;
@@ -2649,14 +2649,14 @@ export function setproperty(base, qual, name, value)
             return;
         }
 
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     // class static
     if (base instanceof Class)
     {
         if (String(name) == "prototype")
         {
-            throw constructerror(referenceerrorclass, "Cannot assign to read-only property 'prototype'.");
+            throw new ReferenceError("Cannot assign to read-only property 'prototype'.");
         }
         let c1 = base;
         while (c1 !== null)
@@ -2669,11 +2669,11 @@ export function setproperty(base, qual, name, value)
                 {
                     if (trait.readonly && c1.staticvarvals.has(trait))
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     if (!istype(value, trait.type))
                     {
-                        throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                        throw new TypeError("Cannot assign incompatible value.");
                     }
                     c1.staticvarvals.set(trait, coerce(value, trait.type));
                     return;
@@ -2684,11 +2684,11 @@ export function setproperty(base, qual, name, value)
                     const setter = trait.getter;
                     if (setter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     if (!istype(value, trait.type))
                     {
-                        throw constructerror(typeerrorclass, "Cannot assign incompatible value.");
+                        throw new TypeError("Cannot assign incompatible value.");
                     }
                     setter.exec.apply(undefined, [coerce(value, trait.type)]);
                     return;
@@ -2696,14 +2696,14 @@ export function setproperty(base, qual, name, value)
                 // method
                 if (trait instanceof Method)
                 {
-                    throw constructerror(typeerrorclass, "Cannot assign to read-only method.");
+                    throw new TypeError("Cannot assign to read-only method.");
                 }
                 // namespace
                 if (trait instanceof Nsalias)
                 {
-                    throw constructerror(typeerrorclass, "Cannot assign to read-only namespace.");
+                    throw new TypeError("Cannot assign to read-only namespace.");
                 }
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             c1 = c1.baseclass;
         }
@@ -2711,7 +2711,7 @@ export function setproperty(base, qual, name, value)
         {
             return;
         }
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     if (typeof base === "object" || typeof base === "symbol")
     {
@@ -2742,10 +2742,10 @@ export function setproperty(base, qual, name, value)
     // null
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot read property of null.");
+        throw new ReferenceError("Cannot read property of null.");
     }
     // undefined
-    throw constructerror(referenceerrorclass, "Cannot read property of undefined.");
+    throw new ReferenceError("Cannot read property of undefined.");
 }
 
 /**
@@ -2835,7 +2835,7 @@ export function deleteproperty(base, qual, name)
                 const mm = base[DICTIONARY_PROPERTIES_INDEX];
                 if (mm instanceof WeakMap && !(name instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 return mm.delete(name);
             }
@@ -2853,7 +2853,7 @@ export function deleteproperty(base, qual, name)
             }
             if ((istype(base, vectorclass) || istype(base, vectordoubleclass) || istype(base, vectorfloatclass) || istype(base, vectorintclass) || istype(base, vectoruintclass)) && !isNaN(Number(name)) && Number(name) == name >> 0)
             {
-                throw constructerror(typeerrorclass, "Cannot delete vector indices.");
+                throw new TypeError("Cannot delete vector indices.");
             }
         }
 
@@ -2864,7 +2864,7 @@ export function deleteproperty(base, qual, name)
             let itrait = c1.prototypenames.getname(qual, String(name));
             if (itrait)
             {
-                throw constructerror(typeerrorclass, "Cannot delete fixed property.");
+                throw new TypeError("Cannot delete fixed property.");
             }
 
             c1 = c1.baseclass;
@@ -2887,14 +2887,14 @@ export function deleteproperty(base, qual, name)
             return false;
         }
 
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     // class static
     if (base instanceof Class)
     {
         if (String(name) == "prototype")
         {
-            throw constructerror(typeerrorclass, "Cannot delete property 'prototype'.");
+            throw new TypeError("Cannot delete property 'prototype'.");
         }
         let c1 = base;
         while (c1 !== null)
@@ -2902,7 +2902,7 @@ export function deleteproperty(base, qual, name)
             const trait = c1.staticnames.getname(qual, name);
             if (trait)
             {
-                throw constructerror(typeerrorclass, "Cannot delete fixed property.");
+                throw new TypeError("Cannot delete fixed property.");
             }
             c1 = c1.baseclass;
         }
@@ -2912,7 +2912,7 @@ export function deleteproperty(base, qual, name)
             return false;
         }
 
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     if (typeof base === "object" || typeof base === "symbol")
     {
@@ -2936,10 +2936,10 @@ export function deleteproperty(base, qual, name)
     // null
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot delete property of null.");
+        throw new ReferenceError("Cannot delete property of null.");
     }
     // undefined
-    throw constructerror(referenceerrorclass, "Cannot delete property of undefined.");
+    throw new ReferenceError("Cannot delete property of undefined.");
 }
 
 /**
@@ -2980,7 +2980,7 @@ export function callproperty(base, qual, name, ...args)
                 let i = name >> 0;
                 if (i < 0 || i >= base[VECTOR_SUBARRAY_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
                 }
                 return call(base[VECTOR_SUBARRAY_INDEX][i], ...args);
             }
@@ -2989,7 +2989,7 @@ export function callproperty(base, qual, name, ...args)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 return call(base[VECTOR_SUBARRAY_INDEX].get(i), ...args);
             }
@@ -3014,7 +3014,7 @@ export function callproperty(base, qual, name, ...args)
                     const getter = itrait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot read write-only property.");
+                        throw new ReferenceError("Cannot read write-only property.");
                     }
                     return call(getter.exec.call(base), ...args);
                 }
@@ -3025,10 +3025,10 @@ export function callproperty(base, qual, name, ...args)
                 }
                 if (itrait instanceof Nsalias)
                 {
-                    throw constructerror(typeerrorclass, "Value is not a function.");
+                    throw new TypeError("Value is not a function.");
                 }
                 
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             
             // instance ecmaprototype
@@ -3057,7 +3057,7 @@ export function callproperty(base, qual, name, ...args)
             return call(reflectclass(base[CLASS_CLASS_INDEX]), ...args);
         }
 
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     // class static
     if (base instanceof Class)
@@ -3083,7 +3083,7 @@ export function callproperty(base, qual, name, ...args)
                     const getter = trait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot read write-only property.");
+                        throw new ReferenceError("Cannot read write-only property.");
                     }
                     return call(getter.exec.apply(undefined, []), ...args);
                 }
@@ -3097,7 +3097,7 @@ export function callproperty(base, qual, name, ...args)
                 {
                     return call(reflectnamespace(trait.ns), ...args);
                 }
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             c1 = c1.baseclass;
         }
@@ -3105,7 +3105,7 @@ export function callproperty(base, qual, name, ...args)
         {
             return call(reflectclass(classclass), ...args);
         }
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     if (typeof base === "object" || typeof base === "symbol")
     {
@@ -3144,10 +3144,10 @@ export function callproperty(base, qual, name, ...args)
     // null
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot read property of null.");
+        throw new ReferenceError("Cannot read property of null.");
     }
     // undefined
-    throw constructerror(referenceerrorclass, "Cannot read property of undefined.");
+    throw new ReferenceError("Cannot read property of undefined.");
 }
 
 export function preincrementproperty(base, qual, name)
@@ -3192,7 +3192,7 @@ function preincreaseproperty(base, qual, name, incVal)
             const children = (base[XML_NODE_INDEX]).childNodes;
             if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                throw new TypeError("Cannot increment or decrement a XML node.");
             }
             else
             {
@@ -3202,7 +3202,7 @@ function preincreaseproperty(base, qual, name, incVal)
                     const child = children[i];
                     if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                        throw new TypeError("Cannot increment or decrement a XML node.");
                     }
                 }
             }
@@ -3213,7 +3213,7 @@ function preincreaseproperty(base, qual, name, incVal)
             const children = base[XMLLIST_XMLARRAY_INDEX];
             if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                throw new TypeError("Cannot increment or decrement a XML node.");
             }
             else
             {
@@ -3223,7 +3223,7 @@ function preincreaseproperty(base, qual, name, incVal)
                     const child = children[i][XML_NODE_INDEX];
                     if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                        throw new TypeError("Cannot increment or decrement a XML node.");
                     }
                 }
             }
@@ -3242,7 +3242,7 @@ function preincreaseproperty(base, qual, name, incVal)
                 const arr = base[ARRAY_SUBARRAY_INDEX];
                 if (typeof arr[name >> 0] !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                    throw new TypeError("Cannot increment or decrement a non numeric value.");
                 }
                 arr[name >> 0] += incVal;
                 return arr[name >> 0];
@@ -3252,12 +3252,12 @@ function preincreaseproperty(base, qual, name, incVal)
                 let i = name >> 0;
                 if (i < 0 || i >= base[VECTOR_SUBARRAY_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
                 }
                 const arr = base[VECTOR_SUBARRAY_INDEX];
                 if (typeof arr[i] !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                    throw new TypeError("Cannot increment or decrement a non numeric value.");
                 }
                 arr[i] += incVal;
                 return arr[i];
@@ -3267,7 +3267,7 @@ function preincreaseproperty(base, qual, name, incVal)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 const flexvec = base[VECTOR_SUBARRAY_INDEX];
                 let v = flexvec.get(i) + incVal;
@@ -3280,7 +3280,7 @@ function preincreaseproperty(base, qual, name, incVal)
                 let i = name >> 0, l = ba.length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 let v = ba.get(i) + incVal;
                 ba.set(i, v);
@@ -3291,12 +3291,12 @@ function preincreaseproperty(base, qual, name, incVal)
                 const mm = base[DICTIONARY_PROPERTIES_INDEX];
                 if (mm instanceof WeakMap && !(name instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 let v = mm.get(name);
                 if (typeof v !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                    throw new TypeError("Cannot increment or decrement a non numeric value.");
                 }
                 v += incVal;
                 mm.set(name, v);
@@ -3317,12 +3317,12 @@ function preincreaseproperty(base, qual, name, incVal)
                     const i = ctor.prototypevarslots.indexOf(itrait);
                     if (itrait.readonly && typeof base[SLOT_FIXTURE_START + i] !== "undefined")
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     let v = base[SLOT_FIXTURE_START + i];
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     v += incVal;
                     v = coerce(v, itrait.type);
@@ -3335,17 +3335,17 @@ function preincreaseproperty(base, qual, name, incVal)
                     const getter = itrait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a write-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a write-only property.");
                     }
                     const setter = itrait.setter;
                     if (setter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a read-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a read-only property.");
                     }
                     let v = getter.exec.call(base);
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     v += incVal;
                     v = coerce(v, itrait.type);
@@ -3355,14 +3355,14 @@ function preincreaseproperty(base, qual, name, incVal)
                 // bound method
                 if (itrait instanceof Method)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot increment or decrement from a method.");
+                    throw new ReferenceError("Cannot increment or decrement from a method.");
                 }
                 if (itrait instanceof Nsalias)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot increment or decrement from a namespace.");
+                    throw new ReferenceError("Cannot increment or decrement from a namespace.");
                 }
 
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
 
             c1 = c1.baseclass;
@@ -3374,7 +3374,7 @@ function preincreaseproperty(base, qual, name, incVal)
             let v = callproperty(base, flexproxyns, "getProperty", qn);
             if (typeof v !== "number")
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                throw new TypeError("Cannot increment or decrement a non numeric value.");
             }
             v += incVal;
             callproperty(base, flexproxyns, "setProperty", qn, v);
@@ -3386,7 +3386,7 @@ function preincreaseproperty(base, qual, name, incVal)
             let v = base[DYNAMIC_PROPERTIES_INDEX].get(String(name));
             if (typeof v !== "number")
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                throw new TypeError("Cannot increment or decrement a non numeric value.");
             }
             v += incVal;
             base[DYNAMIC_PROPERTIES_INDEX].set(String(name), v);
@@ -3401,17 +3401,17 @@ function preincreaseproperty(base, qual, name, incVal)
 
         if (notqual && name == "constructor")
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement 'constructor'.");
+            throw new ReferenceError("Cannot increment or decrement 'constructor'.");
         }
 
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     // class static
     if (base instanceof Class)
     {
         if (String(name) == "prototype")
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement 'prototype'.");
+            throw new ReferenceError("Cannot increment or decrement 'prototype'.");
         }
         let c1 = base;
         while (c1 !== null)
@@ -3424,12 +3424,12 @@ function preincreaseproperty(base, qual, name, incVal)
                 {
                     if (trait.readonly && c1.staticvarvals.has(trait))
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     let v = c1.staticvarvals.get(trait);
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     v += incVal;
                     v = coerce(v, trait.type);
@@ -3442,17 +3442,17 @@ function preincreaseproperty(base, qual, name, incVal)
                     const getter = trait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a write-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a write-only property.");
                     }
                     const setter = trait.setter;
                     if (setter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a read-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a read-only property.");
                     }
                     let v = getter.exec.call(base);
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     v += incVal;
                     v = coerce(v, trait.type);
@@ -3462,22 +3462,22 @@ function preincreaseproperty(base, qual, name, incVal)
                 // method
                 if (trait instanceof Method)
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement from method.");
+                    throw new TypeError("Cannot increment or decrement from method.");
                 }
                 // namespace
                 if (trait instanceof Nsalias)
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement from namespace.");
+                    throw new TypeError("Cannot increment or decrement from namespace.");
                 }
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             c1 = c1.baseclass;
         }
         if (notqual && name == "constructor")
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement 'constructor'.");
+            throw new ReferenceError("Cannot increment or decrement 'constructor'.");
         }
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     if (typeof base === "object" || typeof base === "symbol")
     {
@@ -3491,25 +3491,25 @@ function preincreaseproperty(base, qual, name, incVal)
     // Number
     if (typeof base == "number")
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from a Number object.");
+        throw new TypeError("Cannot increment or decrement from a Number object.");
     }
     // Boolean
     if (typeof base == "boolean")
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from a Boolean object.");
+        throw new TypeError("Cannot increment or decrement from a Boolean object.");
     }
     // String
     if (typeof base == "string")
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from a String object.");
+        throw new TypeError("Cannot increment or decrement from a String object.");
     }
     // null
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot read property of null.");
+        throw new ReferenceError("Cannot read property of null.");
     }
     // undefined
-    throw constructerror(referenceerrorclass, "Cannot read property of undefined.");
+    throw new ReferenceError("Cannot read property of undefined.");
 }
 
 /**
@@ -3535,7 +3535,7 @@ function postincreaseproperty(base, qual, name, incVal)
             const children = (base[XML_NODE_INDEX]).childNodes;
             if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                throw new TypeError("Cannot increment or decrement a XML node.");
             }
             else
             {
@@ -3545,7 +3545,7 @@ function postincreaseproperty(base, qual, name, incVal)
                     const child = children[i];
                     if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                        throw new TypeError("Cannot increment or decrement a XML node.");
                     }
                 }
             }
@@ -3556,7 +3556,7 @@ function postincreaseproperty(base, qual, name, incVal)
             const children = base[XMLLIST_XMLARRAY_INDEX];
             if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                throw new TypeError("Cannot increment or decrement a XML node.");
             }
             else
             {
@@ -3566,7 +3566,7 @@ function postincreaseproperty(base, qual, name, incVal)
                     const child = children[i][XML_NODE_INDEX];
                     if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a XML node.");
+                        throw new TypeError("Cannot increment or decrement a XML node.");
                     }
                 }
             }
@@ -3586,7 +3586,7 @@ function postincreaseproperty(base, qual, name, incVal)
                 const v = arr[name >> 0];
                 if (typeof v !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                    throw new TypeError("Cannot increment or decrement a non numeric value.");
                 }
                 arr[name >> 0] += incVal;
                 return v;
@@ -3596,13 +3596,13 @@ function postincreaseproperty(base, qual, name, incVal)
                 let i = name >> 0;
                 if (i < 0 || i >= base[VECTOR_SUBARRAY_INDEX].length)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + base[VECTOR_SUBARRAY_INDEX].length + ").");
                 }
                 const arr = base[VECTOR_SUBARRAY_INDEX];
                 const v = arr[i];
                 if (typeof v !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                    throw new TypeError("Cannot increment or decrement a non numeric value.");
                 }
                 arr[i] += incVal;
                 return v;
@@ -3612,7 +3612,7 @@ function postincreaseproperty(base, qual, name, incVal)
                 let i = name >> 0, l = base[VECTOR_SUBARRAY_INDEX].length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 const flexvec = base[VECTOR_SUBARRAY_INDEX];
                 const v = flexvec.get(i);
@@ -3625,7 +3625,7 @@ function postincreaseproperty(base, qual, name, incVal)
                 let i = name >> 0, l = ba.length;
                 if (i < 0 || i >= l)
                 {
-                    throw constructerror(referenceerrorclass, "Index " + i + " out of bounds (length=" + l + ").");
+                    throw new ReferenceError("Index " + i + " out of bounds (length=" + l + ").");
                 }
                 const v = ba.get(i);
                 ba.set(i, v + incVal);
@@ -3636,12 +3636,12 @@ function postincreaseproperty(base, qual, name, incVal)
                 const mm = base[DICTIONARY_PROPERTIES_INDEX];
                 if (mm instanceof WeakMap && !(name instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 let v = mm.get(name);
                 if (typeof v !== "number")
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                    throw new TypeError("Cannot increment or decrement a non numeric value.");
                 }
                 mm.set(name, v + incVal);
                 return v;
@@ -3661,12 +3661,12 @@ function postincreaseproperty(base, qual, name, incVal)
                     const i = ctor.prototypevarslots.indexOf(itrait);
                     if (itrait.readonly && typeof base[SLOT_FIXTURE_START + i] !== "undefined")
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     let v = base[SLOT_FIXTURE_START + i];
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     base[SLOT_FIXTURE_START + i] = coerce(v + incVal, itrait.type);
                     return v;
@@ -3677,17 +3677,17 @@ function postincreaseproperty(base, qual, name, incVal)
                     const getter = itrait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a write-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a write-only property.");
                     }
                     const setter = itrait.setter;
                     if (setter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a read-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a read-only property.");
                     }
                     let v = getter.exec.call(base);
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     setter.exec.call(base, coerce(v + incVal, itrait.type));
                     return v;
@@ -3695,14 +3695,14 @@ function postincreaseproperty(base, qual, name, incVal)
                 // bound method
                 if (itrait instanceof Method)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot increment or decrement from a method.");
+                    throw new ReferenceError("Cannot increment or decrement from a method.");
                 }
                 if (itrait instanceof Nsalias)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot increment or decrement from a namespace.");
+                    throw new ReferenceError("Cannot increment or decrement from a namespace.");
                 }
                 
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
 
             c1 = c1.baseclass;
@@ -3714,7 +3714,7 @@ function postincreaseproperty(base, qual, name, incVal)
             let v = callproperty(base, flexproxyns, "getProperty", qn);
             if (typeof v !== "number")
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                throw new TypeError("Cannot increment or decrement a non numeric value.");
             }
             callproperty(base, flexproxyns, "setProperty", qn, v + incVal);
             return v;
@@ -3725,7 +3725,7 @@ function postincreaseproperty(base, qual, name, incVal)
             let v = base[DYNAMIC_PROPERTIES_INDEX].get(String(name));
             if (typeof v !== "number")
             {
-                throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                throw new TypeError("Cannot increment or decrement a non numeric value.");
             }
             base[DYNAMIC_PROPERTIES_INDEX].set(String(name), v + incVal);
             return v;
@@ -3739,17 +3739,17 @@ function postincreaseproperty(base, qual, name, incVal)
 
         if (notqual && name == "constructor")
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement 'constructor'.");
+            throw new ReferenceError("Cannot increment or decrement 'constructor'.");
         }
 
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     // class static
     if (base instanceof Class)
     {
         if (String(name) == "prototype")
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement 'prototype'.");
+            throw new ReferenceError("Cannot increment or decrement 'prototype'.");
         }
         let c1 = base;
         while (c1 !== null)
@@ -3762,12 +3762,12 @@ function postincreaseproperty(base, qual, name, incVal)
                 {
                     if (trait.readonly && c1.staticvarvals.has(trait))
                     {
-                        throw constructerror(referenceerrorclass, "Cannot assign to read-only property.");
+                        throw new ReferenceError("Cannot assign to read-only property.");
                     }
                     let v = c1.staticvarvals.get(trait);
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     c1.staticvarvals.set(trait, coerce(v + incVal, trait.type));
                     return v;
@@ -3778,17 +3778,17 @@ function postincreaseproperty(base, qual, name, incVal)
                     const getter = trait.getter;
                     if (getter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a write-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a write-only property.");
                     }
                     const setter = trait.setter;
                     if (setter === null)
                     {
-                        throw constructerror(referenceerrorclass, "Cannot increment or decrement a read-only property.");
+                        throw new ReferenceError("Cannot increment or decrement a read-only property.");
                     }
                     let v = getter.exec.call(base);
                     if (typeof v !== "number")
                     {
-                        throw constructerror(typeerrorclass, "Cannot increment or decrement a non numeric value.");
+                        throw new TypeError("Cannot increment or decrement a non numeric value.");
                     }
                     setter.exec.call(base, coerce(v + incVal, trait.type));
                     return v;
@@ -3796,22 +3796,22 @@ function postincreaseproperty(base, qual, name, incVal)
                 // method
                 if (trait instanceof Method)
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement from method.");
+                    throw new TypeError("Cannot increment or decrement from method.");
                 }
                 // namespace
                 if (trait instanceof Nsalias)
                 {
-                    throw constructerror(typeerrorclass, "Cannot increment or decrement from namespace.");
+                    throw new TypeError("Cannot increment or decrement from namespace.");
                 }
-                throw constructerror(referenceerrorclass, "Internal error");
+                throw new ReferenceError("Internal error");
             }
             c1 = c1.baseclass;
         }
         if (notqual && name == "constructor")
         {
-            throw constructerror(referenceerrorclass, "Cannot increment or decrement 'constructor'.");
+            throw new ReferenceError("Cannot increment or decrement 'constructor'.");
         }
-        throw constructerror(referenceerrorclass, "Access of undefined property " + name + ".");
+        throw new ReferenceError("Access of undefined property " + name + ".");
     }
     if (typeof base === "object" || typeof base === "symbol")
     {
@@ -3826,25 +3826,25 @@ function postincreaseproperty(base, qual, name, incVal)
     // Number
     if (typeof base == "number")
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from a Number object.");
+        throw new TypeError("Cannot increment or decrement from a Number object.");
     }
     // Boolean
     if (typeof base == "boolean")
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from a Boolean object.");
+        throw new TypeError("Cannot increment or decrement from a Boolean object.");
     }
     // String
     if (typeof base == "string")
     {
-        throw constructerror(typeerrorclass, "Cannot increment or decrement from a String object.");
+        throw new TypeError("Cannot increment or decrement from a String object.");
     }
     // null
     if (base === null)
     {
-        throw constructerror(referenceerrorclass, "Cannot read property of null.");
+        throw new ReferenceError("Cannot read property of null.");
     }
     // undefined
-    throw constructerror(referenceerrorclass, "Cannot read property of undefined.");
+    throw new ReferenceError("Cannot read property of undefined.");
 }
 
 export function call(obj, ...args)
@@ -3879,7 +3879,7 @@ export function call(obj, ...args)
                 const nodes = args[0][XMLLIST_XMLARRAY_INDEX];
                 if (nodes.length != 1)
                 {
-                    throw constructerror(typeerrorclass, "Invalid XML() argument.");
+                    throw new TypeError("Invalid XML() argument.");
                 }
                 return nodes[0];
             }
@@ -3899,18 +3899,18 @@ export function call(obj, ...args)
             {
                 return construct(classobj, args[0]);
             }
-            throw constructerror(typeerrorclass, "Incorrect call to the Vector() class.");
+            throw new TypeError("Incorrect call to the Vector() class.");
         }
         const arg = args[0];
         if (istype(arg, classobj) || issubtype(arg, classobj))
         {
             return arg;
         }
-        throw constructerror(typeerrorclass, "Could not cast value to " + classobj.name + ".");
+        throw new TypeError("Could not cast value to " + classobj.name + ".");
     }
     else
     {
-        throw constructerror(typeerrorclass, "Value is not a function.");
+        throw new TypeError("Value is not a function.");
     }
 }
 
@@ -3936,7 +3936,7 @@ function callboundfunctionorclass(obj, thisreceiver, ...args)
     }
     else
     {
-        throw constructerror(typeerrorclass, "Value is not a function.");
+        throw new TypeError("Value is not a function.");
     }
 }
 
@@ -4187,6 +4187,65 @@ export function tostring(arg)
         }
     }
     return String(callproperty(arg, null, "toString"));
+}
+
+class ArgumentError extends Error
+{
+    constructor(message)
+    {
+        super(message);
+    }
+}
+
+const __AS3__err_Symbol = Symbol("__AS3__err");
+
+export function fromjserror(error)
+{
+    if (error instanceof Error)
+    {
+        const k = error[__AS3__err_Symbol];
+        if (k)
+        {
+            return k;
+        }
+        const errname = error.name;
+        if ((error instanceof AggregateError || errname == "AggregateError") && error.errors instanceof Array)
+        {
+            return [aggregateerrorclass, new Map(), error, error.errors.map(e => fromjserror(e))];
+        }
+        const ctor = errname == "SyntaxError" ? syntaxerrorclass :
+            errname == "ReferenceError" ? referenceerrorclass :
+            errname == "TypeError" ? typeerrorclass :
+            errname == "ArgumentError" ? argumenterrorclass :
+            errname == "RangeError" ? rangeerrorclass :
+            errname == "URIError" ? urierrorclass :
+            errname == "EvalError" ? evalerrorclass : errorclass;
+        return [ctor, new Map(), error];
+    }
+    else
+    {
+        return error;
+    }
+}
+
+export function tojserror(error)
+{
+    if (istype(error, errorclass))
+    {
+        if (istype(error, aggregateerrorclass))
+        {
+            const obj = error[ERROR_ERROR_INDEX];
+            obj.name = error[CONSTRUCTOR_INDEX].name;
+            obj.errors = error[AGGREGATEERROR_ERRORS_INDEX].map(e => tojserror(e));
+            obj[__AS3__err_Symbol] = error;
+            return obj;
+        }
+        const obj = error[ERROR_ERROR_INDEX];
+        obj.name = error[CONSTRUCTOR_INDEX].name;
+        obj[__AS3__err_Symbol] = error;
+        return obj;
+    }
+    return type;
 }
 
 function randomHexID()
@@ -4726,7 +4785,7 @@ export function reflectclass(classOrItrfc)
 {
     if (!(classOrItrfc instanceof Class || classOrItrfc instanceof Interface))
     {
-        throw constructerror(typeerrorclass, "Cannot reflect a value as a Class object.");
+        throw new TypeError("Cannot reflect a value as a Class object.");
     }
     let obj = internedclassobjs.get(classOrItrfc);
     if (!obj)
@@ -4876,7 +4935,7 @@ export const xmlclass = defineclass(name($publicns, "XML"),
             }
             else if (value === null || typeof value === "undefined")
             {
-                throw constructerror(typeerrorclass, "Invalid XML() argument.");
+                throw new TypeError("Invalid XML() argument.");
             }
             const node = new DOMParser().parseFromString(tostring(value), "text/xml");
             this[XML_NODE_INDEX] = node;
@@ -5272,7 +5331,7 @@ export const xmlclass = defineclass(name($publicns, "XML"),
                     case thisNode.PROCESSING_INSTRUCTION_NODE:
                         return "processing-instruction";
                     default:
-                        throw constructerror(typeerrorclass, "Inaccessible node kind.");
+                        throw new TypeError("Inaccessible node kind.");
                 }
             }
         })],
@@ -5497,7 +5556,7 @@ export const xmllistclass = defineclass(name($publicns, "XMLList"),
                 }
                 else
                 {
-                    throw constructerror(typeerrorclass, "Invalid XMLList() argument.");
+                    throw new TypeError("Invalid XMLList() argument.");
                 }
                 const docsrc = "<doc>" + object + "</doc>";
                 const doc = new DOMParser().parseFromString(tostring(docsrc), "text/xml");
@@ -7018,7 +7077,7 @@ function nonnumerictointeger(v)
     {
         if (Number(v) !== v >> 0)
         {
-            throw constructerror(typeerrorclass, "Could not convert non-numeric value to integer.");
+            throw new TypeError("Could not convert non-numeric value to integer.");
         }
         v = v >> 0;
     }
@@ -7069,7 +7128,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
                 {
                     if (this[VECTOR_FIXED_INDEX])
                     {
-                        throw constructerror(errorclass, fixedVectorMessage);
+                        throw new Error(fixedVectorMessage);
                     }
                     this[VECTOR_SUBARRAY_INDEX].length = val >>> 0;
                 },
@@ -7187,7 +7246,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 arr.splice(index, 0, element);
@@ -7231,7 +7290,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.pop() ?? null;
@@ -7243,7 +7302,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.push(...args);
@@ -7255,7 +7314,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.splice(index, 1)[0] ?? null;
@@ -7276,7 +7335,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 if (arr.length == 0)
@@ -7473,7 +7532,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(startIndex, deleteCount, ...items);
@@ -7486,7 +7545,7 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
             {
                 if (this[VECTOR_FIXED_INDEX])
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.unshift(...args);
@@ -7520,7 +7579,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
                 {
                     if (this[VECTOR_SUBARRAY_INDEX].fixed)
                     {
-                        throw constructerror(errorclass, fixedVectorMessage);
+                        throw new Error(fixedVectorMessage);
                     }
                     this[VECTOR_SUBARRAY_INDEX].length = val >>> 0;
                 },
@@ -7582,7 +7641,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 arr.splice(index, 0, element);
@@ -7618,7 +7677,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.pop();
@@ -7630,7 +7689,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.push(...args);
@@ -7642,7 +7701,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(index, 1);
@@ -7664,7 +7723,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.shift();
@@ -7700,7 +7759,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(startIndex, deleteCount, ...items);
@@ -7713,7 +7772,7 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.unshift(...args);
@@ -8054,7 +8113,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
                 {
                     if (this[VECTOR_SUBARRAY_INDEX].fixed)
                     {
-                        throw constructerror(errorclass, fixedVectorMessage);
+                        throw new Error(fixedVectorMessage);
                     }
                     this[VECTOR_SUBARRAY_INDEX].length = val >>> 0;
                 },
@@ -8116,7 +8175,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 arr.splice(index, 0, element);
@@ -8152,7 +8211,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.pop();
@@ -8164,7 +8223,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.push(...args);
@@ -8176,7 +8235,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(index, 1);
@@ -8198,7 +8257,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.shift();
@@ -8234,7 +8293,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(startIndex, deleteCount, ...items);
@@ -8247,7 +8306,7 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.unshift(...args);
@@ -8281,7 +8340,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
                 {
                     if (this[VECTOR_SUBARRAY_INDEX].fixed)
                     {
-                        throw constructerror(errorclass, fixedVectorMessage);
+                        throw new Error(fixedVectorMessage);
                     }
                     this[VECTOR_SUBARRAY_INDEX].length = val >>> 0;
                 },
@@ -8343,7 +8402,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 arr.splice(index, 0, element);
@@ -8379,7 +8438,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.pop();
@@ -8391,7 +8450,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.push(...args);
@@ -8403,7 +8462,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(index, 1);
@@ -8425,7 +8484,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.shift();
@@ -8461,7 +8520,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(startIndex, deleteCount, ...items);
@@ -8474,7 +8533,7 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.unshift(...args);
@@ -8508,7 +8567,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
                 {
                     if (this[VECTOR_SUBARRAY_INDEX].fixed)
                     {
-                        throw constructerror(errorclass, fixedVectorMessage);
+                        throw new Error(fixedVectorMessage);
                     }
                     this[VECTOR_SUBARRAY_INDEX].length = val >>> 0;
                 },
@@ -8570,7 +8629,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 arr.splice(index, 0, element);
@@ -8606,7 +8665,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.pop();
@@ -8618,7 +8677,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.push(...args);
@@ -8630,7 +8689,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(index, 1);
@@ -8652,7 +8711,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.shift();
@@ -8688,7 +8747,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 const r = arr.splice(startIndex, deleteCount, ...items);
@@ -8701,7 +8760,7 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
             {
                 if (this[VECTOR_SUBARRAY_INDEX].fixed)
                 {
-                    throw constructerror(errorclass, fixedVectorMessage);
+                    throw new Error(fixedVectorMessage);
                 }
                 const arr = this[VECTOR_SUBARRAY_INDEX];
                 return arr.unshift(...args);
@@ -8734,7 +8793,7 @@ export const promiseclass = defineclass(name($publicns, "Promise"),
             {
                 if (!istype(list, arrayclass))
                 {
-                    throw constructerror(argumenterrorclass, "Argument must be an Array.");
+                    throw new ArgumentError("Argument must be an Array.");
                 }
                 list = (list[ARRAY_SUBARRAY_INDEX]).map(p => call(promiseclass, p)[PROMISE_PROMISE_INDEX]);
                 return [promiseclass, new Map(), Promise.all(list).then(vals =>
@@ -8751,7 +8810,7 @@ export const promiseclass = defineclass(name($publicns, "Promise"),
             {
                 if (!istype(list, arrayclass))
                 {
-                    throw constructerror(argumenterrorclass, "Argument must be an Array.");
+                    throw new ArgumentError("Argument must be an Array.");
                 }
                 list = (list[ARRAY_SUBARRAY_INDEX]).map(p => call(promiseclass, p)[PROMISE_PROMISE_INDEX]);
                 return [promiseclass, new Map(), Promise.allSettled(list).then(vals =>
@@ -8787,7 +8846,7 @@ export const promiseclass = defineclass(name($publicns, "Promise"),
             {
                 if (!istype(list, arrayclass))
                 {
-                    throw constructerror(argumenterrorclass, "Argument must be an Array.");
+                    throw new ArgumentError("Argument must be an Array.");
                 }
                 list = (list[ARRAY_SUBARRAY_INDEX]).map(p => call(promiseclass, p)[PROMISE_PROMISE_INDEX]);
                 return [promiseclass, new Map(), Promise.any(list).catch(reason => {
@@ -8807,7 +8866,7 @@ export const promiseclass = defineclass(name($publicns, "Promise"),
             {
                 if (!istype(list, arrayclass))
                 {
-                    throw constructerror(argumenterrorclass, "Argument must be an Array.");
+                    throw new ArgumentError("Argument must be an Array.");
                 }
                 list = (list[ARRAY_SUBARRAY_INDEX]).map(p => call(promiseclass, p)[PROMISE_PROMISE_INDEX]);
                 return [promiseclass, new Map(), Promise.race(list)];
@@ -9028,17 +9087,6 @@ export const errorclass = defineclass(name($publicns, "Error"),
     ]
 );
 
-/**
- * Constructs an ActionScript `Error` object.
- */
-export function constructerror(errorclass, message = "")
-{
-    const obj = construct(errorclass);
-    assert(istype(obj, errorclass));
-    setproperty(obj, null, "message", tostring(message));
-    return obj;
-}
-
 // after ERROR_ERROR_INDEX
 const AGGREGATEERROR_ERRORS_INDEX = 3; // Array of Error
 export const aggregateerrorclass = defineclass(name($publicns, "AggregateError"),
@@ -9051,7 +9099,7 @@ export const aggregateerrorclass = defineclass(name($publicns, "AggregateError")
             errorclass.ctor.apply(this, [message]);
             if (!istype(errors, arrayclass))
             {
-                throw constructerror(argumenterrorclass, "Argument must be an Array.");
+                throw new ArgumentError("Argument must be an Array.");
             }
             this[AGGREGATEERROR_ERRORS_INDEX] = errors;
         },
@@ -9073,7 +9121,7 @@ export const aggregateerrorclass = defineclass(name($publicns, "AggregateError")
                 {
                     if (!istype(val, arrayclass))
                     {
-                        throw constructerror(typeerrorclass, "Value must be an Array.");
+                        throw new TypeError("Value must be an Array.");
                     }
                     this[AGGREGATEERROR_ERRORS_INDEX] = val;
                 },
@@ -9240,7 +9288,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m =this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap)
                 {
-                    throw constructerror(typeerrorclass, "Cannot retrieve the length of a weak Dictionary.");
+                    throw new TypeError("Cannot retrieve the length of a weak Dictionary.");
                 }
                 return (m).size;
             },
@@ -9259,12 +9307,12 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap && !(key instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 const v = m.get(key);
                 if (!istype(v, functionclass))
                 {
-                    throw constructerror(typeerrorclass, "Value is not a function.");
+                    throw new TypeError("Value is not a function.");
                 }
                 return v[FUNCTION_FUNCTION_INDEX](...args);
             },
@@ -9276,7 +9324,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap && !(key instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 return m.has(key);
             },
@@ -9288,7 +9336,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap && !(key instanceof Array))
                 {
-                    throw constructerror(referenceerrorclass, "Weak key must be a managed Object.");
+                    throw new ReferenceError("Weak key must be a managed Object.");
                 }
                 return m.has(key);
             },
@@ -9300,7 +9348,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot enumerate entries of a weak Dictionary.");
+                    throw new ReferenceError("Cannot enumerate entries of a weak Dictionary.");
                 }
                 const list = Array.from(m.entries()).map(entry => [arrayclass, new Map(), entry]);
                 return [arrayclass, new Map(), list];
@@ -9313,7 +9361,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot enumerate keys of a weak Dictionary.");
+                    throw new ReferenceError("Cannot enumerate keys of a weak Dictionary.");
                 }
                 return [arrayclass, new Map(), Array.from(m.keys())];
             },
@@ -9325,7 +9373,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot enumerate values of a weak Dictionary.");
+                    throw new ReferenceError("Cannot enumerate values of a weak Dictionary.");
                 }
                 return [arrayclass, new Map(), Array.from(m.values())];
             },
@@ -9337,7 +9385,7 @@ export const dictionaryclass = defineclass(name($publicns, "Dictionary"),
                 const m = this[DICTIONARY_PROPERTIES_INDEX];
                 if (m instanceof WeakMap)
                 {
-                    throw constructerror(referenceerrorclass, "Cannot clear a weak Dictionary.");
+                    throw new ReferenceError("Cannot clear a weak Dictionary.");
                 }
                 m.clear();
             },
@@ -9393,7 +9441,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
             {
                 if (!istype(arg, bytearrayclass))
                 {
-                    throw constructerror(argumenterrorclass, "Argument must be a ByteArray.");
+                    throw new ArgumentError("Argument must be a ByteArray.");
                 }
                 return (this[BYTEARRAY_BA_INDEX]).equals(arg[BYTEARRAY_BA_INDEX]);
             },
@@ -9414,7 +9462,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 {
                     if (availableEndianConstants.indexOf(val) == -1)
                     {
-                        throw constructerror(errorclass, "Invalid Endian constant.");
+                        throw new Error("Invalid Endian constant.");
                     }
                     (this[BYTEARRAY_BA_INDEX]).endian = val;
                 },
@@ -9475,7 +9523,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position >= ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readUnsignedByte();
             },
@@ -9494,7 +9542,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position >= ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readByte();
             },
@@ -9513,7 +9561,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + 2 > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readShort();
             },
@@ -9532,7 +9580,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + 2 > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readUnsignedShort();
             },
@@ -9551,7 +9599,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + 4 > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readInt();
             },
@@ -9570,7 +9618,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + 4 > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readUnsignedInt();
             },
@@ -9589,7 +9637,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + 4 > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readFloat();
             },
@@ -9608,7 +9656,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + 8 > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readDouble();
             },
@@ -9627,7 +9675,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + length > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return ba.readUTF(length);
             },
@@ -9646,7 +9694,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
                 const ba = this[BYTEARRAY_BA_INDEX];
                 if (ba.position + length > ba.length)
                 {
-                    throw constructerror(rangeerrorclass, "Insufficient data available to read.");
+                    throw new RangeError("Insufficient data available to read.");
                 }
                 return [bytearrayclass, new Map(), ba.readBytes(length)];
             },
@@ -9657,7 +9705,7 @@ export const bytearrayclass = defineclass(name($publicns, "ByteArray"),
             {
                 if (!istype(value, bytearrayclass))
                 {
-                    throw constructerror(argumenterrorclass, "Argument must be a ByteArray.");
+                    throw new ArgumentError("Argument must be a ByteArray.");
                 }
                 (this[BYTEARRAY_BA_INDEX]).writeByte(value[BYTEARRAY_BA_INDEX]);
             },
@@ -9686,63 +9734,63 @@ export const proxyclass = defineclass(name($publicns, "Proxy"),
         {
             exec(name, ...rest)
             {
-                throw constructerror(errorclass, "flex_proxy::callProperty() is not implemented.");
+                throw new Error("flex_proxy::callProperty() is not implemented.");
             },
         })],
         [name(flexproxyns, "deleteProperty"), method(
         {
             exec(name)
             {
-                throw constructerror(errorclass, "flex_proxy::deleteProperty() is not implemented.");
+                throw new Error("flex_proxy::deleteProperty() is not implemented.");
             },
         })],
         [name(flexproxyns, "getDescendants"), method(
         {
             exec(name)
             {
-                throw constructerror(errorclass, "flex_proxy::getDescendants() is not implemented.");
+                throw new Error("flex_proxy::getDescendants() is not implemented.");
             },
         })],
         [name(flexproxyns, "getProperty"), method(
         {
             exec(name)
             {
-                throw constructerror(errorclass, "flex_proxy::getProperty() is not implemented.");
+                throw new Error("flex_proxy::getProperty() is not implemented.");
             },
         })],
         [name(flexproxyns, "hasProperty"), method(
         {
             exec(name)
             {
-                throw constructerror(errorclass, "flex_proxy::hasProperty() is not implemented.");
+                throw new Error("flex_proxy::hasProperty() is not implemented.");
             },
         })],
         [name(flexproxyns, "nextName"), method(
         {
             exec(index)
             {
-                throw constructerror(errorclass, "flex_proxy::nextName() is not implemented.");
+                throw new Error("flex_proxy::nextName() is not implemented.");
             },
         })],
         [name(flexproxyns, "nextNameIndex"), method(
         {
             exec(index)
             {
-                throw constructerror(errorclass, "flex_proxy::nextNameIndex() is not implemented.");
+                throw new Error("flex_proxy::nextNameIndex() is not implemented.");
             },
         })],
         [name(flexproxyns, "nextValue"), method(
         {
             exec(index)
             {
-                throw constructerror(errorclass, "flex_proxy::nextValue() is not implemented.");
+                throw new Error("flex_proxy::nextValue() is not implemented.");
             },
         })],
         [name(flexproxyns, "setProperty"), method(
         {
             exec(name, value)
             {
-                throw constructerror(errorclass, "flex_proxy::setProperty() is not implemented.");
+                throw new Error("flex_proxy::setProperty() is not implemented.");
             },
         })],
     ]
