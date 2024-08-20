@@ -1961,12 +1961,14 @@ export function hasmethod(base, qual, name)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            return false;
+            return notqual ? typeof base[name] == "function" : false;
         }
+
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
@@ -2137,6 +2139,10 @@ function qualincludespublic(qual)
 {
     if (qual instanceof Array)
     {
+        if (qual[CONSTRUCTOR_INDEX] instanceof Class)
+        {
+            return false;
+        }
         return qual.some(q => (q).ispublicns() || q === as3ns);
     }
     if (qual instanceof Ns && (qual.ispublicns() || qual === as3ns))
@@ -2154,16 +2160,23 @@ export function getproperty(base, qual, name)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            return qualincludespublic(qual) ? base[name] : undefined;
+            return notqual ? base[name] : undefined;
         }
+
         if (istype(base, xmlclass))
         {
             const m = [];
             const children = (base[XML_NODE_INDEX]).childNodes;
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
+            if (notqual && !isNaN(Number(name)) && name >>> 0 === Number(name))
             {
+                if ((name >>> 0) >= children.length)
+                {
+                    throw new ReferenceError("Index " + (name >>> 0) + " out of bounds (length=" + children.length + ").");
+                }
                 return w3cnodetoe4xnode(children[name >>> 0]);
             }
             else
@@ -2185,8 +2198,12 @@ export function getproperty(base, qual, name)
         {
             const m = [];
             const children = base[XMLLIST_XMLARRAY_INDEX];
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
+            if (notqual && !isNaN(Number(name)) && name >>> 0 === Number(name))
             {
+                if ((name >>> 0) >= children.length)
+                {
+                    throw new ReferenceError("Index " + (name >>> 0) + " out of bounds (length=" + children.length + ").");
+                }
                 return children[name >>> 0];
             }
             else
@@ -2206,7 +2223,6 @@ export function getproperty(base, qual, name)
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
@@ -2435,19 +2451,26 @@ export function setproperty(base, qual, name, value)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            if (qualincludespublic(qual))
+            if (notqual)
             {
                 base[name] = value;
             }
             return;
         }
+
         if (istype(base, xmlclass))
         {
             const children = (base[XML_NODE_INDEX]).childNodes;
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
+            if (notqual && !isNaN(Number(name)) && name >>> 0 === Number(name))
             {
+                if ((name >>> 0) >= children.length)
+                {
+                    throw new ReferenceError("Index " + (name >>> 0) + " out of bounds (length=" + children.length + ").");
+                }
                 const child = children[name >>> 0];
                 (base[XML_NODE_INDEX]).insertBefore(call(xmlclass, value), child);
                 (base[XML_NODE_INDEX]).removeChild(child);
@@ -2462,8 +2485,12 @@ export function setproperty(base, qual, name, value)
         if (istype(base, xmllistclass))
         {
             const children = base[XMLLIST_XMLARRAY_INDEX];
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
+            if (notqual && !isNaN(Number(name)) && name >>> 0 === Number(name))
             {
+                if ((name >>> 0) >= children.length)
+                {
+                    throw new ReferenceError("Index " + (name >>> 0) + " out of bounds (length=" + children.length + ").");
+                }
                 children[name >>> 0] = call(xmlclass, value);
                 return;
             }
@@ -2474,7 +2501,6 @@ export function setproperty(base, qual, name, value)
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
@@ -2744,16 +2770,23 @@ export function deleteproperty(base, qual, name)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            return qualincludespublic(qual) ? delete base[name] : false;
+            return notqual ? delete base[name] : false;
         }
+
         if (istype(base, xmlclass))
         {
             const m = [];
             const children = (base[XML_NODE_INDEX]).childNodes;
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
+            if (notqual && !isNaN(Number(name)) && name >>> 0 === Number(name))
             {
+                if ((name >>> 0) >= children.length)
+                {
+                    throw new ReferenceError("Index " + (name >>> 0) + " out of bounds (length=" + children.length + ").");
+                }
                 (base[XML_NODE_INDEX]).removeChild(children[name >>> 0]);
                 return true;
             }
@@ -2784,8 +2817,12 @@ export function deleteproperty(base, qual, name)
         {
             const m = [];
             const children = base[XMLLIST_XMLARRAY_INDEX];
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
+            if (notqual && !isNaN(Number(name)) && name >>> 0 === Number(name))
             {
+                if ((name >>> 0) >= children.length)
+                {
+                    throw new ReferenceError("Index " + (name >>> 0) + " out of bounds (length=" + children.length + ").");
+                }
                 children.splice(name >>> 0, 1);
                 return true;
             }
@@ -2813,7 +2850,6 @@ export function deleteproperty(base, qual, name)
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
@@ -2938,13 +2974,14 @@ export function callproperty(base, qual, name, ...args)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            return qualincludespublic(qual) ? base[name].apply(base, args) : undefined;
+            return notqual ? base[name].apply(base, args) : undefined;
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
@@ -3112,7 +3149,8 @@ export function callproperty(base, qual, name, ...args)
     // String
     if (typeof base == "string")
     {
-        if (!qual || (qual instanceof Ns && qual === as3ns))
+        const notqual = qualincludespublic(qual);
+        if (notqual)
         {
             if (name == "charAt")
             {
@@ -3166,9 +3204,11 @@ function preincreaseproperty(base, qual, name, incVal)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            if (qualincludespublic(qual))
+            if (notqual)
             {
                 base[name] += incVal;
                 return base[name];
@@ -3177,48 +3217,15 @@ function preincreaseproperty(base, qual, name, incVal)
         }
         if (istype(base, xmlclass))
         {
-            const children = (base[XML_NODE_INDEX]).childNodes;
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
-            {
-                throw new TypeError("Cannot increment or decrement a XML node.");
-            }
-            else
-            {
-                let qualrefl = qual ? reflectnamespace(qual) : null;
-                for (let i = 0; i < children.length; i++)
-                {
-                    const child = children[i];
-                    if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
-                    {
-                        throw new TypeError("Cannot increment or decrement a XML node.");
-                    }
-                }
-            }
+            throw new TypeError("Cannot increment or decrement a XML node.");
         }
 
         if (istype(base, xmllistclass))
         {
-            const children = base[XMLLIST_XMLARRAY_INDEX];
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
-            {
-                throw new TypeError("Cannot increment or decrement a XML node.");
-            }
-            else
-            {
-                let qualrefl = qual ? reflectnamespace(qual) : null;
-                for (let i = 0; i < children.length; i++)
-                {
-                    const child = children[i][XML_NODE_INDEX];
-                    if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
-                    {
-                        throw new TypeError("Cannot increment or decrement a XML node.");
-                    }
-                }
-            }
+            throw new TypeError("Cannot increment or decrement a XML node.");
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
@@ -3508,9 +3515,11 @@ function postincreaseproperty(base, qual, name, incVal)
     // instance
     if (base instanceof Array)
     {
+        const notqual = qualincludespublic(qual);
+
         if (!(base[CONSTRUCTOR_INDEX] instanceof Class))
         {
-            if (qualincludespublic(qual))
+            if (notqual)
             {
                 const v = base[name];
                 base[name] += incVal;
@@ -3520,48 +3529,15 @@ function postincreaseproperty(base, qual, name, incVal)
         }
         if (istype(base, xmlclass))
         {
-            const children = (base[XML_NODE_INDEX]).childNodes;
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
-            {
-                throw new TypeError("Cannot increment or decrement a XML node.");
-            }
-            else
-            {
-                let qualrefl = qual ? reflectnamespace(qual) : null;
-                for (let i = 0; i < children.length; i++)
-                {
-                    const child = children[i];
-                    if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
-                    {
-                        throw new TypeError("Cannot increment or decrement a XML node.");
-                    }
-                }
-            }
+            throw new TypeError("Cannot increment or decrement a XML node.");
         }
 
         if (istype(base, xmllistclass))
         {
-            const children = base[XMLLIST_XMLARRAY_INDEX];
-            if (!qual && !isNaN(Number(name)) && name >>> 0 === Number(name) && (name >>> 0) < children.length)
-            {
-                throw new TypeError("Cannot increment or decrement a XML node.");
-            }
-            else
-            {
-                let qualrefl = qual ? reflectnamespace(qual) : null;
-                for (let i = 0; i < children.length; i++)
-                {
-                    const child = children[i][XML_NODE_INDEX];
-                    if (child.nodeType == child.ELEMENT_NODE && w3celementhastagname(child, qualrefl, name))
-                    {
-                        throw new TypeError("Cannot increment or decrement a XML node.");
-                    }
-                }
-            }
+            throw new TypeError("Cannot increment or decrement a XML node.");
         }
 
         const ctor = base[CONSTRUCTOR_INDEX];
-        const notqual = qualincludespublic(qual);
         const isproxy = istype(base, proxyclass);
 
         if (notqual && !isproxy)
