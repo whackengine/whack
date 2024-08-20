@@ -11,6 +11,8 @@ export const DYNAMIC_PROPERTIES_INDEX = 1;
 
 const untouchedDynamicProperties = new Map();
 
+let $setPrototypeNow = false;
+
 export class Ns
 {
     toString()
@@ -336,14 +338,14 @@ export class Class
     metadata;
     ctor;
 
-    staticnamess = new Names();
+    staticnames = new Names();
     /**
      * The read-only ECMAScript 3 `prototype` Object
      * containing ActionScript values.
      */
     ecmaprototype = null;
 
-    prototypenamess = new Names();
+    prototypenames = new Names();
 
     staticvarvals = new Map();
 
@@ -426,7 +428,10 @@ export function defineclass(name, options, items)
         assert(!!objectclass, "Class definitions must follow the Object class.");
         class1.baseclass = options.extendslist ?? objectclass;
         assert(!class1.baseclass.final, "Cannot extend " + class1.baseclass.name);
-        class1.ecmaprototype = construct(objectclass);
+        if ($setPrototypeNow)
+        {
+            class1.ecmaprototype = construct(objectclass);
+        }
     }
 
     // Implement interfaces
@@ -468,11 +473,6 @@ export function defineclass(name, options, items)
     // Finish
     globalnames.setnsname(name.ns, name.name, class1);
 
-    if (isobjectclass)
-    {
-        class1.ecmaprototype = construct(objectclass);
-    }
-
     return class1;
 }
 
@@ -489,7 +489,7 @@ export class Interface
     name;
     metadata;
 
-    prototypenamess = new Names();
+    prototypenames = new Names();
 
     constructor(name, metadata)
     {
@@ -533,7 +533,7 @@ export type InterfaceOptions =
 };
 */
 
-export function defineinterface(name, optionsOptions, items)
+export function defineinterface(name, options, items)
 {
     assert(!globalnames.hasnsname(name.ns, name.name), "Name conflict: " + name.toString());
 
@@ -609,14 +609,14 @@ export type NsaliasOptions =
 };
 */
 
-export function nsalias(optionsaliasOptions)
+export function nsalias(options)
 {
     const r = new Nsalias("", options.ns);
     r.static = options.static ?? false;
     return r;
 }
 
-export function definensalias(propertyns, propertyname, optionsaliasOptions)
+export function definensalias(propertyns, propertyname, options)
 {
     assert(!globalnames.hasnsname(propertyns, propertyname), "Name conflict: " + new Name(propertyns, propertyname).toString());
 
@@ -4216,8 +4216,6 @@ definevar($publicns, "undefined", {
     readonly: true,
 });
 
-setglobal($publicns, "undefined", undefined);
-
 definemethod($publicns, "isXMLName", {
     exec(str)
     {
@@ -4286,14 +4284,10 @@ definevar($publicns, "NaN", {
     readonly: true,
 });
 
-setglobal($publicns, "NaN", NaN);
-
 definevar($publicns, "Infinity", {
     type: numberclass,
     readonly: true,
 });
-
-setglobal($publicns, "Infinity", Infinity);
 
 export const INT_VALUE_INDEX = 2;
 export const intclass = defineclass(name($publicns, "int"),
@@ -6916,18 +6910,6 @@ export const arrayclass = defineclass(name($publicns, "Array"),
     ]
 );
 
-setdynamicproperty(arrayclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    const arr = this[ARRAY_SUBARRAY_INDEX];
-    return arr.map(v => tostring(v)).join(",");
-}]);
-
-setdynamicproperty(arrayclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    const arr = this[ARRAY_SUBARRAY_INDEX];
-    return arr.map(v => tostring(v)).join(",");
-}]);
-
 function compareadvanced(a, b, sortOptions)
 {
     const caseinsensitive = (sortOptions & Array_CASEINSENSITIVE) != 0;
@@ -7513,18 +7495,6 @@ export const vectorclass = defineclass(name($publicns, "Vector"),
     ]
 );
 
-setdynamicproperty(vectorclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.map(v => tostring(v)).join(",");
-}]);
-
-setdynamicproperty(vectorclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.map(v => tostring(v)).join(",");
-}]);
-
 export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
     {
         final: true,
@@ -7751,18 +7721,6 @@ export const vectordoubleclass = defineclass(name($publicns, "Vector$double"),
         })],
     ]
 );
-
-setdynamicproperty(vectordoubleclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
-
-setdynamicproperty(vectordoubleclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
 
 function Vectornumber_concat(...args)
 {
@@ -8298,18 +8256,6 @@ export const vectorfloatclass = defineclass(name($publicns, "Vector$float"),
     ]
 );
 
-setdynamicproperty(vectorfloatclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
-
-setdynamicproperty(vectorfloatclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
-
 export const vectorintclass = defineclass(name($publicns, "Vector$int"),
     {
         final: true,
@@ -8537,18 +8483,6 @@ export const vectorintclass = defineclass(name($publicns, "Vector$int"),
     ]
 );
 
-setdynamicproperty(vectorintclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
-
-setdynamicproperty(vectorintclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
-
 export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
     {
         final: true,
@@ -8775,18 +8709,6 @@ export const vectoruintclass = defineclass(name($publicns, "Vector$uint"),
         })],
     ]
 );
-
-setdynamicproperty(vectoruintclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
-
-setdynamicproperty(vectoruintclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    const arr = this[VECTOR_SUBARRAY_INDEX];
-    return arr.join(",");
-}]);
 
 export const vectorclasses = [vectorclass, vectordoubleclass, vectorfloatclass, vectorintclass, vectoruintclass];
 
@@ -9106,11 +9028,6 @@ export const errorclass = defineclass(name($publicns, "Error"),
     ]
 );
 
-setdynamicproperty(errorclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    return (this[ERROR_ERROR_INDEX]).toString();
-}]);
-
 /**
  * Constructs an ActionScript `Error` object.
  */
@@ -9304,26 +9221,6 @@ export const verifyerrorclass = defineclass(name($publicns, "VerifyError"),
     [
     ]
 );
-
-setdynamicproperty(objectclass.ecmaprototype, "hasOwnProperty", [functionclass, new Map(), function(name)
-{
-    return hasownproperty(this, tostring(name));
-}]);
-
-setdynamicproperty(objectclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
-{
-    return tostring(this);
-}]);
-
-setdynamicproperty(objectclass.ecmaprototype, "toString", [functionclass, new Map(), function()
-{
-    return tostring(this);
-}]);
-
-setdynamicproperty(objectclass.ecmaprototype, "valueOf", [functionclass, new Map(), function()
-{
-    return this;
-}]);
 
 $publicns = packagens("fx.utils");
 
@@ -9850,3 +9747,159 @@ export const proxyclass = defineclass(name($publicns, "Proxy"),
         })],
     ]
 );
+
+// Initialize prototypes
+
+const $builtinclasses = [
+    objectclass,
+    numberclass,
+    intclass,
+    uintclass,
+    floatclass,
+    booleanclass,
+    stringclass,
+    namespaceclass,
+    qnameclass,
+    xmlclass,
+    xmllistclass,
+    classclass,
+    dateclass,
+    functionclass,
+    arrayclass,
+    vectorclass,
+    vectordoubleclass,
+    vectorfloatclass,
+    vectorintclass,
+    vectoruintclass,
+    promiseclass,
+    regexpclass,
+    errorclass,
+    aggregateerrorclass,
+    argumenterrorclass,
+    definitionerrorclass,
+    evalerrorclass,
+    rangeerrorclass,
+    referenceerrorclass,
+    securityerrorclass,
+    syntaxerrorclass,
+    typeerrorclass,
+    urierrorclass,
+    verifyerrorclass,
+    dictionaryclass,
+    bytearrayclass,
+    proxyclass,
+];
+
+for (const classobj of $builtinclasses)
+{
+    classobj.ecmaprototype = construct(objectclass);
+}
+
+$setPrototypeNow = true;
+
+// Globals: set values
+
+setglobal($publicns, "undefined", undefined);
+
+setglobal($publicns, "NaN", NaN);
+
+setglobal($publicns, "Infinity", Infinity);
+
+// Prototype: set properties
+
+setdynamicproperty(objectclass.ecmaprototype, "hasOwnProperty", [functionclass, new Map(), function(name)
+    {
+        return hasownproperty(this, tostring(name));
+    }]);
+
+setdynamicproperty(objectclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    return tostring(this);
+}]);
+
+setdynamicproperty(objectclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    return tostring(this);
+}]);
+
+setdynamicproperty(objectclass.ecmaprototype, "valueOf", [functionclass, new Map(), function()
+{
+    return this;
+}]);
+
+setdynamicproperty(arrayclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    const arr = this[ARRAY_SUBARRAY_INDEX];
+    return arr.map(v => tostring(v)).join(",");
+}]);
+
+setdynamicproperty(arrayclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    const arr = this[ARRAY_SUBARRAY_INDEX];
+    return arr.map(v => tostring(v)).join(",");
+}]);
+
+setdynamicproperty(vectorclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.map(v => tostring(v)).join(",");
+}]);
+
+setdynamicproperty(vectorclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.map(v => tostring(v)).join(",");
+}]);
+
+setdynamicproperty(vectordoubleclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectordoubleclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectorfloatclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectorfloatclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectorintclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectorintclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectoruintclass.ecmaprototype, "toLocaleString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(vectoruintclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    const arr = this[VECTOR_SUBARRAY_INDEX];
+    return arr.join(",");
+}]);
+
+setdynamicproperty(errorclass.ecmaprototype, "toString", [functionclass, new Map(), function()
+{
+    return (this[ERROR_ERROR_INDEX]).toString();
+}]);
