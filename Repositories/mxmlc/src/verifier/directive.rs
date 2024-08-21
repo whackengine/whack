@@ -181,6 +181,35 @@ impl DirectiveSubverifier {
             var_parent.properties(&verifier.host)
         };
 
+        // Determine the namespace according to the attribute combination
+        let mut ns = var_scope.search_system_ns_in_scope_chain(if var_parent.is::<InterfaceType>() { SystemNamespaceKind::Public } else { SystemNamespaceKind::Internal });
+        for attr in defn.attributes.iter().rev() {
+            match attr {
+                Attribute::Expression(_) => {
+                    fixme();
+                    break;
+                },
+                Attribute::Public(_) => {
+                    fixme();
+                    break;
+                },
+                Attribute::Private(_) => {
+                    fixme();
+                    break;
+                },
+                Attribute::Internal(_) => {
+                    fixme();
+                    break;
+                },
+                Attribute::Protected(_) => {
+                    // protected or static-protected
+                    fixme();
+                    break;
+                }
+                _ => {},
+            }
+        }
+
         fixme();
 
         match phase {

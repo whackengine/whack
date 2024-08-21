@@ -218,9 +218,9 @@ dependencies = [
 
 [[package]]
 name = "mxmlextrema-mxmlcaot"
-version = "0.3.7"
+version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2d0b467750293ee697e5716c0a3335de7211fa0e4c0e716c6736eb3248a11e8"
+checksum = "0b45d8f9e60ad647635898cd8e65f86d877a28b30669843b97dc3dc85b0540ce"
 dependencies = [
  "bitflags",
  "by_address",
