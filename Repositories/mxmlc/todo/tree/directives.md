@@ -38,17 +38,17 @@ Procedure:
   * [x] If the first topmost variable binding's slot is not invalidated
     * [x] Assign ASDoc to the first topmost variable binding's slot.
     * [x] Assign meta-data to the first variable binding's slot.
-* [ ] Beta
-  * [ ] If a binding is a simple identifier
-    * [ ] Try resolving type annotation if any; if resolved
-      * [ ] If a binding's slot is not invalidated
-        * [ ] Update the binding slot's static type
-* [ ] Delta
-  * [ ] If a binding is a simple identifier
-    * [ ] If binding slot's not invalidated and its static type is unresolved
-      * [ ] Try resolving type annotation if any; if resolved
-        * [ ] Update the binding slot's static type
-* [ ] Epsilon
+* [x] Beta
+  * [x] If a binding is a simple identifier
+    * [x] Try resolving type annotation if any; if resolved
+      * [x] If a binding's slot is not invalidated
+        * [x] Update the binding slot's static type
+* [x] Delta
+  * [x] If a binding is a simple identifier
+    * [x] If binding slot's not invalidated and its static type is unresolved
+      * [x] Try resolving type annotation if any; if resolved
+        * [x] Update the binding slot's static type
+* [x] Epsilon
   * [ ] Handle the `[Bindable]` meta-data for simple identifier patterns
   * [ ] Handle the `[Embed]` meta-data for simple identifier patterns
 * [ ] Omega

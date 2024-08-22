@@ -262,6 +262,8 @@ impl DirectiveSubverifier {
                     // Verify identifier binding or destructuring pattern (alpha)
                     let _ = DestructuringDeclarationSubverifier::verify_pattern(verifier, &binding.destructuring.destructuring, &verifier.host.unresolved_entity(), defn.kind.0 == VariableDefinitionKind::Const, &mut var_out, &ns, &var_parent, is_external);
                 }
+
+                // Set ASDoc and meta-data
                 let slot1 = verifier.host.node_mapping().get(&defn.bindings[0].destructuring.destructuring);
                 if slot1.and_then(|e| if e.is::<VariableSlot>() { Some(e) } else { None }).is_some() {
                     let slot1 = slot1.unwrap();
@@ -275,7 +277,24 @@ impl DirectiveSubverifier {
             },
             // Beta
             VerifierPhase::Beta => {
-                fixme();
+                for binding in &defn.bindings {
+                    // If a binding is a simple identifier,
+                    // try resolving type annotation if any; if resolved,
+                    // if the binding's slot is not invalidated
+                    // update the binding slot's static type.
+                    let is_simple_id = matches!(binding.destructuring.destructuring.as_ref(), Expression::QualifiedIdentifier(_));
+                    if is_simple_id && binding.destructuring.type_annotation.is_some() {
+                        let t = verifier.verify_type_expression(&binding.destructuring.type_annotation.unwrap())?;
+                        if let Some(t) = t {
+                            let slot = verifier.node_mapping().get(&binding.destructuring.destructuring);
+                            if let Some(slot) = slot {
+                                if slot.is::<VariableSlot>() {
+                                    slot.set_static_type(t);
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
@@ -283,7 +302,26 @@ impl DirectiveSubverifier {
             },
             // Delta
             VerifierPhase::Delta => {
-                fixme();
+                for binding in &defn.bindings {
+                    // If a binding is a simple identifier and
+                    // the binding's slot is not invalidated and its static type is unresolved,
+                    // try resolving the type annotation if any; if resolved,
+                    // update the binding slot's static type.
+                    let is_simple_id = matches!(binding.destructuring.destructuring.as_ref(), Expression::QualifiedIdentifier(_));
+                    if is_simple_id {
+                        let slot = verifier.node_mapping().get(&binding.destructuring.destructuring);
+                        if let Some(slot) = slot {
+                            if slot.is::<VariableSlot>() && slot.static_type(&verifier.host).is::<UnresolvedEntity>() {
+                                if binding.destructuring.type_annotation.is_some() {
+                                    let t = verifier.verify_type_expression(&binding.destructuring.type_annotation.unwrap())?;
+                                    if let Some(t) = t {
+                                        slot.set_static_type(t);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Epsilon);
@@ -291,7 +329,9 @@ impl DirectiveSubverifier {
             },
             // Epsilon
             VerifierPhase::Epsilon => {
-                fixme();
+                // @todo
+                // - Handle the `[Bindable]` meta-data for simple identifier patterns
+                // - Handle the `[Embed]` meta-data for simple identifier patterns
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Omega);
