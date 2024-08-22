@@ -228,7 +228,7 @@ impl ExpSubverifier {
                 return Ok(Some(verifier.host.factory().create_number_constant(n.unwrap(), t)));
             }
         }
-        let t = verifier.host.number_type().defer()?;
+        let t = if literal.suffix == NumberSuffix::F { verifier.host.float_type() } else { verifier.host.number_type() }.defer()?;
         let n = Self::parse_number_as_data_type(&verifier.host, literal, &t, context);
         if n.is_err() {
             verifier.add_verify_error(&literal.location, FlexDiagnosticKind::CouldNotParseNumber, diagarg![t]);
