@@ -634,9 +634,21 @@ impl Subverifier {
         }
     }
 
+    /// Ensures a definition in a base class is not to be shadowed.
     pub fn ensure_not_shadowing_definition(&self, output: &Names, parent: &Entity, name: &QName) {
-        let is_instance = output == &parent.prototype(&self.host);
-        fix();
+        // Do not worry about enums as they always extend Object directly.
+        if parent.is::<ClassType>() && output == &parent.prototype(&self.host) {
+            let p1 = parent.extends_class(&self.host);
+            while p1.is_some() {
+                let p = p1.unwrap();
+                if name.namespace().is_public_ns() && p.prototype(&self.host).get_in_any_public_ns(&name.local_name()).map(|e| e.is_some()).unwrap_or(false) {
+                    fix();
+                } else if p.prototype(&self.host).has(name) {
+                    fix();
+                }
+                p1 = p.extends_class(&self.host);
+            }
+        }
     }
 }
 
