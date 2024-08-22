@@ -164,81 +164,13 @@ impl DirectiveSubverifier {
             return Ok(());
         }
 
-        // Check the "static" attribute to know where the output name goes in exactly.
-        let is_static = Attribute::find_static(&defn.attributes).is_some();
-        let mut var_scope = verifier.scope();
-        var_scope = if is_static { var_scope.search_hoist_scope() } else { var_scope };
-        let var_parent = if var_scope.is::<ClassScope>() || var_scope.is::<EnumScope>() {
-            var_scope.class()
-        } else if var_scope.is::<InterfaceScope>() {
-            var_scope.interface()
-        } else {
-            var_scope.clone()
-        };
-        let mut var_out = if ((var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) && !is_static) || var_parent.is::<InterfaceType>() {
-            var_parent.prototype(&verifier.host)
-        } else {
-            var_parent.properties(&verifier.host)
-        };
-
-        // Determine the namespace according to the attribute combination
-        let mut ns = None;
-        for attr in defn.attributes.iter().rev() {
-            match attr {
-                Attribute::Expression(exp) => {
-                    let nsconst = verifier.verify_expression(exp, &Default::default())?;
-                    if nsconst.as_ref().map(|k| !k.is::<NamespaceConstant>()).unwrap_or(false) {
-                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                        verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::NotANamespaceConstant, diagarg![]);
-                        return Ok(());
-                    }
-                    if !(var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) {
-                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                        verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
-                        return Ok(());
-                    }
-                    if nsconst.is_none() {
-                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                        return Ok(());
-                    }
-                    ns = Some(nsconst.unwrap().referenced_ns());
-                    break;
-                },
-                Attribute::Public(_) => {
-                    ns = var_scope.search_system_ns_in_scope_chain(SystemNamespaceKind::Public);
-                    break;
-                },
-                Attribute::Private(loc) => {
-                    // protected or static-protected
-                    if !var_parent.is::<ClassType>() {
-                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                        verifier.add_verify_error(loc, FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
-                        return Ok(());
-                    }
-                    ns = var_parent.private_ns();
-                    break;
-                },
-                Attribute::Protected(loc) => {
-                    // protected or static-protected
-                    if !var_parent.is::<ClassType>() {
-                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                        verifier.add_verify_error(loc, FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
-                        return Ok(());
-                    }
-                    ns = if is_static { var_parent.static_protected_ns() } else { var_parent.protected_ns() };
-                    break;
-                },
-                Attribute::Internal(_) => {
-                    ns = var_scope.search_system_ns_in_scope_chain(SystemNamespaceKind::Internal);
-                    break;
-                },
-                _ => {},
-            }
+        // Determine the variable's scope, parent, property destination, and namespace.
+        let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+        if defn_local.is_err() {
+            verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+            return Ok(());
         }
-        if ns.is_none() {
-            ns = var_scope.search_system_ns_in_scope_chain(if var_parent.is::<InterfaceType>() { SystemNamespaceKind::Public } else { SystemNamespaceKind::Internal });
-        }
-        let ns = ns.unwrap();
+        let (var_scope, var_parent, mut var_out, ns) = defn_local.unwrap();
 
         // [FLEX::EXTERNAL]
         let is_external = defn.attributes.iter().find(|a| {
@@ -414,6 +346,83 @@ impl DirectiveSubverifier {
             },
             _ => panic!(),
         }
+    }
+
+    /// Returns (var_scope, var_parent, var_out, ns) for a
+    /// annotatable driective.
+    fn definition_local_maybe_static(verifier: &mut Subverifier, attributes: &[Attribute]) -> Result<Result<(Entity, Entity, Names, Entity), ()>, DeferError> {
+        // Check the "static" attribute to know where the output name goes in exactly.
+        let is_static = Attribute::find_static(&attributes).is_some();
+        let mut var_scope = verifier.scope();
+        var_scope = if is_static { var_scope.search_hoist_scope() } else { var_scope };
+        let var_parent = if var_scope.is::<ClassScope>() || var_scope.is::<EnumScope>() {
+            var_scope.class()
+        } else if var_scope.is::<InterfaceScope>() {
+            var_scope.interface()
+        } else {
+            var_scope.clone()
+        };
+        let var_out = if ((var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) && !is_static) || var_parent.is::<InterfaceType>() {
+            var_parent.prototype(&verifier.host)
+        } else {
+            var_parent.properties(&verifier.host)
+        };
+
+        // Determine the namespace according to the attribute combination
+        let mut ns = None;
+        for attr in attributes.iter().rev() {
+            match attr {
+                Attribute::Expression(exp) => {
+                    let nsconst = verifier.verify_expression(exp, &Default::default())?;
+                    if nsconst.as_ref().map(|k| !k.is::<NamespaceConstant>()).unwrap_or(false) {
+                        verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::NotANamespaceConstant, diagarg![]);
+                        return Ok(Err(()));
+                    }
+                    if !(var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) {
+                        verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
+                        return Ok(Err(()));
+                    }
+                    if nsconst.is_none() {
+                        return Ok(Err(()));
+                    }
+                    ns = Some(nsconst.unwrap().referenced_ns());
+                    break;
+                },
+                Attribute::Public(_) => {
+                    ns = var_scope.search_system_ns_in_scope_chain(SystemNamespaceKind::Public);
+                    break;
+                },
+                Attribute::Private(loc) => {
+                    // protected or static-protected
+                    if !var_parent.is::<ClassType>() {
+                        verifier.add_verify_error(loc, FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
+                        return Ok(Err(()));
+                    }
+                    ns = var_parent.private_ns();
+                    break;
+                },
+                Attribute::Protected(loc) => {
+                    // protected or static-protected
+                    if !var_parent.is::<ClassType>() {
+                        verifier.add_verify_error(loc, FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
+                        return Ok(Err(()));
+                    }
+                    ns = if is_static { var_parent.static_protected_ns() } else { var_parent.protected_ns() };
+                    break;
+                },
+                Attribute::Internal(_) => {
+                    ns = var_scope.search_system_ns_in_scope_chain(SystemNamespaceKind::Internal);
+                    break;
+                },
+                _ => {},
+            }
+        }
+        if ns.is_none() {
+            ns = var_scope.search_system_ns_in_scope_chain(if var_parent.is::<InterfaceType>() { SystemNamespaceKind::Public } else { SystemNamespaceKind::Internal });
+        }
+        let ns = ns.unwrap();
+
+        Ok(Ok((var_scope, var_parent, var_out, ns)))
     }
 
     fn verify_package_concat_drtv(verifier: &mut Subverifier, drtv: &Rc<Directive>, pckgcat: &PackageConcatDirective) -> Result<(), DeferError> {
