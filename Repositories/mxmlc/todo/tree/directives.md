@@ -71,7 +71,7 @@ Note that statements and static binding initializers within a class or enum bloc
 
 ## Function definitions
 
-Function definitions should have careful plannings. It involves caching the activation, setting phases (similiarly to destructuring), and avoiding verifying things twice (the signature, that is). They should also be able to do inference in the signature's result type depending on the `inferTypes` option.
+Function definitions should have careful plannings. It involves caching the activation, setting phases (similiarly to destructuring), and avoiding verifying things twice (the signature, that is).
 
 Never ever let getters and setters have the wrong signature assigned to them; if they are invalid, just use a default signature matching their requirements.
 
