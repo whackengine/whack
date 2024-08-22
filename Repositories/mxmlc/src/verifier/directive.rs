@@ -249,7 +249,7 @@ impl DirectiveSubverifier {
             // Alpha
             VerifierPhase::Alpha => {
                 for binding in defn.bindings {
-                    let is_destructuring = !matches(binding.destructuring.destructuring, Expression::QualifiedIdentifier(_));
+                    let is_destructuring = !(matches!(binding.destructuring.destructuring.as_ref(), Expression::QualifiedIdentifier(_)));
 
                     // If the parent is a fixture or if the variable is external,
                     // do not allow destructuring, in which case the pattern shall be invalidated.
@@ -261,10 +261,15 @@ impl DirectiveSubverifier {
 
                     // Verify identifier binding or destructuring pattern (alpha)
                     let _ = DestructuringDeclarationSubverifier::verify_pattern(verifier, &binding.destructuring.destructuring, &verifier.host.unresolved_entity(), defn.kind.0 == VariableDefinitionKind::Const, &mut var_out, &ns, &var_parent, is_external);
-
-                    fixme();
                 }
-                fixme();
+                let slot1 = verifier.host.node_mapping().get(&defn.bindings[0].destructuring.destructuring);
+                if slot1.and_then(|e| if e.is::<VariableSlot>() { Some(e) } else { None }).is_some() {
+                    let slot1 = slot1.unwrap();
+                    slot1.set_asdoc(defn.asdoc.clone());
+                    slot1.metadata().extend(Attribute::find_metadata(&defn.attributes));
+                }
+                verifier.set_drtv_phase(drtv, VerifierPhase::Beta);
+                Err(DeferError(None))
             },
             // Beta
             VerifierPhase::Beta => {
