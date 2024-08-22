@@ -175,7 +175,7 @@ impl DirectiveSubverifier {
         } else {
             var_scope
         };
-        let var_out = if var_scope.is::<FixtureScope>() && (!is_static || var_parent.is::<InterfaceType>()) {
+        let mut var_out = if ((var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) && !is_static) || var_parent.is::<InterfaceType>() {
             var_parent.prototype(&verifier.host)
         } else {
             var_parent.properties(&verifier.host)
@@ -246,18 +246,39 @@ impl DirectiveSubverifier {
         }).is_some();
 
         match phase {
+            // Alpha
             VerifierPhase::Alpha => {
+                for binding in defn.bindings {
+                    let is_destructuring = !matches(binding.destructuring.destructuring, Expression::QualifiedIdentifier(_));
+
+                    // If the parent is a fixture or if the variable is external,
+                    // do not allow destructuring, in which case the pattern shall be invalidated.
+                    if is_destructuring && (var_scope.is::<FixtureScope>() || is_external) {
+                        verifier.add_verify_error(&binding.destructuring.location, FlexDiagnosticKind::CannotUseDestructuringHere, diagarg![]);
+                        verifier.host.node_mapping().set(&binding.destructuring.destructuring, Some(verifier.host.invalidation_entity()));
+                        continue;
+                    }
+
+                    // Verify identifier binding or destructuring pattern (alpha)
+                    let _ = DestructuringDeclarationSubverifier::verify_pattern(verifier, &binding.destructuring.destructuring, &verifier.host.unresolved_entity(), defn.kind.0 == VariableDefinitionKind::Const, &mut var_out, &ns, &var_parent, is_external);
+
+                    fixme();
+                }
                 fixme();
             },
+            // Beta
             VerifierPhase::Beta => {
                 fixme();
             },
+            // Delta
             VerifierPhase::Delta => {
                 fixme();
             },
+            // Epsilon
             VerifierPhase::Epsilon => {
                 fixme();
             },
+            // Omega
             VerifierPhase::Omega => {
                 fixme();
             },

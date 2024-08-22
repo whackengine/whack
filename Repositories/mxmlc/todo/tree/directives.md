@@ -33,8 +33,8 @@ Procedure:
 * [x] Determine the system namespace according to the attribute combination (`static` + `protected` = `static protected`).
 * [x] Verify for `[FLEX::EXTERNAL]` presence, indicating whether a variable is external or not.
 * [ ] Alpha
-  * [ ] If the parent is a fixture or if the variable is external, do not allow destructuring, in which case the pattern shall be invalidated.
-  * [ ] Call `DestructuringDeclarationSubverifier::verify_pattern(...)` without deferring (alpha phase)
+  * [x] If the parent is a fixture or if the variable is external, do not allow destructuring, in which case the pattern shall be invalidated.
+  * [x] Call `DestructuringDeclarationSubverifier::verify_pattern(...)` without deferring (alpha phase)
   * [ ] If the first topmost variable binding's slot is not invalidated
     * [ ] Assign ASDoc to the first topmost variable binding's slot.
     * [ ] Assign meta-data to the first variable binding's slot.

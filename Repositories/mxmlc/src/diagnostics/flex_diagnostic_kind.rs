@@ -64,6 +64,7 @@ pub enum FlexDiagnosticKind {
     ConcatenatingSelfReferentialPackage = 2108,
     CallOnDateType = 2109,
     AccessControlNamespaceNotAllowedHere = 2110,
+    CannotUseDestructuringHere = 2111,
 }
 
 impl FlexDiagnosticKind {
