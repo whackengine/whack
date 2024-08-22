@@ -635,16 +635,21 @@ impl Subverifier {
     }
 
     /// Ensures a definition in a base class is not to be shadowed.
-    pub fn ensure_not_shadowing_definition(&self, output: &Names, parent: &Entity, name: &QName) {
+    pub fn ensure_not_shadowing_definition(&mut self, name_loc: &Location, output: &Names, parent: &Entity, name: &QName) {
         // Do not worry about enums as they always extend Object directly.
         if parent.is::<ClassType>() && output == &parent.prototype(&self.host) {
-            let p1 = parent.extends_class(&self.host);
+            let mut p1 = parent.extends_class(&self.host);
             while p1.is_some() {
                 let p = p1.unwrap();
-                if name.namespace().is_public_ns() && p.prototype(&self.host).get_in_any_public_ns(&name.local_name()).map(|e| e.is_some()).unwrap_or(false) {
-                    fix();
-                } else if p.prototype(&self.host).has(name) {
-                    fix();
+                let dup;
+                if name.namespace().is_public_ns() {
+                    dup = p.prototype(&self.host).get_in_any_public_ns(&name.local_name()).map(|e| e.is_some()).unwrap_or(true);
+                } else {
+                    dup = p.prototype(&self.host).has(name);
+                }
+                if dup {
+                    self.add_syntax_error(name_loc, FlexDiagnosticKind::ShadowingDefinitionInBaseClass, diagarg![name.to_string()]);
+                    break;
                 }
                 p1 = p.extends_class(&self.host);
             }

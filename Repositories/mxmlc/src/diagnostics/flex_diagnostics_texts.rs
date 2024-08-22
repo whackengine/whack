@@ -69,6 +69,7 @@ lazy_static! {
         FlexDiagnosticKind::CallOnDateType.id() => "'Date(...)' is not a cast. It ignores its arguments and returns a String value equal to 'new Date().toString()'. To cast a value to type Date use 'x as Date' instead of 'Date(x)'.".into(),
         FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere.id() => "Access control namespace not allowed here.".into(),
         FlexDiagnosticKind::CannotUseDestructuringHere.id() => "Cannot use destructuring here.".into(),
+        FlexDiagnosticKind::ShadowingDefinitionInBaseClass.id() => "Shadowing definition in base class: $1.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }

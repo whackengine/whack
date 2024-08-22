@@ -65,6 +65,7 @@ pub enum FlexDiagnosticKind {
     CallOnDateType = 2109,
     AccessControlNamespaceNotAllowedHere = 2110,
     CannotUseDestructuringHere = 2111,
+    ShadowingDefinitionInBaseClass = 2112,
 }
 
 impl FlexDiagnosticKind {
