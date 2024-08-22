@@ -32,12 +32,12 @@ Procedure:
 * [x] Check the `static` attribute to know where the output name goes exactly.
 * [x] Determine the system namespace according to the attribute combination (`static` + `protected` = `static protected`).
 * [x] Verify for `[FLEX::EXTERNAL]` presence, indicating whether a variable is external or not.
-* [ ] Alpha
+* [x] Alpha
   * [x] If the parent is a fixture or if the variable is external, do not allow destructuring, in which case the pattern shall be invalidated.
   * [x] Call `DestructuringDeclarationSubverifier::verify_pattern(...)` without deferring (alpha phase)
-  * [ ] If the first topmost variable binding's slot is not invalidated
-    * [ ] Assign ASDoc to the first topmost variable binding's slot.
-    * [ ] Assign meta-data to the first variable binding's slot.
+  * [x] If the first topmost variable binding's slot is not invalidated
+    * [x] Assign ASDoc to the first topmost variable binding's slot.
+    * [x] Assign meta-data to the first variable binding's slot.
 * [ ] Beta
   * [ ] If a binding is a simple identifier
     * [ ] Try resolving type annotation if any; if resolved
