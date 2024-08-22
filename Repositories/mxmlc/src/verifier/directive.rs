@@ -240,7 +240,10 @@ impl DirectiveSubverifier {
         }
         let ns = ns.unwrap();
 
-        fixme();
+        // [FLEX::EXTERNAL]
+        let is_external = defn.attributes.iter().find(|a| {
+            if let Attribute::Metadata(m) = a { m.name.0 == "FLEX::EXTERNAL" } else { false }
+        }).is_some();
 
         match phase {
             VerifierPhase::Alpha => {

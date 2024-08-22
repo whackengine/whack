@@ -31,7 +31,7 @@ Procedure:
 
 * [x] Check the `static` attribute to know where the output name goes exactly.
 * [x] Determine the system namespace according to the attribute combination (`static` + `protected` = `static protected`).
-* [ ] Verify for `[FLEX::EXTERNAL]` presence, indicating whether a variable is external or not.
+* [x] Verify for `[FLEX::EXTERNAL]` presence, indicating whether a variable is external or not.
 * [ ] Alpha
   * [ ] If the parent is a fixture or if the variable is external, do not allow destructuring, in which case the pattern shall be invalidated.
   * [ ] Call `DestructuringDeclarationSubverifier::verify_pattern(...)` without deferring (alpha phase)
