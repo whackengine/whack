@@ -80,6 +80,14 @@ Handle conflicting definitions properly, only moving forward in verification if 
 - Remember: `[FLEX::EXTERNAL]`
 - Remember: do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
 
+### Common function
+
+### Constructor function
+
+### Getter function
+
+### Setter function
+
 ## Getters/setters
 
 Getters and setters have their own method of handling name conflict since they belong to a virtual slot.
