@@ -29,51 +29,13 @@ The `StatementSubverifier::verify_statement()` method will verify a statement or
 
 Procedure:
 
-* [x] Check the `static` attribute to know where the output name goes exactly.
-* [x] Determine the system namespace according to the attribute combination (`static` + `protected` = `static protected`).
-* [x] Verify for `[FLEX::EXTERNAL]` presence, indicating whether a variable is external or not.
 * [x] Alpha
-  * [x] If the parent is a fixture or if the variable is external, do not allow destructuring, in which case the pattern shall be invalidated.
-  * [x] Call `DestructuringDeclarationSubverifier::verify_pattern(...)` without deferring (alpha phase)
-  * [x] If the first topmost variable binding's slot is not invalidated
-    * [x] Assign ASDoc to the first topmost variable binding's slot.
-    * [x] Assign meta-data to the first variable binding's slot.
 * [x] Beta
-  * [x] If a binding is a simple identifier
-    * [x] Try resolving type annotation if any; if resolved
-      * [x] If a binding's slot is not invalidated
-        * [x] Update the binding slot's static type
 * [x] Delta
-  * [x] If a binding is a simple identifier
-    * [x] If binding slot's not invalidated and its static type is unresolved
-      * [x] Try resolving type annotation if any; if resolved
-        * [x] Update the binding slot's static type
 * [x] Epsilon
   * [ ] Handle the `[Bindable]` meta-data for simple identifier patterns
   * [ ] Handle the `[Embed]` meta-data for simple identifier patterns
-* [ ] Omega
-  * [ ] Let *init* be `None`.
-  * [ ] Try resolving type annotation if any; defer if unresolved.
-  * [ ] If there is an initialiser
-    * [ ] If there is a type annotation
-      * [ ] Implicitly coerce it to the annotated type and assign the result to *init*.
-    * [ ] Else
-      * [ ] Assign the result of verification of the initialiser into *init*.
-    * [ ] If the variable is external, *init* must be a compile-time constant.
-  * [ ] Lazy initialise *init1* (`cached_var_init`)
-    * [ ] If *init* is some and the compiler option `inferTypes` is on
-      * [ ] Return *init*
-    * [ ] Else
-      * [ ] If there is no type annotation
-        * [ ] Return a value of the `*` type.
-      * [ ] Else
-        * [ ] Return a value whose type is the annotated type.
-  * [ ] Call `DestructuringDeclarationSubverifier::verify_pattern(...)?` using *init1*
-  * [ ] Remove *init1* from `cached_var_init`
-  * [ ] If there is no type annotation and (*init* is none or `inferTypes` is off)
-    * [ ] Report a warning
-  * [ ] If variable is marked constant, is not `[Embed]` and does not contain an initializer
-    * [ ] Report an error.
+* [x] Omega
 
 ## Inheritance
 

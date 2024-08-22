@@ -66,6 +66,8 @@ pub enum FlexDiagnosticKind {
     AccessControlNamespaceNotAllowedHere = 2110,
     CannotUseDestructuringHere = 2111,
     ShadowingDefinitionInBaseClass = 2112,
+    VariableHasNoTypeAnnotation = 2113,
+    ConstantMustContainInitializer = 2114,
 }
 
 impl FlexDiagnosticKind {

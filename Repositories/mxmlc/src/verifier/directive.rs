@@ -173,7 +173,7 @@ impl DirectiveSubverifier {
         } else if var_scope.is::<InterfaceScope>() {
             var_scope.interface()
         } else {
-            var_scope
+            var_scope.clone()
         };
         let mut var_out = if ((var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) && !is_static) || var_parent.is::<InterfaceType>() {
             var_parent.prototype(&verifier.host)
@@ -187,7 +187,7 @@ impl DirectiveSubverifier {
             match attr {
                 Attribute::Expression(exp) => {
                     let nsconst = verifier.verify_expression(exp, &Default::default())?;
-                    if nsconst.map(|k| !k.is::<NamespaceConstant>()).unwrap_or(false) {
+                    if nsconst.as_ref().map(|k| !k.is::<NamespaceConstant>()).unwrap_or(false) {
                         verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
                         verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::NotANamespaceConstant, diagarg![]);
                         return Ok(());
@@ -248,7 +248,7 @@ impl DirectiveSubverifier {
         match phase {
             // Alpha
             VerifierPhase::Alpha => {
-                for binding in defn.bindings {
+                for binding in &defn.bindings {
                     let is_destructuring = !(matches!(binding.destructuring.destructuring.as_ref(), Expression::QualifiedIdentifier(_)));
 
                     // If the parent is a fixture or if the variable is external,
@@ -265,7 +265,7 @@ impl DirectiveSubverifier {
 
                 // Set ASDoc and meta-data
                 let slot1 = verifier.host.node_mapping().get(&defn.bindings[0].destructuring.destructuring);
-                if slot1.and_then(|e| if e.is::<VariableSlot>() { Some(e) } else { None }).is_some() {
+                if slot1.as_ref().and_then(|e| if e.is::<VariableSlot>() { Some(e) } else { None }).is_some() {
                     let slot1 = slot1.unwrap();
                     slot1.set_asdoc(defn.asdoc.clone());
                     slot1.metadata().extend(Attribute::find_metadata(&defn.attributes));
@@ -284,7 +284,7 @@ impl DirectiveSubverifier {
                     // update the binding slot's static type.
                     let is_simple_id = matches!(binding.destructuring.destructuring.as_ref(), Expression::QualifiedIdentifier(_));
                     if is_simple_id && binding.destructuring.type_annotation.is_some() {
-                        let t = verifier.verify_type_expression(&binding.destructuring.type_annotation.unwrap())?;
+                        let t = verifier.verify_type_expression(binding.destructuring.type_annotation.as_ref().unwrap())?;
                         if let Some(t) = t {
                             let slot = verifier.node_mapping().get(&binding.destructuring.destructuring);
                             if let Some(slot) = slot {
@@ -313,7 +313,7 @@ impl DirectiveSubverifier {
                         if let Some(slot) = slot {
                             if slot.is::<VariableSlot>() && slot.static_type(&verifier.host).is::<UnresolvedEntity>() {
                                 if binding.destructuring.type_annotation.is_some() {
-                                    let t = verifier.verify_type_expression(&binding.destructuring.type_annotation.unwrap())?;
+                                    let t = verifier.verify_type_expression(binding.destructuring.type_annotation.as_ref().unwrap())?;
                                     if let Some(t) = t {
                                         slot.set_static_type(t);
                                     }
@@ -339,7 +339,74 @@ impl DirectiveSubverifier {
             },
             // Omega
             VerifierPhase::Omega => {
-                fixme();
+                let is_const = defn.kind.0 == VariableDefinitionKind::Const;
+
+                for i in 0..defn.bindings.len() {
+                    let binding = &defn.bindings[i];
+
+                    // Let *init* be `None`.
+                    let mut init: Option<Entity> = None;
+
+                    // Try resolving type annotation if any.
+                    let mut annotation_type: Option<Entity> = None;
+                    if let Some(node) = binding.destructuring.type_annotation.as_ref() {
+                        annotation_type = verifier.verify_type_expression(node)?;
+                    }
+
+                    // If there is an initialiser and there is a type annotation,
+                    // then implicitly coerce it to the annotated type and assign the result to *init*;
+                    // otherwise, assign the result of verifying the initialiser into *init*.
+                    if let Some(init_node) = binding.initializer.as_ref() {
+                        if let Some(t) = annotation_type.as_ref() {
+                            init = verifier.imp_coerce_exp(init_node, t)?;
+                        } else {
+                            init = verifier.verify_expression(init_node, &Default::default())?;
+                        }
+                    }
+
+                    let host = verifier.host.clone();
+
+                    // Lazy initialise *init1* (`cached_var_init`)
+                    let init = verifier.cache_var_init(&binding.destructuring.destructuring, || {
+                        // If "init" is Some, return it.
+                        if let Some(init) = init {
+                            init
+                        } else {
+                            // If there is a type annotation, then return a value of that type;
+                            // otherwise return a value of the `*` type.
+                            if let Some(t) = annotation_type {
+                                host.factory().create_value(&t)
+                            } else {
+                                host.factory().create_value(&host.any_type())
+                            }
+                        }
+                    });
+
+                    // If the variable is external, *init* must be a compile-time constant.
+                    if is_external {
+                        if !init.is::<Constant>() && binding.initializer.is_some() {
+                            verifier.add_verify_error(&binding.initializer.as_ref().unwrap().location(), FlexDiagnosticKind::EntityIsNotAConstant, diagarg![]);
+                        }
+                    }
+
+                    // Verify the identifier binding or destructuring pattern
+                    DestructuringDeclarationSubverifier::verify_pattern(verifier, &binding.destructuring.destructuring, &init, is_const, &mut var_out, &ns, &var_parent, is_external)?;
+
+                    // Remove *init1* from "cached_var_init"
+                    verifier.cached_var_init.remove(&ByAddress(binding.destructuring.destructuring.clone()));
+
+                    // If there is no type annotation and initialiser is unspecified,
+                    // then report a warning
+                    if binding.destructuring.type_annotation.is_none() && binding.initializer.is_none() {
+                        verifier.add_warning(&binding.destructuring.location, FlexDiagnosticKind::VariableHasNoTypeAnnotation, diagarg![]);
+                    }
+
+                    // If variable is marked constant, is not `[Embed]` and does not contain an initializer,
+                    // then report an error
+                    if is_const && !(i == 0 && Attribute::find_metadata(&defn.attributes).iter().any(|mdata| mdata.name.0 == "Embed")) {
+                        verifier.add_verify_error(&binding.destructuring.location, FlexDiagnosticKind::ConstantMustContainInitializer, diagarg![]);
+                    }
+                }
 
                 // Finish
                 verifier.set_drtv_phase(drtv, VerifierPhase::Finished);

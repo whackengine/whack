@@ -70,6 +70,8 @@ lazy_static! {
         FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere.id() => "Access control namespace not allowed here.".into(),
         FlexDiagnosticKind::CannotUseDestructuringHere.id() => "Cannot use destructuring here.".into(),
         FlexDiagnosticKind::ShadowingDefinitionInBaseClass.id() => "Shadowing definition in base class: $1.".into(),
+        FlexDiagnosticKind::VariableHasNoTypeAnnotation.id() => "Variable has no type annotation.".into(),
+        FlexDiagnosticKind::ConstantMustContainInitializer.id() => "Constant must contain initializer.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }
