@@ -573,19 +573,22 @@ impl Subverifier {
         Ok(Some(r))
     }
 
-    /// Handles definition conflict, returning any equivalent variable or method slot back, or invalidation.
+    /// Handles definition conflict.
     pub fn handle_definition_conflict(&mut self, prev: &Entity, new: &Entity) -> Entity {
         self.definition_conflicts.push((prev.clone(), new.clone()));
+        /*
         let parent = new.parent().unwrap();
         if new.is::<VariableSlot>() && !parent.is::<FixtureScope>() && prev.is::<VariableSlot>() {
             return prev.clone();
         } else if prev.is::<VariableSlot>() && !parent.is::<FixtureScope>() && new.is::<MethodSlot>() {
             return prev.clone();
         }
+        */
         self.host.invalidation_entity()
     }
 
     pub fn finish_definition_conflict(&mut self, prev: &Entity, new: &Entity) {
+        /*/
         let name = new.name();
         let parent = new.parent().unwrap();
         let host = self.host.clone();
@@ -600,6 +603,7 @@ impl Subverifier {
                 return;
             }
         }
+        */
         self.report_definition_conflict_for_entity(prev);
         self.report_definition_conflict_for_entity(new);
     }
@@ -628,6 +632,11 @@ impl Subverifier {
             self.cached_var_init.insert(NodeAsKey(pattern.clone()), init.clone());
             init
         }
+    }
+
+    pub fn ensure_not_shadowing_definition(&self, output: &Names, parent: &Entity, name: &QName) {
+        let is_instance = output == &parent.prototype(&self.host);
+        fix();
     }
 }
 

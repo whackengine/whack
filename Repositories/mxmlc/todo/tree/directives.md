@@ -118,10 +118,11 @@ Never ever let getters and setters have the wrong signature assigned to them; if
 Handle conflicting definitions properly, only moving forward in verification if the resulting slot is a method slot and not something else (it could be a variable slot or a class, for example).
 
 - Remember: `[FLEX::EXTERNAL]`
-- Remember: do not allow shadowing properties from in base classes
+- Remember: do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
 
 ## Getters/setters
 
 Getters and setters have their own method of handling name conflict since they belong to a virtual slot.
 
 - Remember: `[FLEX::EXTERNAL]`
+- Remember: do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
