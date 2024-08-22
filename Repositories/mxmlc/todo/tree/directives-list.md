@@ -2,7 +2,8 @@
 
 Tip: use a mapping from directive to phase for certain of the following directives. Clear that mapping on `reset_state()`.
 
-* [ ] Variable definition
+* [x] Variable definition
+  * [ ] Framework specific meta-data
 * [ ] Function definition
 * [ ] Class definition
 * [ ] Enum definition
