@@ -67,6 +67,7 @@ lazy_static! {
         FlexDiagnosticKind::CannotResolveConfigConstant.id() => "Can not resolve configuration constant: '{1}'".into(),
         FlexDiagnosticKind::ConcatenatingSelfReferentialPackage.id() => "Concatenating a self referential package.".into(),
         FlexDiagnosticKind::CallOnDateType.id() => "'Date(...)' is not a cast. It ignores its arguments and returns a String value equal to 'new Date().toString()'. To cast a value to type Date use 'x as Date' instead of 'Date(x)'.".into(),
+        FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere.id() => "Access control namespace not allowed here.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }

@@ -182,33 +182,63 @@ impl DirectiveSubverifier {
         };
 
         // Determine the namespace according to the attribute combination
-        let mut ns = var_scope.search_system_ns_in_scope_chain(if var_parent.is::<InterfaceType>() { SystemNamespaceKind::Public } else { SystemNamespaceKind::Internal });
+        let mut ns = None;
         for attr in defn.attributes.iter().rev() {
             match attr {
-                Attribute::Expression(_) => {
-                    fixme();
+                Attribute::Expression(exp) => {
+                    let nsconst = verifier.verify_expression(exp, &Default::default())?;
+                    if nsconst.map(|k| !k.is::<NamespaceConstant>()).unwrap_or(false) {
+                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                        verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::NotANamespaceConstant, diagarg![]);
+                        return Ok(());
+                    }
+                    if !(var_parent.is::<ClassType>() || var_parent.is::<EnumType>()) {
+                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                        verifier.add_verify_error(&exp.location(), FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
+                        return Ok(());
+                    }
+                    if nsconst.is_none() {
+                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                        return Ok(());
+                    }
+                    ns = Some(nsconst.unwrap().referenced_ns());
                     break;
                 },
                 Attribute::Public(_) => {
-                    fixme();
+                    ns = var_scope.search_system_ns_in_scope_chain(SystemNamespaceKind::Public);
                     break;
                 },
-                Attribute::Private(_) => {
-                    fixme();
+                Attribute::Private(loc) => {
+                    // protected or static-protected
+                    if !var_parent.is::<ClassType>() {
+                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                        verifier.add_verify_error(loc, FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
+                        return Ok(());
+                    }
+                    ns = var_parent.private_ns();
+                    break;
+                },
+                Attribute::Protected(loc) => {
+                    // protected or static-protected
+                    if !var_parent.is::<ClassType>() {
+                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                        verifier.add_verify_error(loc, FlexDiagnosticKind::AccessControlNamespaceNotAllowedHere, diagarg![]);
+                        return Ok(());
+                    }
+                    ns = if is_static { var_parent.static_protected_ns() } else { var_parent.protected_ns() };
                     break;
                 },
                 Attribute::Internal(_) => {
-                    fixme();
+                    ns = var_scope.search_system_ns_in_scope_chain(SystemNamespaceKind::Internal);
                     break;
                 },
-                Attribute::Protected(_) => {
-                    // protected or static-protected
-                    fixme();
-                    break;
-                }
                 _ => {},
             }
         }
+        if ns.is_none() {
+            ns = var_scope.search_system_ns_in_scope_chain(if var_parent.is::<InterfaceType>() { SystemNamespaceKind::Public } else { SystemNamespaceKind::Internal });
+        }
+        let ns = ns.unwrap();
 
         fixme();
 
