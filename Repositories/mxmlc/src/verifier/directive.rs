@@ -268,24 +268,42 @@ impl DirectiveSubverifier {
                     slot1.set_asdoc(defn.asdoc.clone());
                     slot1.metadata().extend(Attribute::find_metadata(&defn.attributes));
                 }
+
+                // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Beta);
                 Err(DeferError(None))
             },
             // Beta
             VerifierPhase::Beta => {
                 fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
+                Err(DeferError(None))
             },
             // Delta
             VerifierPhase::Delta => {
                 fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Epsilon);
+                Err(DeferError(None))
             },
             // Epsilon
             VerifierPhase::Epsilon => {
                 fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Omega);
+                Err(DeferError(None))
             },
             // Omega
             VerifierPhase::Omega => {
                 fixme();
+
+                // Finish
+                verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                Ok(())
             },
             _ => panic!(),
         }
