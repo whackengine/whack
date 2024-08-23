@@ -521,6 +521,8 @@ impl DirectiveSubverifier {
                 // Retrieve method slot
                 let slot = verifier.host.node_mapping().get(drtv).unwrap();
 
+                fixme();
+
                 // "override"
                 let marked_override = Attribute::find_override(&defn.attributes).is_some();
 
@@ -535,8 +537,6 @@ impl DirectiveSubverifier {
                     let name = verifier.host.factory().create_qname(&ns, name.0.clone());
                     verifier.ensure_not_shadowing_definition(&name.1, &fn_out, &fn_parent, &name);
                 }
-
-                fixme();
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
