@@ -466,23 +466,49 @@ impl DirectiveSubverifier {
                 };
 
                 // Create method slot
+                let common = defn.common.clone();
                 let loc = name.1.clone();
                 let name = verifier.host.factory().create_qname(&ns, name.0.clone());
-                let slot = verifier.host.factory().create_method_slot(&name, &verifier.host.unresolved_entity());
+                let mut slot = verifier.host.factory().create_method_slot(&name, &verifier.host.unresolved_entity());
                 slot.set_location(Some(loc.clone()));
                 slot.set_parent(Some(fn_parent.clone()));
                 slot.set_is_external(is_external);
+                slot.set_is_final(Attribute::find_final(&defn.attributes).is_some());
+                slot.set_is_static(Attribute::find_static(&defn.attributes).is_some());
+                slot.set_is_native(Attribute::find_native(&defn.attributes).is_some());
+                slot.set_is_abstract(Attribute::find_abstract(&defn.attributes).is_some());
+                slot.set_is_async(common.contains_await);
+                slot.set_is_generator(common.contains_yield);
+                slot.set_is_constructor(false);
+                slot.set_is_overriding(Attribute::find_override(&defn.attributes).is_some());
 
+                // Set meta-data ASDoc
                 slot.metadata().extend(Attribute::find_metadata(&defn.attributes));
                 slot.set_asdoc(defn.asdoc.clone());
 
                 // If external, function must be native or abstract.
-                if is_external && (Attribute::find_native(&defn.attributes).is_some() || Attribute::find_abstract(&defn.attributes).is_some()) {
-                    fixme();
+                if is_external && !(slot.is_native() || slot.is_abstract()) {
+                    verifier.add_verify_error(&loc, FlexDiagnosticKind::ExternalFunctionMustBeNativeOrAbstract, diagarg![]);
                 }
 
+                let slot;
+
                 // Define method property
-                fixme();
+                if let Some(prev) = fn_out.get(&name) {
+                    slot = verifier.handle_definition_conflict(&prev, &slot);
+                } else {
+                    Unused(&verifier.host).add_nominal(&slot);
+                    fn_out.set(name, slot.clone());
+                }
+
+                // Initialise activation
+                if slot.is::<MethodSlot>() {
+                    let act = verifier.host.factory().create_activation(&slot);
+                    slot.set_activation(Some(act.clone()));
+                }
+
+                // Map node to method slot
+                verifier.host.node_mapping().set(drtv, if slot.is::<MethodSlot>() { Some(slot.clone()) } else { None });
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Beta);

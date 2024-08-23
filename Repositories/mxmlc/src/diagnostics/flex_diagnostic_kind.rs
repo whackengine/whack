@@ -68,6 +68,7 @@ pub enum FlexDiagnosticKind {
     ShadowingDefinitionInBaseClass = 2112,
     VariableHasNoTypeAnnotation = 2113,
     ConstantMustContainInitializer = 2114,
+    ExternalFunctionMustBeNativeOrAbstract = 2115,
 }
 
 impl FlexDiagnosticKind {

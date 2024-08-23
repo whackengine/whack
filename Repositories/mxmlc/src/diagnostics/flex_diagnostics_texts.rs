@@ -72,6 +72,7 @@ lazy_static! {
         FlexDiagnosticKind::ShadowingDefinitionInBaseClass.id() => "Shadowing definition in base class: $1.".into(),
         FlexDiagnosticKind::VariableHasNoTypeAnnotation.id() => "Variable has no type annotation.".into(),
         FlexDiagnosticKind::ConstantMustContainInitializer.id() => "Constant must contain initializer.".into(),
+        FlexDiagnosticKind::ExternalFunctionMustBeNativeOrAbstract.id() => "External function must be marked native or abstract.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }

@@ -45,6 +45,7 @@ impl DestructuringDeclarationSubverifier {
             // Ensure definition is not shadowing another definition
             verifier.ensure_not_shadowing_definition(&pattern.location(), output, parent, &name);
 
+            // Define variable property
             if let Some(prev) = output.get(&name) {
                 slot = Some(verifier.handle_definition_conflict(&prev, &slot1));
             } else {

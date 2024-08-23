@@ -1774,7 +1774,9 @@ impl ExpSubverifier {
             let method = host.factory().create_method_slot(&name, &host.unresolved_entity());
             method.set_is_async(common.contains_await);
             method.set_is_generator(common.contains_yield);
+
             let act = host.factory().create_activation(&method);
+            method.set_activation(Some(act.clone()));
 
             // The "this" receiver
             if let Some(this_param) = common.signature.this_parameter.clone() {
