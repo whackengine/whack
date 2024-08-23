@@ -505,6 +505,9 @@ impl DirectiveSubverifier {
                 if slot.is::<MethodSlot>() {
                     let act = verifier.host.factory().create_activation(&slot);
                     slot.set_activation(Some(act.clone()));
+                } else {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
                 }
 
                 // Map node to method slot
@@ -515,6 +518,8 @@ impl DirectiveSubverifier {
                 Err(DeferError(None))
             },
             VerifierPhase::Beta => {
+                let slot = verifier.host.node_mapping().get(drtv).unwrap();
+
                 fixme();
 
                 let marked_override = Attribute::find_override(&defn.attributes).is_some();
