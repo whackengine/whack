@@ -84,14 +84,19 @@ Handle conflicting definitions properly, only moving forward in verification if 
 
 - [ ] 1. Property definition (alpha)
   - [ ] Determine whether the function is external (contains `[FLEX::EXTERNAL]` or belongs to an external class) and if it is unallowed to contain a body (in which case it must be `native` or `abstract`).
-  - [ ] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
+  - [ ] If method is not marked "override"
+    - [ ] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
 - [ ] 2. Activation creation
   - [ ] Resolve the signature
   - [ ] Create the "this" receiver: either none, inherit "this" type, or create a "this" receiver of the specified type
   - [ ] Define parameter bindings into the activation.
-- [ ] 3. Verify the body
+- [ ] 3. If method is marked "override"
+  - [ ] Override method in base class
+- [ ] 4. Verify the body
 
 ### Constructor function
+
+- Remember: if the base class contains a non-empty constructor, the subclass's constructor must contain a super statement.
 
 ### Getter function
 
