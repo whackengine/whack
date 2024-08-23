@@ -86,13 +86,13 @@ Handle conflicting definitions properly, only moving forward in verification if 
   - [ ] Determine whether the function is external (contains `[FLEX::EXTERNAL]` or belongs to an external class) and if it is unallowed to contain a body (in which case it must be `native` or `abstract`).
   - [ ] If method is not marked "override"
     - [ ] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
-- [ ] 2. Activation creation
+- [ ] 2. Activation creation (beta)
   - [ ] Resolve the signature
   - [ ] Create the "this" receiver: either none, inherit "this" type, or create a "this" receiver of the specified type
   - [ ] Define parameter bindings into the activation.
-- [ ] 3. If method is marked "override"
+- [ ] 3. If method is marked "override" (delta)
   - [ ] Override method in base class
-- [ ] 4. Verify the body
+- [ ] 4. Verify the body (omega)
 
 ### Constructor function
 

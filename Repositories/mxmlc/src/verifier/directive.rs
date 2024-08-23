@@ -17,6 +17,9 @@ impl DirectiveSubverifier {
             Directive::VariableDefinition(defn) => {
                 Self::verify_var_defn(verifier, drtv, defn)
             },
+            Directive::FunctionDefinition(defn) => {
+                Self::verify_fn_defn(verifier, drtv, defn)
+            },
             Directive::Block(block) => {
                 let phase = verifier.lazy_init_drtv_phase(drtv, VerifierPhase::Alpha);
                 if phase == VerifierPhase::Finished {
@@ -428,6 +431,81 @@ impl DirectiveSubverifier {
         let ns = ns.unwrap();
 
         Ok(Ok((var_scope, var_parent, var_out, ns)))
+    }
+
+    fn verify_fn_defn(verifier: &mut Subverifier, drtv: &Rc<Directive>, defn: &FunctionDefinition) -> Result<(), DeferError> {
+        match &defn.name {
+            FunctionName::Identifier(name) => Self::verify_normal_fn_defn(verifier, drtv, defn, name),
+        }
+    }
+
+    fn verify_normal_fn_defn(verifier: &mut Subverifier, drtv: &Rc<Directive>, defn: &FunctionDefinition, name: &(String, Location)) -> Result<(), DeferError> {
+        let phase = verifier.lazy_init_drtv_phase(drtv, VerifierPhase::Alpha);
+        if phase == VerifierPhase::Finished {
+            return Ok(());
+        }
+
+        match phase {
+            VerifierPhase::Alpha => {
+                // Determine the property's scope, parent, property destination, and namespace.
+                let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+                if defn_local.is_err() {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
+                }
+                let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+
+                // Determine whether the definition is external or not
+                let is_external = if fn_parent.is::<Type>() && fn_parent.is_external() {
+                    true
+                } else {
+                    // [FLEX::EXTERNAL]
+                    defn.attributes.iter().find(|a| {
+                        if let Attribute::Metadata(m) = a { m.name.0 == "FLEX::EXTERNAL" } else { false }
+                    }).is_some()
+                };
+
+                // If external, function must be native or abstract.
+                if is_external {
+                    fixme();
+                }
+
+                let marked_override = Attribute::find_override(&defn.attributes).is_some();
+
+                // Do not allow shadowing properties in base classes if not marked "override".
+                if !marked_override {
+                    fixme();
+                }
+
+                fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Beta);
+                Err(DeferError(None))
+            },
+            VerifierPhase::Beta => {
+                fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
+                Err(DeferError(None))
+            },
+            VerifierPhase::Delta => {
+                fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Omega);
+                Err(DeferError(None))
+            },
+            VerifierPhase::Omega => {
+                fixme();
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                Ok(())
+            },
+            _ => panic!(),
+        }
     }
 
     fn verify_package_concat_drtv(verifier: &mut Subverifier, drtv: &Rc<Directive>, pckgcat: &PackageConcatDirective) -> Result<(), DeferError> {
