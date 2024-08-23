@@ -518,16 +518,25 @@ impl DirectiveSubverifier {
                 Err(DeferError(None))
             },
             VerifierPhase::Beta => {
+                // Retrieve method slot
                 let slot = verifier.host.node_mapping().get(drtv).unwrap();
 
-                fixme();
-
+                // "override"
                 let marked_override = Attribute::find_override(&defn.attributes).is_some();
 
                 // Do not allow shadowing properties in base classes if not marked "override".
                 if !marked_override {
-                    verifier.ensure_not_shadowing_definition(&loc, &fn_out, &fn_parent, &name);
+                    let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+                    if defn_local.is_err() {
+                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                        return Ok(());
+                    }
+                    let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+                    let name = verifier.host.factory().create_qname(&ns, name.0.clone());
+                    verifier.ensure_not_shadowing_definition(&name.1, &fn_out, &fn_parent, &name);
                 }
+
+                fixme();
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
