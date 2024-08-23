@@ -465,18 +465,23 @@ impl DirectiveSubverifier {
                     }).is_some()
                 };
 
+                // Create method slot
+                let loc = name.1.clone();
+                let name = verifier.host.factory().create_qname(&ns, name.0.clone());
+                let slot = verifier.host.factory().create_method_slot(&name, &verifier.host.unresolved_entity());
+                slot.set_location(Some(loc.clone()));
+                slot.set_parent(Some(fn_parent.clone()));
+                slot.set_is_external(is_external);
+
+                slot.metadata().extend(Attribute::find_metadata(&defn.attributes));
+                slot.set_asdoc(defn.asdoc.clone());
+
                 // If external, function must be native or abstract.
-                if is_external {
+                if is_external && (Attribute::find_native(&defn.attributes).is_some() || Attribute::find_abstract(&defn.attributes).is_some()) {
                     fixme();
                 }
 
-                let marked_override = Attribute::find_override(&defn.attributes).is_some();
-
-                // Do not allow shadowing properties in base classes if not marked "override".
-                if !marked_override {
-                    fixme();
-                }
-
+                // Define method property
                 fixme();
 
                 // Next phase
@@ -485,6 +490,13 @@ impl DirectiveSubverifier {
             },
             VerifierPhase::Beta => {
                 fixme();
+
+                let marked_override = Attribute::find_override(&defn.attributes).is_some();
+
+                // Do not allow shadowing properties in base classes if not marked "override".
+                if !marked_override {
+                    verifier.ensure_not_shadowing_definition(&loc, &fn_out, &fn_parent, &name);
+                }
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
