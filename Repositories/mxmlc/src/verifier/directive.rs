@@ -172,10 +172,15 @@ impl DirectiveSubverifier {
         }
         let (var_scope, var_parent, mut var_out, ns) = defn_local.unwrap();
 
-        // [FLEX::EXTERNAL]
-        let is_external = defn.attributes.iter().find(|a| {
-            if let Attribute::Metadata(m) = a { m.name.0 == "FLEX::EXTERNAL" } else { false }
-        }).is_some();
+        // Determine whether the definition is external or not
+        let is_external = if var_parent.is::<Type>() && var_parent.is_external() {
+            true
+        } else {
+            // [FLEX::EXTERNAL]
+            defn.attributes.iter().find(|a| {
+                if let Attribute::Metadata(m) = a { m.name.0 == "FLEX::EXTERNAL" } else { false }
+            }).is_some()
+        };
 
         match phase {
             // Alpha

@@ -82,6 +82,9 @@ Handle conflicting definitions properly, only moving forward in verification if 
 
 ### Common function
 
+- [ ] 1. Property definition (alpha)
+  - [ ] Determine whether the function is external (contains `[FLEX::EXTERNAL]` or belongs to an external class) and if it is unallowed to contain a body (in which case it must be `native` or `abstract`).
+
 ### Constructor function
 
 ### Getter function
