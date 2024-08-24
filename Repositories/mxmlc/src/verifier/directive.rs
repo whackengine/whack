@@ -20,6 +20,9 @@ impl DirectiveSubverifier {
             Directive::FunctionDefinition(defn) => {
                 Self::verify_fn_defn(verifier, drtv, defn)
             },
+            Directive::ClassDefinition(defn) => {
+                Self::verify_class_defn(verifier, drtv, defn)
+            },
             Directive::Block(block) => {
                 let phase = verifier.lazy_init_drtv_phase(drtv, VerifierPhase::Alpha);
                 if phase == VerifierPhase::Finished {
