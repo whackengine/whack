@@ -521,6 +521,36 @@ impl DirectiveSubverifier {
                 // Retrieve method slot
                 let slot = verifier.host.node_mapping().get(drtv).unwrap();
 
+                // Retrieve activation
+                let act = slot.activation().unwrap();
+
+                // FunctionCommon
+                let common = defn.common.clone();
+
+                // Database
+                let host = verifier.host.clone();
+
+                let loc = name.1.clone();
+                let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+                if defn_local.is_err() {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
+                }
+                let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+
+                // The "this" receiver
+                if let Some(this_param) = common.signature.this_parameter.clone() {
+                    let t = verifier.verify_type_expression(&this_param.type_annotation)?.unwrap_or(host.any_type());
+                    act.set_this(Some(host.factory().create_this_object(&t)));
+                } else if !slot.is_static() && (fn_parent.is::<ClassType>() || fn_parent.is::<EnumType>()) {
+                    act.set_this(Some(host.factory().create_this_object(&fn_parent)));
+                } else {
+                    // Inherit "this" type
+                    let super_act = verifier.scope().search_activation();
+                    let super_this_type = super_act.and_then(|a| a.this().map(|this| this.static_type(&verifier.host)));
+                    act.set_this(Some(host.factory().create_this_object(&super_this_type.unwrap_or(host.any_type()))));
+                }
+
                 fixme();
 
                 // "override"
@@ -528,14 +558,8 @@ impl DirectiveSubverifier {
 
                 // Do not allow shadowing properties in base classes if not marked "override".
                 if !marked_override {
-                    let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
-                    if defn_local.is_err() {
-                        verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                        return Ok(());
-                    }
-                    let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
                     let name = verifier.host.factory().create_qname(&ns, name.0.clone());
-                    verifier.ensure_not_shadowing_definition(&name.1, &fn_out, &fn_parent, &name);
+                    verifier.ensure_not_shadowing_definition(&loc, &fn_out, &fn_parent, &name);
                 }
 
                 // Next phase
