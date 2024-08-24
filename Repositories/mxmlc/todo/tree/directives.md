@@ -70,3 +70,7 @@ Note that statements and static binding initializers within a class or enum bloc
 * [ ] For the interface block, verify only top-level function definitions
 
 - Remember: `[FLEX::EXTERNAL]`
+
+## Function definitions
+
+- [ ] `[Bindable]` for getter and setter
