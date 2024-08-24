@@ -453,7 +453,7 @@ impl DirectiveSubverifier {
                     verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
                     return Ok(());
                 }
-                let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+                let (_, fn_parent, mut fn_out, ns) = defn_local.unwrap();
 
                 // Determine whether the definition is external or not
                 let is_external = if fn_parent.is::<Type>() && fn_parent.is_external() {
@@ -490,8 +490,6 @@ impl DirectiveSubverifier {
                 if is_external && !(slot.is_native() || slot.is_abstract()) {
                     verifier.add_verify_error(&loc, FlexDiagnosticKind::ExternalFunctionMustBeNativeOrAbstract, diagarg![]);
                 }
-
-                let slot;
 
                 // Define method property
                 if let Some(prev) = fn_out.get(&name) {
@@ -537,7 +535,7 @@ impl DirectiveSubverifier {
                     verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
                     return Ok(());
                 }
-                let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+                let (_, fn_parent, fn_out, ns) = defn_local.unwrap();
 
                 // Save scope
                 let kscope = verifier.scope();
@@ -719,7 +717,7 @@ impl DirectiveSubverifier {
                     let mut result_type = partials.result_type().unwrap(); 
 
                     if common.contains_await && !result_type.promise_result_type(&host)?.is_some() {
-                        verifier.add_verify_error(&name_span, FlexDiagnosticKind::ReturnTypeDeclarationMustBePromise, diagarg![]);
+                        verifier.add_verify_error(&loc, FlexDiagnosticKind::ReturnTypeDeclarationMustBePromise, diagarg![]);
                         result_type = host.promise_type().defer()?.apply_type(&host, &host.promise_type().defer()?.type_params().unwrap(), &shared_array![host.invalidation_entity()])
                     }
 
@@ -743,9 +741,6 @@ impl DirectiveSubverifier {
                 // Restore scope
                 verifier.set_scope(&kscope);
 
-                // Remove definition partials
-                verifier.function_definition_partials.remove(&NodeAsKey(common.clone()));
-
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
                 Err(DeferError(None))
@@ -754,23 +749,11 @@ impl DirectiveSubverifier {
                 // Retrieve method slot
                 let slot = verifier.host.node_mapping().get(drtv).unwrap();
 
-                // Retrieve activation
-                let activation = slot.activation().unwrap();
-
-                // FunctionCommon
-                let common = defn.common.clone();
-
                 // Database
                 let host = verifier.host.clone();
 
-                // Determine definition location
+                // Definition location
                 let loc = name.1.clone();
-                let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
-                if defn_local.is_err() {
-                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
-                    return Ok(());
-                }
-                let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
 
                 // Override if marked "override"
                 if slot.is_overriding() {
@@ -796,9 +779,30 @@ impl DirectiveSubverifier {
                 Err(DeferError(None))
             },
             VerifierPhase::Omega => {
-                fixme();
+                // Retrieve method slot
+                let slot = verifier.host.node_mapping().get(drtv).unwrap();
 
-                // Next phase
+                // Retrieve activation
+                let activation = slot.activation().unwrap();
+
+                // FunctionCommon
+                let common = defn.common.clone();
+
+                // Save scope
+                let kscope = verifier.scope();
+
+                // Definition partials
+                let partials = verifier.function_definition_partials.get(&NodeAsKey(common.clone())).unwrap();
+
+                // Enter scope
+                verifier.inherit_and_enter_scope(&activation);
+
+                FunctionCommonSubverifier::verify_function_definition_common(verifier, &common, &partials)?;
+
+                // Restore scope
+                verifier.set_scope(&kscope);
+
+                // Finish
                 verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
                 Ok(())
             },

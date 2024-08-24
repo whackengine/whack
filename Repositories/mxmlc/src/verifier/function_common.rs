@@ -150,6 +150,49 @@ impl FunctionCommonSubverifier {
         Ok(())
     }
 
+    
+    pub fn verify_function_definition_common(verifier: &mut Subverifier, common: &Rc<FunctionCommon>, partials: &VerifierFunctionPartials) -> Result<(), DeferError> {
+        let host = verifier.host.clone();
+        let activation =  partials.activation();
+        verifier.set_scope(&activation);
+
+        // Resolve directives and then statements, or just the expression body.
+        match &common.body {
+            Some(FunctionBody::Block(block)) => {
+                let block_scope = host.factory().create_scope();
+                verifier.inherit_and_enter_scope(&block_scope);
+                DirectiveSubverifier::verify_directives(verifier, &block.directives)?;
+                StatementSubverifier::verify_statements(verifier, &block.directives);
+                verifier.exit_scope();
+            },
+            Some(FunctionBody::Expression(exp)) => {
+                if let Some(result_type) = partials.result_type() {
+                    verifier.imp_coerce_exp(exp, &result_type)?;
+                } else {
+                    verifier.verify_expression(exp, &default())?;
+                }
+            },
+            None => {},
+        }
+
+        // Analyse the control flow (for block only).
+        if let Some(FunctionBody::Block(block)) = &common.body {
+            ControlFlowAnalyser::analyse_directives(&block.directives, &activation.control_flow_graph(), &mut vec![], &[]);
+        }
+
+        // Ensure all code paths return a value.
+        // Result types that do not require a return value are
+        // `*`, `void`, `Promise.<*>`, and `Promise.<void>`.
+        if let Some(_signature) = partials.signature() {
+            ControlFlowAnalysisIsUnimplemented::unimplemented();
+        }
+
+        // Cleanup the VerifierFunctionPartials cache from Subverifier.
+        verifier.function_definition_partials.remove(&NodeAsKey(common.clone()));
+
+        Ok(())
+    }
+
     fn deduce_result_type(_verifier: &mut Subverifier, _first_result_type: Option<Entity>) -> Entity {
         todo!();
     }

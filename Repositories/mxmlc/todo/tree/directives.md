@@ -93,7 +93,7 @@ Handle conflicting definitions properly, only moving forward in verification if 
     - [x] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
 - [x] 3. If method is marked "override" (delta)
   - [x] Override method in base class
-- [ ] 4. Verify the body (omega)
+- [x] 4. Verify the body (omega)
 
 ### Constructor function
 
