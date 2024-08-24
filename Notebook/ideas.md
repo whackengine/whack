@@ -37,6 +37,8 @@ It embeds the CORS middleware from the NPM `cors` package.
 
 It embeds a way of retrieving user's real IP address from an application using [@fullerstack/nax-ipware](https://github.com/neekware/fullerstack/tree/main/libs/nax-ipware).
 
+It embeds handling of `multipart/form-data` using the NPM [`multer` package](https://www.npmjs.com/package/multer).
+
 ```
 package
 {
@@ -51,13 +53,25 @@ package
         public function MyServer()
         {
             super();
+
+            // allow cross-origin resource sharing
             this.use(cors());
+
+            // retrieve IP
             this.use(function(req:Request, res:Response, next:Function):void
             {
                 req.ipInfo = ipware.getClientIP(req);
                 // { ip: '177.139.100.100', isPublic: true, isRouteTrusted: false }
                 next();
             });
+
+            // index
+            this.get("/", function(req:Request, res:Response):void
+            {
+                res.send("hello world");
+            });
+
+            // listen in port 3000
             this.listen(3000);
         }
     }
