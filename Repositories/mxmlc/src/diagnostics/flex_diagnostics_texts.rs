@@ -76,6 +76,8 @@ lazy_static! {
         FlexDiagnosticKind::IncompatibleOverride.id() => "Incompatible override signature: expected $1, but specified $2.".into(),
         FlexDiagnosticKind::MustOverrideAMethod.id() => "Must override a method.".into(),
         FlexDiagnosticKind::OverridingFinalMethod.id() => "Cannot override a method marked final.".into(),
+        FlexDiagnosticKind::RedefiningConstructor.id() => "Redefining constructor.".into(),
+        FlexDiagnosticKind::ConstructorMustContainSuperStatement.id() => "Constructor must contain super statement.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }

@@ -72,6 +72,8 @@ pub enum FlexDiagnosticKind {
     IncompatibleOverride = 2116,
     MustOverrideAMethod = 2117,
     OverridingFinalMethod = 2118,
+    RedefiningConstructor = 2119,
+    ConstructorMustContainSuperStatement = 2120,
 }
 
 impl FlexDiagnosticKind {

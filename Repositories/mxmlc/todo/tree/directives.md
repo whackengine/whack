@@ -59,6 +59,7 @@ Note that statements and static binding initializers within a class or enum bloc
 * [ ] Mark unused
 
 - Remember: `[FLEX::EXTERNAL]` (transitive)
+- Remember: if the base class contains a non-empty constructor, the subclass must define a constructor.
 
 ## Interface definitions
 
@@ -83,21 +84,11 @@ Handle conflicting definitions properly, only moving forward in verification if 
 
 ### Common function
 
-- [x] 1. Property definition (alpha)
-  - [x] Determine whether the function is external (contains `[FLEX::EXTERNAL]` or belongs to an external class) and if it is unallowed to contain a body (in which case it must be `native` or `abstract`).
-- [x] 2. Activation creation and additional verification (beta)
-  - [x] Create the "this" receiver: either none, or create a "this" receiver of the respective instance type, or inherit "this" type, or create a "this" receiver of the specified type
-  - [x] Define parameter bindings into the activation.
-  - [x] Resolve the signature
-  - [x] If method is not marked "override"
-    - [x] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
-- [x] 3. If method is marked "override" (delta)
-  - [x] Override method in base class
-- [x] 4. Verify the body (omega)
+Done.
 
 ### Constructor function
 
-- Remember: if the base class contains a non-empty constructor, the subclass's constructor must contain a super statement.
+Done.
 
 ### Getter function
 
