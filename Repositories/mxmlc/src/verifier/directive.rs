@@ -1059,7 +1059,6 @@ impl DirectiveSubverifier {
 
                 // Result type (2)
                 if partials.result_type().is_none() {
-                    verifier.add_warning(&loc, FlexDiagnosticKind::ReturnValueHasNoTypeDeclaration, diagarg![]);
                     partials.set_result_type(Some(host.void_type()));
                 }
 
