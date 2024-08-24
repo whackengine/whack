@@ -1792,11 +1792,12 @@ impl ExpSubverifier {
             let partials1 = VerifierFunctionPartials::new(&act, name_span);
             verifier.deferred_function_exp.set(NodeAsKey(common.clone()), partials1.clone());
             partials = Some(partials1);
-
-            verifier.inherit_and_enter_scope(&act);
         }
+
         let partials = partials.unwrap();
         let activation = partials.activation();
+
+        verifier.inherit_and_enter_scope(&activation);
 
         if exp.name.is_some() && !activation.properties(&host).borrow().contains_key(&name) {
             let this_func_var = host.factory().create_variable_slot(&name, false, &host.function_type().defer()?);

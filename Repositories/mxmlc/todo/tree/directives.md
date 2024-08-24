@@ -84,10 +84,10 @@ Handle conflicting definitions properly, only moving forward in verification if 
 
 - [x] 1. Property definition (alpha)
   - [x] Determine whether the function is external (contains `[FLEX::EXTERNAL]` or belongs to an external class) and if it is unallowed to contain a body (in which case it must be `native` or `abstract`).
-- [ ] 2. Activation creation and additional verification (beta)
+- [x] 2. Activation creation and additional verification (beta)
   - [x] Create the "this" receiver: either none, or create a "this" receiver of the respective instance type, or inherit "this" type, or create a "this" receiver of the specified type
-  - [ ] Define parameter bindings into the activation.
-  - [ ] Resolve the signature
+  - [x] Define parameter bindings into the activation.
+  - [x] Resolve the signature
   - [x] If method is not marked "override"
     - [x] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
 - [ ] 3. If method is marked "override" (delta)

@@ -55,6 +55,7 @@ impl Verifier {
                 phase_of_drtv: HashMap::new(),
                 phase_of_block: HashMap::new(),
                 deferred_function_exp: SharedMap::new(),
+                function_definition_partials: SharedMap::new(),
                 definition_conflicts: SharedArray::new(),
                 invalidated: false,
                 external: false,
@@ -213,6 +214,7 @@ pub(crate) struct Subverifier {
     pub phase_of_block: HashMap<NodeAsKey<Rc<Block>>, VerifierPhase>,
 
     pub deferred_function_exp: SharedMap<NodeAsKey<Rc<FunctionCommon>>, VerifierFunctionPartials>,
+    pub function_definition_partials: SharedMap<NodeAsKey<Rc<FunctionCommon>>, VerifierFunctionPartials>,
 
     pub definition_conflicts: SharedArray<(Entity, Entity)>,
 
@@ -240,6 +242,7 @@ impl Subverifier {
         self.phase_of_drtv.clear();
         self.phase_of_block.clear();
         self.deferred_function_exp.clear();
+        self.function_definition_partials.clear();
     }
 
     pub fn lazy_init_drtv_phase(&mut self, drtv: &Rc<Directive>, initial_phase: VerifierPhase) -> VerifierPhase {
