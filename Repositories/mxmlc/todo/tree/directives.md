@@ -49,6 +49,7 @@ Note that statements and static binding initializers within a class or enum bloc
 ## Class definitions
 
 * [ ] Assign ASDoc
+* [ ] Assign meta-data
 * [ ] Assign location
 * [ ] Report a verify error for non overriden abstract methods
 * [ ] If the base class contains a non-empty constructor, the subclass must define a constructor.
@@ -64,6 +65,7 @@ Note that statements and static binding initializers within a class or enum bloc
 ## Interface definitions
 
 * [ ] Assign ASDoc
+* [ ] Assign meta-data
 * [ ] Assign location
 * [ ] Assign every `[Event]` semantics to the interface
 * [ ] Mark unused
