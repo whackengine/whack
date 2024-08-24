@@ -51,6 +51,7 @@ Note that statements and static binding initializers within a class or enum bloc
 * [ ] Assign ASDoc
 * [ ] Assign location
 * [ ] Report a verify error for non overriden abstract methods
+* [ ] If the base class contains a non-empty constructor, the subclass must define a constructor.
 * [ ] Read the `[Options]` meta-data and apply `Options` classes restrictions
 * [ ] Assign every `[Event]` semantics to the class
 * [ ] Handle the `[Bindable]` meta-data right after variables are declared
@@ -59,7 +60,6 @@ Note that statements and static binding initializers within a class or enum bloc
 * [ ] Mark unused
 
 - Remember: `[FLEX::EXTERNAL]` (transitive)
-- Remember: if the base class contains a non-empty constructor, the subclass must define a constructor.
 
 ## Interface definitions
 
@@ -70,33 +70,3 @@ Note that statements and static binding initializers within a class or enum bloc
 * [ ] For the interface block, verify only top-level function definitions
 
 - Remember: `[FLEX::EXTERNAL]`
-
-## Function definitions
-
-Function definitions should have careful plannings. It involves caching the activation, setting phases (similiarly to destructuring), and avoiding verifying things twice (the signature, that is).
-
-Never ever let getters and setters have the wrong signature assigned to them; if they are invalid, just use a default signature matching their requirements.
-
-Handle conflicting definitions properly, only moving forward in verification if the resulting slot is a method slot and not something else (it could be a variable slot or a class, for example).
-
-- Remember: `[FLEX::EXTERNAL]`
-- Remember: do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
-
-### Common function
-
-Done.
-
-### Constructor function
-
-Done.
-
-### Getter function
-
-### Setter function
-
-## Getters/setters
-
-Getters and setters have their own method of handling name conflict since they belong to a virtual slot.
-
-- Remember: `[FLEX::EXTERNAL]`
-- Remember: do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)

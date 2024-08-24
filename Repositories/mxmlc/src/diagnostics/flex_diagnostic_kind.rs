@@ -75,6 +75,10 @@ pub enum FlexDiagnosticKind {
     RedefiningConstructor = 2119,
     ConstructorMustContainSuperStatement = 2120,
     GetterMustTakeNoParameters = 2121,
+    SetterMustTakeOneParameter = 2122,
+    GetterMustReturnDataType = 2123,
+    SetterMustTakeDataType = 2124,
+    SetterMustReturnVoid = 2125,
 }
 
 impl FlexDiagnosticKind {

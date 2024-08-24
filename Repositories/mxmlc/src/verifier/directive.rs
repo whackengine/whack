@@ -1201,6 +1201,7 @@ impl DirectiveSubverifier {
                     }
                 } else {
                     let virtual_var1 = verifier.host.factory().create_virtual_slot(&name);
+                    virtual_var1.set_is_external(is_external);
                     virtual_var = Some(virtual_var1.clone());
                     Unused(&verifier.host).add_nominal(&virtual_var1);
                     fn_out.set(name, virtual_var1.clone());
@@ -1473,6 +1474,413 @@ impl DirectiveSubverifier {
 
                 // Definition location
                 let loc = name.1.clone();
+
+                // Virtual slot
+                let virtual_var = slot.of_virtual_slot(&verifier.host).unwrap();
+                
+                // Ensure the getter returns the correct data type
+                if slot.signature(&verifier.host).result_type() != virtual_var.static_type(&verifier.host) {
+                    verifier.add_verify_error(&loc, FlexDiagnosticKind::GetterMustReturnDataType, diagarg![virtual_var.static_type(&verifier.host)]);
+                }
+
+                // Override if marked "override"
+                if slot.is_overriding() {
+                    match MethodOverride(&host).override_method(&slot, &verifier.scope().concat_open_ns_set_of_scope_chain()) {
+                        Ok(_) => {},
+                        Err(MethodOverrideError::Defer) => {
+                            return Err(DeferError(None));
+                        },
+                        Err(MethodOverrideError::IncompatibleOverride { expected_signature, actual_signature }) => {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::IncompatibleOverride, diagarg![expected_signature.clone(), actual_signature.clone()]);
+                        },
+                        Err(MethodOverrideError::MustOverrideAMethod) => {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::MustOverrideAMethod, diagarg![]);
+                        },
+                        Err(MethodOverrideError::OverridingFinalMethod) => {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::OverridingFinalMethod, diagarg![]);
+                        },
+                    }
+                }
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Omega);
+                Err(DeferError(None))
+            },
+            VerifierPhase::Omega => {
+                // Retrieve method slot
+                let slot = verifier.host.node_mapping().get(drtv).unwrap();
+
+                // Retrieve activation
+                let activation = slot.activation().unwrap();
+
+                // FunctionCommon
+                let common = defn.common.clone();
+
+                // Save scope
+                let kscope = verifier.scope();
+
+                // Definition partials
+                let partials = verifier.function_definition_partials.get(&NodeAsKey(common.clone())).unwrap();
+
+                // Enter scope
+                verifier.inherit_and_enter_scope(&activation);
+
+                FunctionCommonSubverifier::verify_function_definition_common(verifier, &common, &partials)?;
+
+                // Restore scope
+                verifier.set_scope(&kscope);
+
+                // Finish
+                verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                Ok(())
+            },
+            _ => panic!(),
+        }
+    }
+
+    fn verify_setter(verifier: &mut Subverifier, drtv: &Rc<Directive>, defn: &FunctionDefinition, name: &(String, Location)) -> Result<(), DeferError> {
+        let phase = verifier.lazy_init_drtv_phase(drtv, VerifierPhase::Alpha);
+        if phase == VerifierPhase::Finished {
+            return Ok(());
+        }
+
+        match phase {
+            VerifierPhase::Alpha => {
+                // Determine the property's scope, parent, property destination, and namespace.
+                let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+                if defn_local.is_err() {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
+                }
+                let (_, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+
+                // Determine whether the definition is external or not
+                let is_external = if fn_parent.is::<Type>() && fn_parent.is_external() {
+                    true
+                } else {
+                    // [FLEX::EXTERNAL]
+                    defn.attributes.iter().find(|a| {
+                        if let Attribute::Metadata(m) = a { m.name.0 == "FLEX::EXTERNAL" } else { false }
+                    }).is_some()
+                };
+
+                // Create method slot
+                let loc = name.1.clone();
+                let name = verifier.host.factory().create_qname(&ns, name.0.clone());
+                let mut slot = verifier.host.factory().create_method_slot(&name, &verifier.host.unresolved_entity());
+                slot.set_location(Some(loc.clone()));
+                slot.set_parent(Some(fn_parent.clone()));
+                slot.set_is_external(is_external);
+                slot.set_is_final(Attribute::find_final(&defn.attributes).is_some());
+                slot.set_is_static(Attribute::find_static(&defn.attributes).is_some());
+                slot.set_is_native(Attribute::find_native(&defn.attributes).is_some());
+                slot.set_is_abstract(Attribute::find_abstract(&defn.attributes).is_some());
+                slot.set_is_constructor(false);
+                slot.set_is_overriding(Attribute::find_override(&defn.attributes).is_some());
+
+                // If external, function must be native or abstract.
+                if is_external && !(slot.is_native() || slot.is_abstract()) {
+                    verifier.add_verify_error(&loc, FlexDiagnosticKind::ExternalFunctionMustBeNativeOrAbstract, diagarg![]);
+                }
+
+                // Define function
+                let mut virtual_var: Option<Entity> = None;
+                if let Some(prev) = fn_out.get(&name) {
+                    if prev.is::<VirtualSlot>() && prev.setter(&verifier.host).is_none() {
+                        virtual_var = Some(prev.clone());
+                    } else {
+                        slot = verifier.handle_definition_conflict(&prev, &slot);
+                    }
+                } else {
+                    let virtual_var1 = verifier.host.factory().create_virtual_slot(&name);
+                    virtual_var1.set_is_external(is_external);
+                    virtual_var = Some(virtual_var1.clone());
+                    Unused(&verifier.host).add_nominal(&virtual_var1);
+                    fn_out.set(name, virtual_var1.clone());
+                }
+
+                if let Some(virtual_var) = virtual_var {
+                    // Function attachment
+                    virtual_var.set_setter(Some(slot.clone()));
+                    slot.set_of_virtual_slot(Some(virtual_var.clone()));
+
+                    // Set meta-data ASDoc
+                    virtual_var.metadata().extend(Attribute::find_metadata(&defn.attributes));
+                    virtual_var.set_asdoc(virtual_var.asdoc().or(defn.asdoc.clone()));
+
+                    // Set location
+                    virtual_var.set_location(virtual_var.location().or(slot.location()));
+                }
+
+                // Initialise activation
+                if slot.is::<MethodSlot>() {
+                    let act = verifier.host.factory().create_activation(&slot);
+                    slot.set_activation(Some(act.clone()));
+                } else {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
+                }
+
+                // Map node to method slot
+                verifier.host.node_mapping().set(drtv, if slot.is::<MethodSlot>() { Some(slot.clone()) } else { None });
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Beta);
+                Err(DeferError(None))
+            },
+            VerifierPhase::Beta => {
+                // Retrieve method slot
+                let slot = verifier.host.node_mapping().get(drtv).unwrap();
+
+                // Retrieve activation
+                let activation = slot.activation().unwrap();
+
+                // FunctionCommon
+                let common = defn.common.clone();
+
+                // Database
+                let host = verifier.host.clone();
+
+                // Determine definition location
+                let loc = name.1.clone();
+                let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+                if defn_local.is_err() {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
+                }
+                let (_, fn_parent, fn_out, ns) = defn_local.unwrap();
+
+                // Save scope
+                let kscope = verifier.scope();
+
+                // Definition partials (1)
+                let mut partials = verifier.function_definition_partials.get(&NodeAsKey(common.clone()));
+                if partials.is_none() {
+                    // The "this" receiver
+                    if let Some(this_param) = common.signature.this_parameter.clone() {
+                        let t = verifier.verify_type_expression(&this_param.type_annotation)?.unwrap_or(host.any_type());
+                        activation.set_this(Some(host.factory().create_this_object(&t)));
+                    } else if !slot.is_static() && (fn_parent.is::<ClassType>() || fn_parent.is::<EnumType>()) {
+                        activation.set_this(Some(host.factory().create_this_object(&fn_parent)));
+                    } else {
+                        // Inherit "this" type
+                        let super_act = verifier.scope().search_activation();
+                        let super_this_type = super_act.and_then(|a| a.this().map(|this| this.static_type(&verifier.host)));
+                        activation.set_this(Some(host.factory().create_this_object(&super_this_type.unwrap_or(host.any_type()))));
+                    }
+
+                    let partials1 = VerifierFunctionPartials::new(&activation, &loc);
+                    verifier.function_definition_partials.set(NodeAsKey(common.clone()), partials1.clone());
+                    partials = Some(partials1);
+                }
+
+                // Definition partials (2)
+                let partials = partials.unwrap();
+
+                // Enter scope
+                verifier.inherit_and_enter_scope(&activation);
+
+                // Verify parameter bindings
+                let mut params: Vec<Rc<SemanticFunctionTypeParameter>> = vec![];
+                let mut last_param_kind = ParameterKind::Required;        
+                if partials.params().is_none() {
+                    let internal_ns = kscope.search_system_ns_in_scope_chain(SystemNamespaceKind::Internal).unwrap();
+
+                    for param_node in &common.signature.parameters {
+                        match param_node.kind {
+                            ParameterKind::Required => {
+                                let param_type;
+                                if let Some(type_annot) = param_node.destructuring.type_annotation.as_ref() {
+                                    param_type = verifier.verify_type_expression(type_annot)?.unwrap_or(host.invalidation_entity());
+                                } else {
+                                    param_type = host.any_type();
+                                }
+        
+                                let pattern = &param_node.destructuring.destructuring;
+                                let init = verifier.cache_var_init(pattern, || host.factory().create_value(&param_type));
+        
+                                if last_param_kind.may_be_followed_by(param_node.kind) {
+                                    loop {
+                                        match DestructuringDeclarationSubverifier::verify_pattern(verifier, pattern, &init, false, &mut activation.properties(&host), &internal_ns, &activation, false) {
+                                            Ok(_) => {
+                                                break;
+                                            },
+                                            Err(DeferError(Some(VerifierPhase::Beta))) |
+                                            Err(DeferError(Some(VerifierPhase::Delta))) |
+                                            Err(DeferError(Some(VerifierPhase::Epsilon))) |
+                                            Err(DeferError(Some(VerifierPhase::Omega))) => {},
+                                            Err(DeferError(_)) => {
+                                                return Err(DeferError(None));
+                                            },
+                                        }
+                                    }
+        
+                                    params.push(Rc::new(SemanticFunctionTypeParameter {
+                                        kind: param_node.kind,
+                                        static_type: param_type.clone(),
+                                    }));
+        
+                                    verifier.cached_var_init.remove(&NodeAsKey(pattern.clone()));
+                                }
+                            },
+                            ParameterKind::Optional => {
+                                let param_type;
+                                if let Some(type_annot) = param_node.destructuring.type_annotation.as_ref() {
+                                    param_type = verifier.verify_type_expression(type_annot)?.unwrap_or(host.invalidation_entity());
+                                } else {
+                                    param_type = host.any_type();
+                                }
+        
+                                let pattern = &param_node.destructuring.destructuring;
+                                let init;
+                                if let Some(init1) = verifier.cached_var_init.get(&NodeAsKey(pattern.clone())) {
+                                    init = init1.clone();
+                                } else {
+                                    init = verifier.imp_coerce_exp(param_node.default_value.as_ref().unwrap(), &param_type)?.unwrap_or(host.invalidation_entity());
+                                    verifier.cached_var_init.insert(NodeAsKey(pattern.clone()), init.clone());
+                                    if !init.is::<InvalidationEntity>() && !init.static_type(&host).is::<Constant>() {
+                                        verifier.add_verify_error(&param_node.default_value.as_ref().unwrap().location(), FlexDiagnosticKind::EntityIsNotAConstant, diagarg![]);
+                                    }
+                                }
+        
+                                if last_param_kind.may_be_followed_by(param_node.kind) {
+                                    loop {
+                                        match DestructuringDeclarationSubverifier::verify_pattern(verifier, &param_node.destructuring.destructuring, &init, false, &mut activation.properties(&host), &internal_ns, &activation, false) {
+                                            Ok(_) => {
+                                                break;
+                                            },
+                                            Err(DeferError(Some(VerifierPhase::Beta))) |
+                                            Err(DeferError(Some(VerifierPhase::Delta))) |
+                                            Err(DeferError(Some(VerifierPhase::Epsilon))) |
+                                            Err(DeferError(Some(VerifierPhase::Omega))) => {},
+                                            Err(DeferError(_)) => {
+                                                return Err(DeferError(None));
+                                            },
+                                        }
+                                    }
+        
+                                    params.push(Rc::new(SemanticFunctionTypeParameter {
+                                        kind: param_node.kind,
+                                        static_type: param_type.clone(),
+                                    }));
+        
+                                    verifier.cached_var_init.remove(&NodeAsKey(pattern.clone()));
+                                }
+                            },
+                            ParameterKind::Rest => {
+                                let mut param_type;
+                                if let Some(type_annot) = param_node.destructuring.type_annotation.as_ref() {
+                                    param_type = verifier.verify_type_expression(type_annot)?.unwrap_or(host.array_type().defer()?.apply_type(&host, &host.array_type().defer()?.type_params().unwrap(), &shared_array![host.invalidation_entity()]));
+                                    if param_type.array_element_type(&host)?.is_none() {
+                                        verifier.add_verify_error(&type_annot.location(), FlexDiagnosticKind::RestParameterMustBeArray, diagarg![]);
+                                        param_type = host.array_type().defer()?.apply_type(&host, &host.array_type().defer()?.type_params().unwrap(), &shared_array![host.invalidation_entity()]);
+                                    }
+                                } else {
+                                    param_type = host.array_type_of_any()?;
+                                }
+        
+                                let pattern = &param_node.destructuring.destructuring;
+                                let init = verifier.cache_var_init(pattern, || host.factory().create_value(&param_type));
+        
+                                if last_param_kind.may_be_followed_by(param_node.kind) && last_param_kind != ParameterKind::Rest {
+                                    loop {
+                                        match DestructuringDeclarationSubverifier::verify_pattern(verifier, pattern, &init, false, &mut activation.properties(&host), &internal_ns, &activation, false) {
+                                            Ok(_) => {
+                                                break;
+                                            },
+                                            Err(DeferError(Some(VerifierPhase::Beta))) |
+                                            Err(DeferError(Some(VerifierPhase::Delta))) |
+                                            Err(DeferError(Some(VerifierPhase::Epsilon))) |
+                                            Err(DeferError(Some(VerifierPhase::Omega))) => {},
+                                            Err(DeferError(_)) => {
+                                                return Err(DeferError(None));
+                                            },
+                                        }
+                                    }
+        
+                                    params.push(Rc::new(SemanticFunctionTypeParameter {
+                                        kind: param_node.kind,
+                                        static_type: param_type.clone(),
+                                    }));
+        
+                                    verifier.cached_var_init.remove(&NodeAsKey(pattern.clone()));
+                                }
+                            },
+                        }
+                        last_param_kind = param_node.kind;
+                    }
+
+                    if params.len() != 1 {
+                        verifier.add_verify_error(&loc, FlexDiagnosticKind::SetterMustTakeOneParameter, diagarg![]);
+                        params.clear();
+                        params.push(Rc::new(SemanticFunctionTypeParameter {
+                            kind: ParameterKind::Required,
+                            static_type: verifier.host.any_type(),
+                        }));
+                    }
+        
+                    partials.set_params(Some(params));
+                }
+        
+                // Result type
+                if let Some(result_annot) = common.signature.result_type.as_ref() {
+                    if partials.result_type().is_none() {
+                        let result_type = verifier.verify_type_expression(result_annot)?.unwrap_or(host.invalidation_entity());
+                        if result_type != verifier.host.void_type() {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::SetterMustReturnVoid, diagarg![]);
+                        }
+                        partials.set_result_type(Some(host.void_type()));
+                    }
+                } else if partials.result_type().is_none() {
+                    verifier.add_warning(&loc, FlexDiagnosticKind::ReturnValueHasNoTypeDeclaration, diagarg![]);
+                    partials.set_result_type(Some(host.void_type()));
+                }
+
+                // Set signature
+                let signature;
+                if partials.signature().is_none() {
+                    let result_type = partials.result_type().unwrap();
+                    let signature1 = host.factory().create_function_type(partials.params().as_ref().unwrap().clone(), result_type);
+                    partials.set_signature(Some(signature1.clone()));
+                    signature = signature1;
+                } else {
+                    signature = partials.signature().unwrap();
+                }
+                slot.set_signature(&signature);
+
+                // "override"
+                let marked_override = Attribute::find_override(&defn.attributes).is_some();
+
+                // Do not allow shadowing properties in base classes if not marked "override".
+                if !marked_override {
+                    let name = verifier.host.factory().create_qname(&ns, name.0.clone());
+                    verifier.ensure_not_shadowing_definition(&loc, &fn_out, &fn_parent, &name);
+                }
+
+                // Restore scope
+                verifier.set_scope(&kscope);
+
+                // Next phase
+                verifier.set_drtv_phase(drtv, VerifierPhase::Delta);
+                Err(DeferError(None))
+            },
+            VerifierPhase::Delta => {
+                // Retrieve method slot
+                let slot = verifier.host.node_mapping().get(drtv).unwrap();
+
+                // Database
+                let host = verifier.host.clone();
+
+                // Definition location
+                let loc = name.1.clone();
+
+                // Virtual slot
+                let virtual_var = slot.of_virtual_slot(&verifier.host).unwrap();
+                
+                // Ensure the setter takes the correct data type
+                if slot.signature(&verifier.host).params().get(0).unwrap().static_type != virtual_var.static_type(&verifier.host) {
+                    verifier.add_verify_error(&loc, FlexDiagnosticKind::SetterMustTakeDataType, diagarg![virtual_var.static_type(&verifier.host)]);
+                }
 
                 // Override if marked "override"
                 if slot.is_overriding() {

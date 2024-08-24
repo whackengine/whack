@@ -79,6 +79,10 @@ lazy_static! {
         FlexDiagnosticKind::RedefiningConstructor.id() => "Redefining constructor.".into(),
         FlexDiagnosticKind::ConstructorMustContainSuperStatement.id() => "Constructor must contain super statement.".into(),
         FlexDiagnosticKind::GetterMustTakeNoParameters.id() => "Getter must take no parameters.".into(),
+        FlexDiagnosticKind::SetterMustTakeOneParameter.id() => "Setter must take one parameter.".into(),
+        FlexDiagnosticKind::GetterMustReturnDataType.id() => "Getter must return data type $1.".into(),
+        FlexDiagnosticKind::SetterMustTakeDataType.id() => "Setter must take data type $1.".into(),
+        FlexDiagnosticKind::SetterMustReturnVoid.id() => "Setter must return void.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }
