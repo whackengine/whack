@@ -73,6 +73,9 @@ lazy_static! {
         FlexDiagnosticKind::VariableHasNoTypeAnnotation.id() => "Variable has no type annotation.".into(),
         FlexDiagnosticKind::ConstantMustContainInitializer.id() => "Constant must contain initializer.".into(),
         FlexDiagnosticKind::ExternalFunctionMustBeNativeOrAbstract.id() => "External function must be marked native or abstract.".into(),
+        FlexDiagnosticKind::IncompatibleOverride.id() => "Incompatible override signature: expected $1, but specified $2.".into(),
+        FlexDiagnosticKind::MustOverrideAMethod.id() => "Must override a method.".into(),
+        FlexDiagnosticKind::OverridingFinalMethod.id() => "Cannot override a method marked final.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }

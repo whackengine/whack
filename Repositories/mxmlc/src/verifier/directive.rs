@@ -530,6 +530,7 @@ impl DirectiveSubverifier {
                 // Database
                 let host = verifier.host.clone();
 
+                // Determine definition location
                 let loc = name.1.clone();
                 let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
                 if defn_local.is_err() {
@@ -750,7 +751,45 @@ impl DirectiveSubverifier {
                 Err(DeferError(None))
             },
             VerifierPhase::Delta => {
-                fixme();
+                // Retrieve method slot
+                let slot = verifier.host.node_mapping().get(drtv).unwrap();
+
+                // Retrieve activation
+                let activation = slot.activation().unwrap();
+
+                // FunctionCommon
+                let common = defn.common.clone();
+
+                // Database
+                let host = verifier.host.clone();
+
+                // Determine definition location
+                let loc = name.1.clone();
+                let defn_local = Self::definition_local_maybe_static(verifier, &defn.attributes)?;
+                if defn_local.is_err() {
+                    verifier.set_drtv_phase(drtv, VerifierPhase::Finished);
+                    return Ok(());
+                }
+                let (fn_scope, fn_parent, mut fn_out, ns) = defn_local.unwrap();
+
+                // Override if marked "override"
+                if slot.is_overriding() {
+                    match MethodOverride(&host).override_method(&slot, &verifier.scope().concat_open_ns_set_of_scope_chain()) {
+                        Ok(_) => {},
+                        Err(MethodOverrideError::Defer) => {
+                            return Err(DeferError(None));
+                        },
+                        Err(MethodOverrideError::IncompatibleOverride { expected_signature, actual_signature }) => {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::IncompatibleOverride, diagarg![expected_signature.clone(), actual_signature.clone()]);
+                        },
+                        Err(MethodOverrideError::MustOverrideAMethod) => {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::MustOverrideAMethod, diagarg![]);
+                        },
+                        Err(MethodOverrideError::OverridingFinalMethod) => {
+                            verifier.add_verify_error(&loc, FlexDiagnosticKind::OverridingFinalMethod, diagarg![]);
+                        },
+                    }
+                }
 
                 // Next phase
                 verifier.set_drtv_phase(drtv, VerifierPhase::Omega);

@@ -69,6 +69,9 @@ pub enum FlexDiagnosticKind {
     VariableHasNoTypeAnnotation = 2113,
     ConstantMustContainInitializer = 2114,
     ExternalFunctionMustBeNativeOrAbstract = 2115,
+    IncompatibleOverride = 2116,
+    MustOverrideAMethod = 2117,
+    OverridingFinalMethod = 2118,
 }
 
 impl FlexDiagnosticKind {

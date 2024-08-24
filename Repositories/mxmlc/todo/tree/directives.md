@@ -50,6 +50,7 @@ Note that statements and static binding initializers within a class or enum bloc
 
 * [ ] Assign ASDoc
 * [ ] Assign location
+* [ ] Report a verify error for non overriden abstract methods
 * [ ] Read the `[Options]` meta-data and apply `Options` classes restrictions
 * [ ] Assign every `[Event]` semantics to the class
 * [ ] Handle the `[Bindable]` meta-data right after variables are declared
@@ -90,8 +91,8 @@ Handle conflicting definitions properly, only moving forward in verification if 
   - [x] Resolve the signature
   - [x] If method is not marked "override"
     - [x] Do not allow shadowing properties in base classes (`verifier.ensure_not_shadowing_definition(...)`)
-- [ ] 3. If method is marked "override" (delta)
-  - [ ] Override method in base class
+- [x] 3. If method is marked "override" (delta)
+  - [x] Override method in base class
 - [ ] 4. Verify the body (omega)
 
 ### Constructor function
