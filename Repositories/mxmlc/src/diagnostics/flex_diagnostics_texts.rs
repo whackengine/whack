@@ -78,6 +78,7 @@ lazy_static! {
         FlexDiagnosticKind::OverridingFinalMethod.id() => "Cannot override a method marked final.".into(),
         FlexDiagnosticKind::RedefiningConstructor.id() => "Redefining constructor.".into(),
         FlexDiagnosticKind::ConstructorMustContainSuperStatement.id() => "Constructor must contain super statement.".into(),
+        FlexDiagnosticKind::GetterMustTakeNoParameters.id() => "Getter must take no parameters.".into(),
         // FlexDiagnosticKind::K.id() => ".".into(),
     };
 }
