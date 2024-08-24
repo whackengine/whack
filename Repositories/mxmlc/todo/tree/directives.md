@@ -62,6 +62,10 @@ Note that statements and static binding initializers within a class or enum bloc
 
 - Remember: `[FLEX::EXTERNAL]` (transitive)
 
+## Enum definitions
+
+- Remember: for alpha, process defining constants and mark them as in the finished phase.
+
 ## Interface definitions
 
 * [ ] Assign ASDoc

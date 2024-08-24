@@ -6,7 +6,7 @@ The compiler is implemented in Rust, while the runtime is implemented in ECMAScr
 
 ## Where we are
 
-The compiler is in progress. The next implementation would be verifying variable definitions. The `todo/tree/directives-list.md` document in the `mxmlc` repository lists what is missing, and `todo/tree/directives.md` contains details about what is further going on.
+The compiler is in progress. The next implementation would be verifying class definitions. The `todo/tree/directives-list.md` document in the `mxmlc` repository lists what is missing, and `todo/tree/directives.md` contains details about what is further going on.
 
 For Visual Studio Code, the "Save and restore tabs" extension is useful for restoring opened tabs. The `mxmlc` repository contains saved tabs that you can restore with this extension, but it requires changing the paths in `.vscode/save-restore-editors.json` as they are absolute paths.
 
