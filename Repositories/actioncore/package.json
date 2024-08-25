@@ -1,7 +1,7 @@
 {
   "name": "com.hydroper.flex.actioncore",
   "version": "1.0.0",
-  "description": "Hydroper Flex ActionCore",
+  "description": "Flex ActionCore",
   "main": "src/index.ts",
   "directories": {
     "doc": "docs"

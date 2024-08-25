@@ -1161,6 +1161,10 @@ export function getglobal(qual, name)
     {
         return reflectnamespace(trait.ns);
     }
+    if (trait instanceof Class || trait instanceof Interface)
+    {
+        return reflectclass(trait);
+    }
     if (trait)
     {
         throw new Error("Internal error");

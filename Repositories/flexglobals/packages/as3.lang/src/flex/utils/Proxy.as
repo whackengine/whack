@@ -1,6 +1,6 @@
 package flex.utils
 {
-    [FLEX::EXTERNAL(slots="2")]
+    [Flex::External(slots="2")]
     public class Proxy
     {
         flex_proxy native function callProperty(name:*, ...rest : [*]):*;

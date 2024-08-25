@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="3")]
+    [Flex::External(slots="3")]
     public final class Function
     {
         public native function Function();

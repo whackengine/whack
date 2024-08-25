@@ -2,16 +2,16 @@ package
 {
     import flex.externals.js.lex;
 
-    [FLEX::EXTERNAL]
+    [Flex::External]
     public namespace AS3 = "http://hydroper.com/AS3/2024/builtin";
 
-    [FLEX::EXTERNAL]
+    [Flex::External]
     public const undefined: * = void 0;
 
-    [FLEX::EXTERNAL]
+    [Flex::External]
     public const NaN: Number = 0 / 0;
 
-    [FLEX::EXTERNAL]
+    [Flex::External]
     public const Infinity: Number = 1 / 0;
 
     /**
@@ -53,7 +53,7 @@ package
  
     }
 
-    [FLEX::EXTERNAL]
+    [Flex::External]
     public native function isXMLName(str:String):Boolean;
 
     public function parseFloat(str:String):Number

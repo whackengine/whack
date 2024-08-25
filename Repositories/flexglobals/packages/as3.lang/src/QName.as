@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="4")]
+    [Flex::External(slots="4")]
     public final class QName
     {
         public native function QName(arg1:*, arg2:* = undefined);

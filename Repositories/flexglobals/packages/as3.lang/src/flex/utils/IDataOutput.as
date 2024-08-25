@@ -1,6 +1,6 @@
 package flex.utils
 {
-    [FX::EXTERNAL]
+    [Flex::External]
     public interface IDataOutput
     {
         /**

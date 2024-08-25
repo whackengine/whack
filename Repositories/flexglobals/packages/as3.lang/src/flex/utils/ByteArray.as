@@ -1,6 +1,6 @@
 package flex.utils
 {
-    [FX::EXTERNAL(slots="3")]
+    [Flex::External(slots="3")]
     public class ByteArray implements IDataInput, IDataOutput
     {
         public native function ByteArray();

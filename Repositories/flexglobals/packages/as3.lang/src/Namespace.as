@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="4")]
+    [Flex::External(slots="4")]
     public final class Namespace
     {
         public native function Namespace(arg1:*, arg2:* = undefined);

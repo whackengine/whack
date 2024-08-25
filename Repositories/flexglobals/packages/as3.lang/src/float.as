@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="2")]
+    [Flex::External(slots="2")]
     public final class float
     {
         public native function float(arg:*);

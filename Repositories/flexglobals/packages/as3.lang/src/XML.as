@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="3")]
+    [Flex::External(slots="3")]
     public final class XML
     {
         public native function XML(val:*);

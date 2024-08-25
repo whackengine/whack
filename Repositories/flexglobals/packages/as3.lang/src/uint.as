@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="2")]
+    [Flex::External(slots="2")]
     public final class uint
     {
         public native function uint(arg:*);

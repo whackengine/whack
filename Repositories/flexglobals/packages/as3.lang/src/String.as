@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::EXTERNAL(slots="3")]
+    [Flex::External(slots="3")]
     public final class String
     {
         public native function String(arg:String);

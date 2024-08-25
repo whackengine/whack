@@ -1,6 +1,6 @@
 package
 {
-    [FLEX::INTERNAL(slots="3")]
+    [Flex::External(slots="3", name="regexpclass")]
     public dynamic class RegExp
     {
         public native function RegExp(re:String, flags:String);

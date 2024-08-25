@@ -2,7 +2,7 @@
 
 ## External definitions
 
-In external definitions (`[FLEX::EXTERNAL(...)]` or these contained within a class that has this meta-data), the verifier puts some restrictions, such as requiring only `native` or `abstract` methods, empty package and global initialization code, and variable bindings may only be assigned a constant.
+In external definitions (`[Flex::External(...)]` or these contained within a class that has this meta-data), the verifier puts some restrictions, such as requiring only `native` or `abstract` methods, empty package and global initialization code, and variable bindings may only be assigned a constant.
 
 ## Locations
 
