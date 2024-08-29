@@ -2,6 +2,6 @@
 
 ## Global objects configuration
 
-- [ ] `package { public namespace AS3 = "http://hydroper.com/AS3/2024/builtin"; }`
-- [ ] `package flex.utils {}`
-- [ ] `package flex.utils { public namespace flex_proxy = "http://hydroper.com/2024/actionscript/flex/proxy"; }`
+- [ ] `package { public namespace AS3 = "http://skywhack.net/AS3/2024/builtin"; }`
+- [ ] `package sw.utils {}`
+- [ ] `package sw.utils { public namespace sw_proxy = "http://skywhack.net/2024/actionscript/sw/proxy"; }`

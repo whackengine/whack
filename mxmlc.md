@@ -1,6 +1,6 @@
 # MXMLC
 
-## Flex::External meta-data
+## Skywhack::External meta-data
 
 - [ ] For classes, `slots="number"` is required.
 

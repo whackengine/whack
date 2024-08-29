@@ -1,4 +1,4 @@
-# Flex
+# Skywhack
 
 Create modern client and server apps.
 
