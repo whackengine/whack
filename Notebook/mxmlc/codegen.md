@@ -5,7 +5,7 @@
 The ECMAScript module output consists of:
 
 * Copies of libraries linked in the manifest `js` section.
-* An entry point that imports, in order: 1) linked libraries, and 2) SkywhackCore.
+* An entry point that imports, in order: 1) linked libraries, and 2) SkyWhackCore.
 
 In a release build, the entry point, together with the linked libraries, is bundled into a minified JavaScript IIFE (immediately invoked function expression) where all local ECMAScript names are shortened through the NPM packages `rollup` and `@rollup/plugin-terser`.
 

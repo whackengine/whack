@@ -10,7 +10,7 @@ Scale either the entire application or a component using the letterbox method.
 
 ## sw.gfx.\*
 
-2D display list implemented using PIXI.js. Implement sw.gfx.\* as an optional package in the Skywhack registry.
+2D display list implemented using PIXI.js. Implement sw.gfx.\* as an optional package in the SkyWhack registry.
 
 - DisplayObject (contains zero or more child display objects)
   - Bitmap
@@ -19,7 +19,7 @@ Scale either the entire application or a component using the letterbox method.
 
 ## sw.gfx3d.\*
 
-3D display implemented using THREE.js. Implement sw.gfx3d.\* as an optional package in the Skywhack registry.
+3D display implemented using THREE.js. Implement sw.gfx3d.\* as an optional package in the SkyWhack registry.
 
 ## foam
 

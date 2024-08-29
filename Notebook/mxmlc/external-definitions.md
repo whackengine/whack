@@ -1,7 +1,7 @@
 # External definitions
 
-- Use `[Skywhack::External]` in external definitions.
-- Use `[Skywhack::External(slots="NUMBER")]` in an external class to count slots within the instance Array (including `CONSTRUCTOR_INDEX` and `DYNAMIC_PROPERTIES_INDEX` (+2)). (`slots=` is required for classes)
+- Use `[SkyWhack::External]` in external definitions.
+- Use `[SkyWhack::External(slots="NUMBER")]` in an external class to count slots within the instance Array (including `CONSTRUCTOR_INDEX` and `DYNAMIC_PROPERTIES_INDEX` (+2)). (`slots=` is required for classes)
 
 ## Particular treatment
 
