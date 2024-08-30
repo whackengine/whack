@@ -1,3 +1,3 @@
 # JavaScript insertion
 
-Process the `sw.externals.js` functions in a special way.
+Process the `whack.externals.js` functions in a special way.

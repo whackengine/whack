@@ -11,7 +11,7 @@ For Visual Studio Code, the "Save and restore tabs" extension is useful for rest
 1. MXML compiler (+AS3, -MXML, -CSS3, -Embed meta data, -Bindable meta data, -Stylesheet meta data, -online registry, +package manager, +codegen, +evaluation in browser or command line server)
 2. IDE support
 3. ASDoc compilation
-4. sw.core package including the application, control, layout, event and skinning classes
+4. whack.core package including the application, control, layout, event and skinning classes
 5. Test it out
 6. MXML compiler (+MXML, +CSS3, +Embed meta data, +Bindable meta data, +Stylesheet meta data)
 7. Test it out

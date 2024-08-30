@@ -1,4 +1,4 @@
-# SkyWhack
+# Whack
 
 Create modern client and server apps.
 

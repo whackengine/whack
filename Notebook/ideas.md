@@ -8,18 +8,18 @@ ASDoc is automatically compiled for each package that is published into the pack
 
 Scale either the entire application or a component using the letterbox method.
 
-## sw.gfx.\*
+## whack.gfx.\*
 
-2D display list implemented using PIXI.js. Implement sw.gfx.\* as an optional package in the SkyWhack registry.
+2D display list implemented using PIXI.js. Implement whack.gfx.\* as an optional package in the Whack registry.
 
 - DisplayObject (contains zero or more child display objects)
   - Bitmap
   - Shape
   - TextArea
 
-## sw.gfx3d.\*
+## whack.gfx3d.\*
 
-3D display implemented using THREE.js. Implement sw.gfx3d.\* as an optional package in the SkyWhack registry.
+3D display implemented using THREE.js. Implement whack.gfx3d.\* as an optional package in the Whack registry.
 
 ## foam
 
