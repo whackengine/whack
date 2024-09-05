@@ -25,9 +25,9 @@ Scale either the entire application or a component using the letterbox method.
 
 A 2D physics engine that is a fork of an old Flash library.
 
-## mysql.easy
+## mysql
 
-A series of packages for facilitating MySQL database migration, seeding, and access using a schema.
+A series of packages for performing MySQL database migration and seeding and for MySQL database access using a schema.
 
 ## express
 
