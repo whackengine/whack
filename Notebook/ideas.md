@@ -12,7 +12,7 @@ Scale either the entire application or a component using the letterbox method.
 
 2D display list implemented using PIXI.js. Implement whack.gfx.\* as an optional package in the Whack registry.
 
-- StencilStage (the graphical container)
+- PencilStage (the main container as an UIComponent)
 - DisplayObject (contains zero or more child display objects)
   - Bitmap
   - Shape
