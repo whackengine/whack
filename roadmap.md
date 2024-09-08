@@ -1,24 +1,15 @@
 # Roadmap
 
-## Where we are
+## Goals
 
-The compiler is in progress. The next implementation would be verifying class definitions. The `todo/tree/directives-list.md` document in the `mxmlc` repository lists what is missing, and `todo/tree/directives.md` contains details about what is further going on.
-
-For Visual Studio Code, the "Save and restore tabs" extension is useful for restoring opened tabs. The `mxmlc` repository contains saved tabs that you can restore with this extension, but it requires changing the paths in `.vscode/save-restore-editors.json` as they are absolute paths.
-
-### Goals
-
-1. MXML compiler (+AS3, -MXML, -CSS3, -Embed meta data, -Bindable meta data, -Stylesheet meta data, -online registry, +package manager, +codegen, +evaluation in browser or command line server)
-2. IDE support
-3. ASDoc compilation
-4. whack.core package including the application, control, layout, event and skinning classes
-5. Test it out
-6. MXML compiler (+MXML, +CSS3, +Embed meta data, +Bindable meta data, +Stylesheet meta data)
+1. Package manager
+2. +Codegen
+3. IDE support
+4. +Evaluation in browser or command line server
+5. ASDoc compilation
+6. whack.core package including the application, control, layout, event and skinning classes
 7. Test it out
-8. MXML compiler (+online registry)
-9. Test online registry
-
-Notes:
-
-- "+" means included
-- "-" means excluded
+8. MXML compiler (+MXML, +CSS3, +Embed meta data, +Bindable meta data, +StyleSheet meta data)
+9. Test it out
+10. MXML compiler (+online registry)
+11. Test online registry
