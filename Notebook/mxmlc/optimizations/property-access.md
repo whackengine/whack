@@ -1,5 +1,9 @@
 # Property access
 
+## External
+
+External methods and property accessors shall be obtained as locals through using ActionCore's '`globaltrait()` function, allowing to optimize the AS3 language global objects.
+
 ## Instance methods
 
 Instance methods shall have a special local that implements the "dynamic dispatch" version of a method that checks for overriding methods.
