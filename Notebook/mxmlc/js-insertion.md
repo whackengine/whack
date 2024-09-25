@@ -1,3 +1,3 @@
 # JavaScript insertion
 
-Process the `whack.jscript` functions in a special way.
+Process the `JS` namespace's functions in a special way.
