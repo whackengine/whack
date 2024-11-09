@@ -1,7 +1,7 @@
 # External definitions
 
-- Use `[Whack::External]` in external definitions.
-- Use `[Whack::External(slots="NUMBER")]` in an external class to count slots within the instance Array (including `CONSTRUCTOR_INDEX` and `DYNAMIC_PROPERTIES_INDEX` (+2)). (`slots=` is required for classes)
+- Use `[whack_external]` in external definitions.
+- Use `[whack_external(slots="NUMBER")]` in an external class to count slots within the instance Array (including `CONSTRUCTOR_INDEX` and `DYNAMIC_PROPERTIES_INDEX` (+2)). (`slots=` is required for classes)
 
 ## Particular treatment
 
