@@ -47,7 +47,7 @@ It embeds handling of `multipart/form-data` using the NPM [`multer` package](htt
 ```
 package
 {
-    import express.core.*;
+    import express.*;
     import express.util.cors.*;
     import express.util.ip.*;
 
