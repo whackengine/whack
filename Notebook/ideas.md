@@ -8,12 +8,16 @@ ASDoc is automatically compiled for each package that is published into the pack
 
 Scale either the entire application or a component using the letterbox method.
 
+## whack.core.\*
+
+- Node
+
 ## whack.gfx.\*
 
-2D display list implemented using PIXI.js. Implement whack.gfx.\* as an optional package in the Whack registry.
+2D display list. Implement whack.gfx.\* as an optional package in the Whack registry.
 
-- PencilStage (the main container as an UIComponent)
-- DisplayObject (contains zero or more child display objects)
+- Canvas \< UIComponent
+- Drawable \< Node
   - Bitmap
   - Shape
   - TextArea
@@ -24,11 +28,11 @@ Scale either the entire application or a component using the letterbox method.
 
 ## foam
 
-A 2D physics engine that is a fork of an old Flash library.
+A 2D physics engine that is a fork of an old Flash library, but designed for Whack.
 
-## mysql
+## prisma
 
-A series of packages for performing MySQL database migration and seeding and for MySQL database access using a schema.
+A Whack equivalent of the Prisma framework from Node.js.
 
 ## express
 
@@ -78,3 +82,7 @@ package
     }
 }
 ```
+
+## fluent
+
+Internationalization library for Whack.
