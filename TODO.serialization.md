@@ -49,8 +49,9 @@ This will return the static type of an object's property. For structural types i
 
 ## Parameterized types (codegen)
 
-## Vector (ActionCore)
+## Array and Vector (ActionCore)
 
-- Store element type as a internal field to turn the vector safe.
+- Store element type as a internal field to turn the array/vector safe.
+- Array and Vector will need some internal constructor usage changes
 
 ## whack.utils.Dictionary turns into Map.\<K, V>
