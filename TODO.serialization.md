@@ -53,4 +53,4 @@ This will return the static type of an object's property. For structural types i
 
 - Store element type as a internal field to turn the vector safe.
 
-## whack.utils.Dictionary > Map.\<K, V>
+## whack.utils.Dictionary turns into Map.\<K, V>
