@@ -47,7 +47,7 @@ Returns the element types of a tuple type.
 ### Reflect.propertyType()
 
 This will return the static type of an object's property. For structural types it should return a base class
-(`Function` for function types; `Object` for nullable and non-nullable types), however nullable types that are equivalent to their inner type (that is, not something like `Number?`, but rather something like `RegExp?`) will return that inner type.
+(`Function` for function types; `Object` for nullable), however nullable types that are equivalent to their inner type (that is, not something like `Number?`, but rather something like `RegExp?`) will return that inner type; non-nullable types will always return their inner type.
 
 ## Tuple type (ActionCore)
 
