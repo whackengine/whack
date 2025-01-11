@@ -127,7 +127,7 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 
 - [ ] (ActionCore) Implement applied types
 - [ ] (ActionCore) Handle applied types in property accesses and other access functions.
-- [ ] (ActionCore) Apply type function (and add it to `templates/importactioncore.js`)
+- [ ] (ActionCore) Apply type function (and add it to `templates/importactioncore.js`). Perform interning too.
 
 ## Parameterized types updates
 
@@ -150,3 +150,7 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 - [ ] (ActionCore) Update `templates/importactioncore.js` to export the `Map` type correctly (and remove `Dictionary`).
 - [ ] (Documentation) Update the developer portal to mention `Map.<K, V>`, and not `whack.utils.Dictionary`.
 - [ ] (SDK) Update references to `Dictionary`, replacing it by `Map.<K, V>`.
+
+## describeType()
+
+- [ ] (ActionCore) Update `describeType()` implementation to handle applied types and tuple types.
