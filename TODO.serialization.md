@@ -1,5 +1,7 @@
 # TODO: serialization
 
+Serialization capabilities first focusing in JSON; class serialization in AMF and XML may get in the package registry later.
+
 ## How it looks like.
 
 Meta-data here should be similiar to serde from Rust.
