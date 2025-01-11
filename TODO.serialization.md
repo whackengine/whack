@@ -154,3 +154,7 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 ## describeType()
 
 - [ ] (ActionCore) Update `describeType()` implementation to handle applied types and tuple types.
+
+## trace()
+
+- [ ] (ActionCore) Enhance debugging by converting class objects into JSON and then using `JSON.parse` from JavaScript. For Array and plain objects, stringify them and convert them to JSON from JavaScript. (Probably make `JSON` methods native to ActionCore.)
