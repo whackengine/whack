@@ -46,11 +46,17 @@ Lookups a type's specific meta-data. (More efficient than `describeType()`.)
 
 Returns the `public` variable slots of a type (excluding variables from base types), in the form `[{localName: "propertyName", type: PropertyClass}]`.
 
+### Reflect.isTupleType()
+
+Returns whether or not a type is a tuple type.
+
 ### Reflect.tupleTypeElements()
 
 Returns the element types of a tuple type.
 
 ### Reflect.superType()
+
+Returns the class that a given class extends.
 
 ### Reflect.propertyType()
 
@@ -59,25 +65,29 @@ This will return the static type of an object's property. For few structural typ
 
 ## ActionCore: constructor
 
-- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an applied type (such as `Vector.<T>`). Handle that everywhere, including property accessors.
+- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an applied type (such as `Vector.<T>` or `Map.<K, V>`). Handle that everywhere, including property accessors.
 
-## Tuple type
+## Tuple types
 
 Tuple should not be equivalent to an `Array` object anymore. It should be real in ActionCore, and codegen will have to be aware of this.
 
-- [ ] Implement the tuple type into ActionCore and handle it in property accesses and other access functions.
-- [ ] Edit the `verifier` documentation wherever mentions that they are erased into `Array`. That is not going to be the case anymore.
+- [ ] (ActionCore) Implement the tuple type into ActionCore and handle it in property accesses and other access functions.
+- [ ] (SDK) Edit the `verifier` documentation wherever mentions that they are erased into `Array`. That is not going to be the case anymore.
 
 ## Make Array final
 
 - [ ] In ActionCore
 - [ ] In whacklib
 
-## Apply type (ActionCore)
+## Applied types
+
+- [ ] (ActionCore) Implement applied types
+- [ ] (ActionCore) Handle applied types in property accesses and other access functions.
+- [ ] (ActionCore) Apply type function
 
 ## Parameterized types updates
 
-- [ ] Edit the `verifier` documentation wherever mentions that parameterized types are erased. That is not going to be the case anymore.
+- [ ] (SDK) Edit the `verifier` documentation wherever mentions that parameterized types are erased. That is not going to be the case anymore.
 
 ## Array and Vector
 
