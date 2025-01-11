@@ -42,9 +42,9 @@ Return applied type's composition. (`null` or `{ original, arguments }`)
 
 Lookups a type's specific meta-data. (More efficient than `describeType()`.)
 
-### Reflect.variableSlots()
+### Reflect.variables()
 
-Returns the `public` variable slots of a type (excluding variables from base types), in the form `[{localName: "propertyName", type: PropertyClass}]`.
+Returns the `public` variable slots of a type (excluding variables from base types), in the form `[{name: "propertyName", type: PropertyClass}]`.
 
 ### Reflect.isTupleType()
 
