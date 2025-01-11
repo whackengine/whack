@@ -38,6 +38,14 @@ package demo
 
 Return applied type's composition. (`null` or `{ original, arguments }`)
 
+### Reflect.lookupMetaData()
+
+Lookups a type's specific meta-data. (More efficient than `describeType()`.)
+
+### Reflect.variableSlots()
+
+Returns the `public` variable slots of a type (excluding variables from base types), in the form `[{localName: "propertyName", type: PropertyClass}]`.
+
 ### Reflect.tupleTypeElements()
 
 Returns the element types of a tuple type.
