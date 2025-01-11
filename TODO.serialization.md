@@ -56,7 +56,7 @@ Lookups a type's specific meta-data. (More efficient than `describeType()`.)
 
 - [ ] Implemented
 
-Returns the `public` variable slots of a type (excluding variables from base types), in the form `[{name: "propertyName", type: PropertyClass}]`.
+Returns the `public` variable slots of a type (excluding variables from base types), in the form `[{metadata: [...], name: "propertyName", type: PropertyClass}]`.
 
 ### Reflect.isTupleType()
 
