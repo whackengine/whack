@@ -38,12 +38,25 @@ package demo
 
 Return applied type's composition. (`null` or `{ original, arguments }`)
 
+### Reflect.tupleTypeElements()
+
+Returns the element types of a tuple type.
+
 ### Reflect.superType()
 
 ### Reflect.propertyType()
 
 This will return the static type of an object's property. For structural types it should return a base class
-(`Function` for function types; `Array` for tuples; `Object` for nullable and non-nullable types;);
+(`Function` for function types; `Object` for nullable and non-nullable types;);
+
+## Tuple type (ActionCore)
+
+Tuple should not be equivalent to an `Array` object anymore. It should be real in ActionCore, and codegen will have to be aware of this.
+
+## Make Array final
+
+- In ActionCore
+- In whacklib
 
 ## Apply type (ActionCore)
 
