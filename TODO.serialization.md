@@ -83,7 +83,8 @@ This will return the static type of an object's property. For few structural typ
 
 ## ActionCore: constructor
 
-- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an applied type (such as `Vector.<T>` or `Map.<K, V>`). Handle that everywhere, including property accessors.
+- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an applied type (such as `Vector.<T>` or `Map.<K, V>`, with optional `specialisation` field). Handle that everywhere, including property accessors.
+  - In general, replace `instanceof Class` checks by `instanceof ActionCoreType`
   - [ ] `inobject()`
   - [ ] `hasownproperty()`
   - [ ] `nameiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
@@ -111,7 +112,7 @@ This will return the static type of an object's property. For few structural typ
 
 Tuple should not be equivalent to an `Array` object anymore. It should be real in ActionCore, and codegen will have to be aware of this.
 
-- [ ] (ActionCore) Implement the tuple type into ActionCore and handle it in property accesses and other access functions.
+- [ ] (ActionCore) Implement the tuple type into ActionCore (extends `ActionCoreType` and interning) and handle it in property accesses and other access functions.
 - [ ] (SDK) Edit the `verifier` documentation wherever mentions that they are erased into `Array`. That is not going to be the case anymore.
 
 ## Make Array final
@@ -146,6 +147,7 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 
 ## whack.utils.Dictionary should turn into Map.\<K, V>
 
+- [ ] (ActionCore) Set `typeParams: 1` in the `Map` class options
 - [ ] (ActionCore) Read the key-value types from the constructor to turn all Map operations safe.
 - [ ] (ActionCore) Update `templates/importactioncore.js` to export the `Map` type correctly (and remove `Dictionary`).
 - [ ] (Documentation) Update the developer portal to mention `Map.<K, V>`, and not `whack.utils.Dictionary`.
