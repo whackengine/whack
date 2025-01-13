@@ -93,7 +93,7 @@ This will return the static type of an object's property. For few structural typ
 
 - [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an special type after substitution (`Array.<T>`, `Vector.<T>` or `Map.<K, V>`, with optional `specialiseditems` and `specialctor` fields). Handle that everywhere, including property accessors.
   - In general, replace `instanceof Class` checks by `instanceof ActionCoreType`
-  - [ ] `inobject()`
+  - [x] `inobject()`
   - [ ] `hasownproperty()`
   - [ ] `nameiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
   - [ ] `valueiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
@@ -111,6 +111,7 @@ This will return the static type of an object's property. For few structural typ
   - [ ] `issubtype()`
   - [ ] `coerce()`
   - [ ] `construct()` (consider `specialisedctor` for `SpecialTypeAfterSub`)
+    - [ ] Do not allow constructing Array, Vector and Map without type argumentation
   - [ ] `tostring()`
   - [ ] `reflectclass()`
 
@@ -145,7 +146,6 @@ This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K
 
 - [ ] (ActionCore) Read the element type from the constructor to turn the array/vector safe in all operations (including property accessors and their methods).
 - [ ] (ActionCore) Array and Vector will need some internal constructor usage changes (e.g. watch out for any `[arrayclass, ...]` or `[vectorclass, ...]` stuff and replace their first element to an applied type)
-- [ ] (ActionCore) Forbid instantiating a `Vector`, `Array` or `Map` without type argumentation, in `construct()`.
 
 ## Vector optimizations
 
