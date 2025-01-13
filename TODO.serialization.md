@@ -159,7 +159,6 @@ This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K
 
 - [x] (ActionCore) Set `final: true` in the `Map` class options
 - [x] (whacklib) Add `final` modifier to the `Map` class
-- [ ] (ActionCore) Read the key-value types from the constructor to turn all Map operations safe.
 - [x] (ActionCore) Update `templates/importactioncore.js` to export the `Map` type correctly (and remove `Dictionary`).
 - [x] (Documentation) Update the developer portal to mention `Map.<K, V>`, and not `whack.utils.Dictionary`.
 - [x] (SDK) Update references to `Dictionary`, replacing it by `Map.<K, V>`.
