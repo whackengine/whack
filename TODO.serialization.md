@@ -130,7 +130,7 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 
 ## Class object
 
-- [ ] (ActionCore) Now, the type that a `Class` object references may also be a tuple type or a `SpecialTypeAfterSub`.
+- [x] (ActionCore) Now, the type that a `Class` object references may also be a tuple type or a `SpecialTypeAfterSub`.
 
 ## Special type after substitution
 
@@ -141,7 +141,7 @@ This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K
 
 ## Parameterized types updates
 
-- [ ] (SDK) Edit the `verifier` documentation wherever mentions that parameterized types are erased. Indicate that not only `Vector.<T>` is real, but also `Array.<T>` and `Map.<K, V>`.
+- [x] (SDK) Edit the `verifier` documentation wherever mentions that parameterized types are erased. Indicate that not only `Vector.<T>` is real, but also `Array.<T>` and `Map.<K, V>`.
 
 ## Array and Vector
 
