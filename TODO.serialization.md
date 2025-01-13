@@ -24,6 +24,10 @@ package demo
 }
 ```
 
+> Note that parameterized types may not work as intended on this pattern, except for `Array.<T>`, `Vector.<T>` and `Map.<K, V>`.
+
+> Note that using nullable or non-nullable types may not work as intended on this pattern.
+
 ## JSON API changes
 
 - [ ] A new JSON method `JSON.parseAs(data, classObject)` should be added.
@@ -44,7 +48,7 @@ package demo
 
 - [ ] Implemented
 
-Return applied type's composition. (`null` or `{ original, arguments }`)
+Return applied type's composition. (`null` or `{ original, arguments }`) This only detects `Array.<T>`, `Vector.<T>` and `Map.<K, V>`.
 
 ### Reflect.lookupMetaData()
 
@@ -81,9 +85,13 @@ Returns the class that a given class extends.
 This will return the static type of an object's property. For few structural types it should return a base class
 (`Function` for function types; `Object` for nullable), however nullable types that are equivalent to their inner type (that is, not something like `Number?`, but rather something like `RegExp?`) will return that inner type; non-nullable types will always return their inner type.
 
+## SDK
+
+- [x] (SDK) Change the base class of tuple types to be `Object`.
+
 ## ActionCore: constructor
 
-- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an applied type (such as `Vector.<T>` or `Map.<K, V>`, with optional `specialisation` field). Handle that everywhere, including property accessors.
+- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an special type after substitution (`Array.<T>`, `Vector.<T>` or `Map.<K, V>`, with optional `specialiseditems` and `specialctor` fields). Handle that everywhere, including property accessors.
   - In general, replace `instanceof Class` checks by `instanceof ActionCoreType`
   - [ ] `inobject()`
   - [ ] `hasownproperty()`
@@ -100,11 +108,11 @@ This will return the static type of an object's property. For few structural typ
   - [ ] `predecrementproperty()`
   - [ ] `postincrementproperty()`
   - [ ] `postdecrementproperty()`
-  - [ ] `call()` (must throw a error for tuple types and applied types)
+  - [ ] `call()` (must throw a error for tuple types and `SpecialTypeAfterSub`)
   - [ ] `istype()`
   - [ ] `issubtype()`
   - [ ] `coerce()`
-  - [ ] `construct()`
+  - [ ] `construct()` (consider `specialisedctor` for `SpecialTypeAfterSub`)
   - [ ] `tostring()`
   - [ ] `reflectclass()`
 
@@ -112,8 +120,8 @@ This will return the static type of an object's property. For few structural typ
 
 Tuple should not be equivalent to an `Array` object anymore. It should be real in ActionCore, and codegen will have to be aware of this.
 
-- [ ] (ActionCore) Implement the tuple type into ActionCore (extends `ActionCoreType` and interning) and handle it in property accesses and other access functions.
-- [ ] (SDK) Edit the `verifier` documentation wherever mentions that they are erased into `Array`. That is not going to be the case anymore.
+- [x] (ActionCore) Implement the tuple type into ActionCore (extends `ActionCoreType` and interning).
+- [x] (SDK) Edit the `verifier` documentation wherever mentions that they are erased into `Array`. That is not going to be the case anymore.
 
 ## Make Array final
 
@@ -122,43 +130,42 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 
 ## Class object
 
-- [ ] (ActionCore) Now, the type that a `Class` object references may also be a tuple type or an applied type.
+- [ ] (ActionCore) Now, the type that a `Class` object references may also be a tuple type or a `SpecialTypeAfterSub`.
 
-## Applied types
+## Special type after substitution
 
-- [ ] (ActionCore) Implement type parameter types
-- [ ] (ActionCore) Implement applied types
-- [ ] (ActionCore) Handle applied types in property accesses and other access functions.
-- [ ] (ActionCore) Apply type function (and add it to `templates/importactioncore.js`). Perform interning too.
-- [ ] (ActionCore) Type substitution function (and add it to `templates/importactioncore.js`). Perform interning too.
+This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K, V>` substitutions.
+
+- [x] (ActionCore) Implement `SpecialTypeAfterSub`
+- [x] (ActionCore) `applytype(original, argumentslist)` function (and add it to `templates/importactioncore.js`). Perform interning too.
 
 ## Parameterized types updates
 
-- [ ] (ActionCore) Now ActionCore's `Class` and `Interface` should support type parameters.
-- [ ] (SDK) Edit the `verifier` documentation wherever mentions that parameterized types are erased. That is not going to be the case anymore.
+- [ ] (SDK) Edit the `verifier` documentation wherever mentions that parameterized types are erased. Indicate that not only `Vector.<T>` is real, but also `Array.<T>` and `Map.<K, V>`.
 
 ## Array and Vector
 
 - [ ] (ActionCore) Read the element type from the constructor to turn the array/vector safe in all operations (including property accessors and their methods).
 - [ ] (ActionCore) Array and Vector will need some internal constructor usage changes (e.g. watch out for any `[arrayclass, ...]` or `[vectorclass, ...]` stuff and replace their first element to an applied type)
+- [ ] (ActionCore) Forbid instantiating a `Vector`, `Array` or `Map` without type argumentation, in `construct()`.
 
 ## Vector optimizations
 
-- [ ] (ActionCore) Vector implementation as an applied type should use specialized implementations based on the element type. (int, uint, Number, float = use their specialization; for anything else, use the more polymorphic implementation.) They are already done, except they now need to fit with the new applied types model.
-- [ ] (ActionCore) Update `templates/importactioncore.js` to export only one `Vector` type (the parameterized one).
+- [ ] (ActionCore) Vector implementation as an applied type should use specialized implementations based on the element type. (int, uint, Number, float = use their specialization; for anything else, use the more polymorphic implementation.) They are already done, except they now need to fit with the new `SpecialTypeAfterSub` model; just set `specialisedctor` and `specialiseditems` over `applytype(vectorclass, [t])`.
 
 ## whack.utils.Dictionary should turn into Map.\<K, V>
 
-- [ ] (ActionCore) Set `typeParams: 1` in the `Map` class options
+- [x] (ActionCore) Set `final: true` in the `Map` class options
+- [x] (whacklib) Add `final` modifier to the `Map` class
 - [ ] (ActionCore) Read the key-value types from the constructor to turn all Map operations safe.
-- [ ] (ActionCore) Update `templates/importactioncore.js` to export the `Map` type correctly (and remove `Dictionary`).
+- [x] (ActionCore) Update `templates/importactioncore.js` to export the `Map` type correctly (and remove `Dictionary`).
 - [ ] (Documentation) Update the developer portal to mention `Map.<K, V>`, and not `whack.utils.Dictionary`.
-- [ ] (SDK) Update references to `Dictionary`, replacing it by `Map.<K, V>`.
+- [x] (SDK) Update references to `Dictionary`, replacing it by `Map.<K, V>`.
 
 ## describeType()
 
-- [ ] (ActionCore) Update `describeType()` implementation to handle applied types and tuple types.
+- [ ] (ActionCore) Update `describeType()` implementation to handle `SpecialTypeAfterSub` and tuple types.
 
 ## trace()
 
-- [ ] (whacklib) Enhance debugging by converting class objects into JSON and then using `JSON.parse` from JavaScript. For Array and plain objects, stringify them and convert them to JSON from JavaScript.
+- [ ] (whacklib) Enhance debugging by converting class objects into JSON and then using `JSON.parse` from JavaScript.
