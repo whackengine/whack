@@ -93,8 +93,9 @@ This will return the static type of an object's property. For few structural typ
 
 - [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an special type after substitution (`Array.<T>`, `Vector.<T>` or `Map.<K, V>`, with optional `specialiseditems` and `specialctor` fields). Handle that everywhere, including property accessors.
   - In general, replace `instanceof Class` checks by `instanceof ActionCoreType`
+  - Replace some type tests by `istypeinstantiatedfrom(type, fromType)`
   - [x] `inobject()`
-  - [ ] `hasownproperty()`
+  - [x] `hasownproperty()`
   - [ ] `nameiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
   - [ ] `valueiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
   - [ ] `getdescendants()`
@@ -149,7 +150,7 @@ This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K
 
 ## Vector optimizations
 
-- [ ] (ActionCore) Vector implementation as an applied type should use specialized implementations based on the element type. (int, uint, Number, float = use their specialization; for anything else, use the more polymorphic implementation.) They are already done, except they now need to fit with the new `SpecialTypeAfterSub` model; just set `specialisedctor` and `specialiseditems` over `applytype(vectorclass, [t])`.
+- [x] (ActionCore) Vector implementation as an applied type should use specialized implementations based on the element type. (int, uint, Number, float = use their specialization; for anything else, use the more polymorphic implementation.) They are already done, except they now need to fit with the new `SpecialTypeAfterSub` model; just set `specialisedecmaprototype`, `specialisedctor` and `specialiseditems` over `applytype(vectorclass, [t])`.
 
 ## whack.utils.Dictionary should turn into Map.\<K, V>
 

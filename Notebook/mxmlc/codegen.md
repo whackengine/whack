@@ -13,6 +13,11 @@ In a release build, the entry point, together with the linked libraries, is bund
 
 When defining entities such as classes and methods, cache the involved namespaces right before the definition.
 
+## Parameterized types
+
+All parameterized types, except `Array.<T>`, `Vector.<T>` and `Map.<K, V>`, have their type parameters erased.
+`Vector.<T>` for example translates to ActionCore snippet `applytype(vectorclass, [t])`, while an user parameterized type translates to `t` as is.
+
 ## Global names
 
 Intern the local name for a global name into an indice of an unique array of local names. This reduces size of the emitted code.
