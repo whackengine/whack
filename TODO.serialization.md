@@ -104,10 +104,8 @@ This will return the static type of an object's property. For few structural typ
   - [ ] `setproperty()`
   - [ ] `deleteproperty()`
   - [ ] `callproperty()`
-  - [ ] `preincrementproperty()`
-  - [ ] `predecrementproperty()`
-  - [ ] `postincrementproperty()`
-  - [ ] `postdecrementproperty()`
+  - [ ] `preincreaseproperty()`
+  - [ ] `postincreaseproperty()`
   - [ ] `call()` (must throw a error for tuple types and `SpecialTypeAfterSub`)
   - [ ] `istype()`
   - [ ] `issubtype()`
