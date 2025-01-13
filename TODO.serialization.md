@@ -145,8 +145,11 @@ This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K
 
 ## Array and Vector
 
-- [ ] (ActionCore) Read the element type from the constructor to turn the array/vector safe in all operations (including property accessors and their methods).
-- [ ] (ActionCore) Array and Vector will need some internal constructor usage changes (e.g. watch out for any `[arrayclass, ...]` or `[vectorclass, ...]` stuff and replace their first element to an applied type)
+- [x] (ActionCore) Read the element type from the constructor to turn the array/vector safe in all operations (including property accessors and their methods).
+- [x] (ActionCore) Array and Vector will need some internal constructor usage changes (e.g. watch out for any `[arrayclass, ...]` or `[vectorclass, ...]` stuff and replace their first element to an applied type)
+  - [x] Vector
+  - [x] Numeric vector (vectordoubleclass, vectorfloatclass, vectorintclass, vectoruintclass)
+  - [x] Array
 
 ## Vector optimizations
 
