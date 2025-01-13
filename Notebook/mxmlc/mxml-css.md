@@ -1,6 +1,6 @@
 # MXML and CSS
 
-MXML is transformed into an ActionScript 3 tree, and certain parts are generated later inside a `DirectiveInjectionNode` (like the contents of the constructor code).
+MXML is transformed into an ActionScript 3 tree, sharing same locations as the MXML code, and certain parts are generated later inside a `DirectiveInjectionNode` (like the contents of the constructor code).
 
 - Metadata for instance is parsed inside `<w:Metadata>` and contributed to the ActionScript 3 tree.
 
