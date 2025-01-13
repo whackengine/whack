@@ -117,8 +117,8 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 
 ## Make Array final
 
-- [ ] In ActionCore
-- [ ] In whacklib
+- [x] In ActionCore
+- [x] In whacklib
 
 ## Class object
 
@@ -134,7 +134,7 @@ Tuple should not be equivalent to an `Array` object anymore. It should be real i
 
 ## Parameterized types updates
 
-- [ ] (ActionCore) Now ActionCore's `Class` should support type parameters. Type parameters are not expressed as types through ActionCore except in a polymorphic way in the SDK.
+- [ ] (ActionCore) Now ActionCore's `Class` and `Interface` should support type parameters.
 - [ ] (SDK) Edit the `verifier` documentation wherever mentions that parameterized types are erased. That is not going to be the case anymore.
 
 ## Array and Vector
