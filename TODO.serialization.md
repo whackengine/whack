@@ -102,11 +102,11 @@ This will return the static type of an object's property. For few structural typ
   - [ ] `hasmethod()`
   - [ ] `ecmatypeof()`
   - [ ] `getproperty()`
-  - [ ] `setproperty()` (type check collection too)
+  - [ ] `setproperty()` (type check collections and Map too)
   - [ ] `deleteproperty()`
   - [ ] `callproperty()`
-  - [ ] `preincreaseproperty()` (type check collection too)
-  - [ ] `postincreaseproperty()` (type check collection too)
+  - [ ] `preincreaseproperty()` (type check collections and Map too)
+  - [ ] `postincreaseproperty()` (type check collections and Map too)
   - [ ] `call()` (must throw a error for tuple types and `SpecialTypeAfterSub`)
   - [ ] `istype()`
   - [ ] `issubtype()`
