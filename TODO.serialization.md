@@ -28,6 +28,8 @@ package demo
 
 > Note that using nullable or non-nullable types may not work as intended on this pattern.
 
+> Note that variables should not hold functions in this pattern.
+
 ## JSON API changes
 
 - [ ] A new JSON method `JSON.parseAs(data, classObject)` should be added.
