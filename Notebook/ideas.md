@@ -12,15 +12,20 @@ Scale either the entire application or a component using the letterbox method.
 
 - Node
 
+## whack.components.\*
+
+- UIComponent
+
 ## whack.gfx.\*
 
 2D display list. Implement whack.gfx.\* as an optional package in the Whack registry.
 
 - Canvas \< UIComponent
-- Drawable \< Node
+- DisplayObject \< Node
   - Bitmap
   - Shape
   - TextArea
+  - MovieClip
 
 ## whack.gfx3d.\*
 

@@ -7,7 +7,7 @@
 3. IDE support
 4. +Evaluation in browser or command line server
 5. ASDoc compilation
-6. whack.core package including the application, control, layout, event and skinning classes
+6. whack.base package including the application, components, layout, event and skinning classes
 7. Test it out
 8. MXML compiler (+MXML, +CSS3, +Embed meta data, +Bindable meta data, +StyleSheet meta data)
 9. Test it out
