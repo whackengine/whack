@@ -98,8 +98,8 @@ This will return the static type of an object's property. For few structural typ
   - Replace some type tests by `istypeinstantiatedfrom(type, fromType)`
   - [x] `inobject()`
   - [x] `hasownproperty()`
-  - [ ] `nameiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
-  - [ ] `valueiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
+  - [x] `nameiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
+  - [x] `valueiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
   - [ ] `getdescendants()`
   - [ ] `hasmethod()`
   - [ ] `ecmatypeof()`
