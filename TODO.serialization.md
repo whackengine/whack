@@ -44,13 +44,13 @@ package demo
 
 ## Add a new Reflect static class
 
-- [ ] Implemented
+- [x] Implemented
 
-### Reflect.parameterizedType()
+### Reflect.typeArguments()
 
-- [ ] Implemented
+- [x] Implemented
 
-Return applied type's composition. (`null` or `{ original, arguments }`) This only detects `Array.<T>`, `Vector.<T>` and `Map.<K, V>`.
+Return applied type's arguments. (`null` or an array of `Class`) This only detects `Array.<T>`, `Vector.<T>` and `Map.<K, V>`.
 
 ### Reflect.lookupMetaData()
 
