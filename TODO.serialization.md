@@ -106,17 +106,16 @@ This will return the static type of an object's property. For few structural typ
   - [x] `getproperty()`
   - [x] `setproperty()` (type check collections and Map too)
   - [x] `deleteproperty()`
-  - [ ] `callproperty()`
-  - [ ] `preincreaseproperty()` (type check collections and Map too)
-  - [ ] `postincreaseproperty()` (type check collections and Map too)
-  - [ ] `call()` (must throw a error for tuple types and `SpecialTypeAfterSub`)
+  - [x] `callproperty()`
+  - [x] `preincreaseproperty()` (type check collections and Map too)
+  - [x] `postincreaseproperty()` (type check collections and Map too)
+  - [x] `call()`
   - [x] `istype()`
   - [x] `issubtype()`
-  - [ ] `coerce()`
-  - [ ] `construct()` (consider `specialisedctor` for `SpecialTypeAfterSub`)
-    - [ ] Do not allow constructing Array, Vector and Map without type argumentation
-  - [ ] `tostring()`
-  - [ ] `reflectclass()`
+  - [x] `coerce()`
+  - [x] `construct()`
+  - [x] `tostring()`
+  - [x] `reflectclass()`
 
 ## Tuple types
 
@@ -167,7 +166,8 @@ This kind of type is used for representing `Array.<T>`, `Vector.<T>` and `Map.<K
 
 ## describeType()
 
-- [ ] (ActionCore) Update `describeType()` implementation to handle `SpecialTypeAfterSub` and tuple types.
+- [ ] (ActionCore) Update `describeType()` implementation to handle tuple types.
+- [ ] (whacklib) Update the `describeType()` ASDoc to mention tuple types.
 
 ## trace()
 
