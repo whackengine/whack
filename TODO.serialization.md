@@ -100,18 +100,18 @@ This will return the static type of an object's property. For few structural typ
   - [x] `hasownproperty()`
   - [x] `nameiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
   - [x] `valueiterator()` (replace `Dictionary` by `Map.<K,V>` and update `Vector` specializations as well)
-  - [ ] `getdescendants()`
-  - [ ] `hasmethod()`
-  - [ ] `ecmatypeof()`
-  - [ ] `getproperty()`
-  - [ ] `setproperty()` (type check collections and Map too)
-  - [ ] `deleteproperty()`
+  - [x] `getdescendants()`
+  - [x] `hasmethod()`
+  - [x] `ecmatypeof()`
+  - [x] `getproperty()`
+  - [x] `setproperty()` (type check collections and Map too)
+  - [x] `deleteproperty()`
   - [ ] `callproperty()`
   - [ ] `preincreaseproperty()` (type check collections and Map too)
   - [ ] `postincreaseproperty()` (type check collections and Map too)
   - [ ] `call()` (must throw a error for tuple types and `SpecialTypeAfterSub`)
-  - [ ] `istype()`
-  - [ ] `issubtype()`
+  - [x] `istype()`
+  - [x] `issubtype()`
   - [ ] `coerce()`
   - [ ] `construct()` (consider `specialisedctor` for `SpecialTypeAfterSub`)
     - [ ] Do not allow constructing Array, Vector and Map without type argumentation
