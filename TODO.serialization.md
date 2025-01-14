@@ -34,6 +34,7 @@ package demo
 
 - [ ] A new JSON method `JSON.parseAs(data, classObject)` should be added.
   - [ ] Handle `Array`, `Vector`, tuples and `Map.<K, V>`
+    - Currently implementing `mapParsedIntoType`.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
   - [ ] Handle `Array`, `Vector`, tuples and `Map.<K, V>`
 
