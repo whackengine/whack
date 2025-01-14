@@ -86,12 +86,3 @@ Returns the class that a given class extends.
 
 This will return the static type of an object's property. For few structural types it should return a base class
 (`Function` for function types; `Object` for nullable), however nullable types that are equivalent to their inner type (that is, not something like `Number?`, but rather something like `RegExp?`) will return that inner type; non-nullable types will always return their inner type.
-
-## describeType()
-
-- [ ] (ActionCore) Update `describeType()` implementation to handle tuple types.
-- [ ] (whacklib) Update the `describeType()` ASDoc to mention tuple types.
-
-## trace()
-
-- [ ] (whacklib) Enhance debugging by converting class objects into JSON and then using `JSON.parse` from JavaScript.
