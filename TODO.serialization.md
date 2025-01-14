@@ -45,21 +45,3 @@ package demo
 ## Add a new Reflect static class
 
 - [x] Implemented
-
-### Reflect.isTupleType()
-
-- [ ] Implemented
-
-Returns whether or not a type is a tuple type.
-
-### Reflect.tupleTypeElements()
-
-- [ ] Implemented
-
-Returns the element types of a tuple type.
-
-### Reflect.superType()
-
-- [ ] Implemented
-
-Returns the class that a given class extends.
