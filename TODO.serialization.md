@@ -93,7 +93,7 @@ This will return the static type of an object's property. For few structural typ
 
 ## ActionCore: constructor
 
-- [ ] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an special type after substitution (`Array.<T>`, `Vector.<T>` or `Map.<K, V>`, with optional `specialiseditems` and `specialctor` fields). Handle that everywhere, including property accessors.
+- [x] Now, the first element of an instance Array may not only be a Class, but may also be a tuple type or an special type after substitution (`Array.<T>`, `Vector.<T>` or `Map.<K, V>`, with optional `specialiseditems` and `specialctor` fields). Handle that everywhere, including property accessors.
   - In general, replace `instanceof Class` checks by `instanceof ActionCoreType`
   - Replace some type tests by `istypeinstantiatedfrom(type, fromType)`
   - [x] `inobject()`
