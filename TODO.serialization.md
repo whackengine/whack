@@ -11,6 +11,7 @@ Tag:
 ```
 package demo
 {
+    // { "type": "bear", "anger": 100 }
     [Serialization(tag="type")]
     public class Animal
     {
@@ -20,6 +21,25 @@ package demo
     public class Bear extends Animal
     {
         public var anger:Number;
+    }
+
+    // "1.0.0"
+    // { "version": "1.0.0" }
+    [Serialization(union="true")]
+    public class Dependency
+    {
+    }
+
+    [Serialization(string="true", field="value")]
+    public class VersionDependency extends Dependency
+    {
+        public var value:String;
+    }
+
+    [Serialization(object="true")]
+    public class AdvancedDependency extends Dependency
+    {
+        public var version:String;
     }
 }
 ```
