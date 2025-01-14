@@ -63,8 +63,3 @@ Returns the element types of a tuple type.
 - [ ] Implemented
 
 Returns the class that a given class extends.
-
-### Reflect.propertyType()
-
-This will return the static type of an object's property. For few structural types it should return a base class
-(`Function` for function types; `Object` for nullable), however nullable types that are equivalent to their inner type (that is, not something like `Number?`, but rather something like `RegExp?`) will return that inner type; non-nullable types will always return their inner type.
