@@ -20,6 +20,10 @@ All parameterized types, except `Array.<T>`, `Vector.<T>` and `Map.<K, V>`, have
 
 `Promise.<T>`, although built-in, has its type parameters erased.
 
+## Tuples
+
+Tuples are constructed as in `[tupleType, untoucheddynamic, elem1, ...elemN]`.
+
 ## Global names
 
 Intern the local name for a global name into an indice of an unique array of local names. This reduces size of the emitted code.
