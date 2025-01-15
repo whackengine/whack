@@ -13,6 +13,8 @@ In a release build, the entry point, together with the linked libraries, is bund
 
 When defining entities such as classes and methods, cache the involved namespaces right before the definition.
 
+For external classes and interfaces, if `codegen_local()` returns `Some(name_string)`, use that local instead of creating a new one when referring to that external class or interface, preventing unnecessary trait lookup.
+
 ## Parameterized types
 
 All parameterized types, except `Array.<T>`, `Vector.<T>` and `Map.<K, V>`, have their type parameters erased.
