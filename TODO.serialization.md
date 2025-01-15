@@ -65,7 +65,7 @@ public var compilationUnit:CompilationUnit;
 
 Formatting classes into string:
 
-> Note that the `format` option may also refer to virtual accessors, and not only fixed variables.
+> Note that the `format` option may also refer to virtual accessors, and not only fixed variables, in which case, for deserialization it is required that the properties are writable.
 
 ```
 package
