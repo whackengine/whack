@@ -93,10 +93,11 @@ package
 }
 ```
 
+Supported union variants include `string="true"`, `number="true"`, `object="true"`, `array="true"` and `boolean="true"`, where all but `object="true"` require the `field="propertyName"` option. The `array="true"` option works with `Array` and `Vector` field types.
+
 ## JSON API changes
 
-- [ ] A new JSON method `JSON.parseAs(data, classObject)` should be added.
-  - Currently finishing `mapParsedIntoType`. Just missing deserializing union.
+- [x] A new JSON method `JSON.parseAs(data, classObject)` should be added.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
   - [ ] Handle `Array`, `Vector`, tuples and `Map.<K, V>`
 
