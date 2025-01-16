@@ -100,7 +100,23 @@ Supported union variants include `string="true"`, `number="true"`, `object="true
 - [x] A new JSON method `JSON.parseAs(data, classObject)` should be added.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
   - Currently implementing `typedObjectToPlain` method
-  - [ ] Handle `Array`, `Vector`, tuples and `Map.<K, V>`
+  - [ ] Handle user class object
+    - [ ] For converting user class object into plain JSON, consider:
+      - [ ] Ignoring fields with `skip="true"`
+      - [ ] Handling fields with `rename=""`
+      - [ ] To convert field value, use `typedObjectToPlain(fieldValue)`
+    - [ ] Handle `tag=""`
+      - [ ] Handle `rename=""`
+    - [ ] Handle `union="true"`
+      - [ ] Handle the different data types (`string="true"`, `number="true"`, `object="true"`, `array="true"` and `boolean="true"`)
+    - [ ] Handle `format=""`
+    - [ ]
+  - [ ] Handle plain object
+  - [ ] Handle `Array`
+  - [ ] Handle `Vector`
+  - [ ] Handle `Map.<K, V>`
+  - [ ] Handle tuples
+  - [ ] For other types, just return the value as is.
 
 ## Document and define it
 
