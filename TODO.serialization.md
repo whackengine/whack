@@ -56,6 +56,13 @@ package demo
 
 The `[Serialization]` meta-data also applies to base classes of base classes. For example, you may want to have `FairyExpression < Expression < Node` and `FairyDirective < Directive < Node`.
 
+Renaming variables:
+
+```
+[Serialization(rename="aa-bb")]
+public var aaBB:String;
+```
+
 Skipping variables:
 
 ```
