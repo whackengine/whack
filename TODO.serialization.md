@@ -17,7 +17,6 @@ Serialization capabilities first focusing in JSON; class serialization in AMF an
     - [ ] Handle `union="true"`
       - [ ] Handle the different data types (`string="true"`, `number="true"`, `object="true"`, `array="true"` and `boolean="true"`)
     - [ ] Handle `format=""`
-    - [ ]
   - [ ] Handle plain object
   - [ ] Handle `Array`
   - [ ] Handle `Vector`
