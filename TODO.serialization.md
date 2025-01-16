@@ -99,6 +99,7 @@ Supported union variants include `string="true"`, `number="true"`, `object="true
 
 - [x] A new JSON method `JSON.parseAs(data, classObject)` should be added.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
+  - Currently implementing `typedObjectToPlain` method
   - [ ] Handle `Array`, `Vector`, tuples and `Map.<K, V>`
 
 ## Document and define it
