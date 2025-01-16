@@ -47,3 +47,7 @@ The catch clause must invoke `fromjserror(errorval)` for any parameter.
 ## Throw statement
 
 The throw statement must invoke `tojserror(errorval)` before passing the error to JavaScript.
+
+## Switch cases
+
+Always add a trailing `break` to all switch cases, since fallthrough is not allowed.
