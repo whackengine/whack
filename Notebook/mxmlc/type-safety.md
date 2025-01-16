@@ -1,4 +1,6 @@
 # Type safety
 
-Create a poll somewhere: is it worthy type checking given arguments in every activation? Is it worthy
-type checking the value in each return statement or function's expression body, as well?
+## Codegen
+
+- [ ] Type check given arguments in every activation using ActionCore `coerceorfail()`.
+- [ ] Type check the value in each return statement or function's expression body using `coerceorfail()`, in case the value is wildcard or `Object` targeting a known type that is not wildcard or `Object`.

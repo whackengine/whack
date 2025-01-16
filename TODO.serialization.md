@@ -74,6 +74,8 @@ Formatting classes into string:
 
 > Note that the `format` option may also refer to virtual accessors, and not only fixed variables, in which case, for deserialization it is required that the properties are writable.
 
+> Note that the `format` option may not work as intended for decimal or negative numbers depending on the expected punctuation.
+
 ```
 package
 {
@@ -94,7 +96,7 @@ package
 ## JSON API changes
 
 - [ ] A new JSON method `JSON.parseAs(data, classObject)` should be added.
-  - Currently finishing `mapParsedIntoType`.
+  - Currently finishing `mapParsedIntoType`. Just missing deserializing union.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
   - [ ] Handle `Array`, `Vector`, tuples and `Map.<K, V>`
 
