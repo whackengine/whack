@@ -4,7 +4,7 @@ Serialization capabilities first focusing in JSON; class serialization in AMF an
 
 ## JSON API changes
 
-- [x] A new JSON method `JSON.parseAs(data, classObject)` should be added.
+- [x] A new JSON method `JSON.parse(data, classObject)` should be added.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
   - Currently implementing `serializableToPlain` method
   - [ ] Handle user class object
