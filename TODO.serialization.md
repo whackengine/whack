@@ -6,13 +6,13 @@ Serialization capabilities first focusing in JSON; class serialization in AMF an
 
 - [x] A new JSON method `JSON.parseAs(data, classObject)` should be added.
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
-  - Currently implementing `typedObjectToPlain` method
+  - Currently implementing `serializableObjectToPlain` method
   - [ ] Handle user class object
     - [ ] Consider `serialization_capabilities::toJSON()` for a class object
     - [ ] For converting user class object into plain JSON, consider:
       - [ ] Ignoring fields with `skip="true"`
       - [ ] Handling fields with `rename=""`
-      - [ ] To convert field value, use `typedObjectToPlain(fieldValue)`
+      - [ ] To convert field value, use `serializableObjectToPlain(fieldValue)`
     - [ ] Handle `tag=""`
       - [ ] Handle `rename=""`
     - [ ] Handle `union="true"`
