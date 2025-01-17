@@ -19,6 +19,9 @@ For external classes and interfaces, if `codegen_local()` returns `Some(name_str
 
 Accessing `JSVal` typed variables should result in using native JavaScript operators instead of methods such as ActionCore `getproperty(...)`.
 
+- [ ] Transform `JSVal(v)` into just `v`
+- [ ] Transform `v as JSVal` into just `v`
+
 ## Parameterized types
 
 All parameterized types, except `Array.<T>`, `Vector.<T>` and `Map.<K, V>`, have their type parameters erased.
