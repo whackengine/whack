@@ -8,7 +8,7 @@ Serialization capabilities first focusing in JSON; class serialization in AMF an
 - [ ] `JSON.stringify()` should accept in addition class objects observing for the `Serialization` meta-data.
   - Currently implementing `serializableToPlain` method
   - [ ] Handle user class object
-    - [ ] Consider `toJSON()` for a class object
+    - [x] Consider `toJSON()` for a class object
     - [ ] For converting user class object into plain JSON, consider:
       - [ ] Ignoring fields with `skip="true"`
       - [ ] Handling fields with `rename=""`
@@ -17,9 +17,10 @@ Serialization capabilities first focusing in JSON; class serialization in AMF an
       - [ ] Handle `rename=""`
     - [ ] Handle `union="true"`
       - [ ] Handle the different data types (`string="true"`, `number="true"`, `object="true"`, `array="true"` and `boolean="true"`)
-  - [ ] Handle plain object
-  - [ ] Handle `Array`
-  - [ ] Handle `Vector`
-  - [ ] Handle `Map.<K, V>`
-  - [ ] Handle tuples
-  - [ ] For other types, just return the value as is.
+        - [ ] All but `Object` have a `field=""` option
+  - [x] Handle plain object
+  - [x] Handle `Array`
+  - [x] Handle `Vector`
+  - [x] Handle `Map.<K, V>`
+  - [x] Handle tuples
+  - [x] For other types, just return the value as is.
