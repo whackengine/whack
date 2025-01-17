@@ -15,6 +15,10 @@ When defining entities such as classes and methods, cache the involved namespace
 
 For external classes and interfaces, if `codegen_local()` returns `Some(name_string)`, use that local instead of creating a new one when referring to that external class or interface, preventing unnecessary trait lookup.
 
+## JSVal
+
+Accessing `JSVal` typed variables should result in using native JavaScript operators instead of methods such as ActionCore `getproperty(...)`.
+
 ## Parameterized types
 
 All parameterized types, except `Array.<T>`, `Vector.<T>` and `Map.<K, V>`, have their type parameters erased.
