@@ -1,5 +1,9 @@
 # Property access
 
+## JSVal
+
+Accessing `JSVal` properties should use native JavaScript operators.
+
 ## External
 
 External methods and property accessors shall be obtained as locals through using ActionCore's '`globaltrait()` function, allowing to optimize the AS3 language global objects.
