@@ -2,14 +2,12 @@
 
 ## Goals
 
-1. Package manager
-2. +Codegen
-3. IDE support
-4. +Evaluation in browser or command line server
-5. ASDoc compilation
-6. whack.base package including the application, components, layout, event and skinning classes
+1. IDE support
+2. whack.base package including the application, components, layout, event and skinning classes
+3. MXML compiler (+MXML, +CSS3, +Embed meta data, +Bindable meta data, +StyleSheet meta data, and other meta data)
+4. +Codegen
+5. +Evaluation in browser or command line server
+6. ASDoc compilation
 7. Test it out
-8. MXML compiler (+MXML, +CSS3, +Embed meta data, +Bindable meta data, +StyleSheet meta data)
-9. Test it out
-10. MXML compiler (+online registry)
-11. Test online registry
+8. Package manager (+online registry, +Git, +unit testing)
+10. Test online registry

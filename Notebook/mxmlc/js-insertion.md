@@ -1,3 +1,3 @@
 # JavaScript insertion
 
-Process the `JS` namespace's functions in a special way.
+- [ ] Process the `JSBridge` namespace's functions in a special way.
