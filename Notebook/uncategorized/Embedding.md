@@ -1,0 +1,4 @@
+- [ ] Embedding static media will output files to the world wide web unstructured public, of which those that are images and text (and not videos such as .mp4) are preloaded at the start, where images should have a (normalURL, base64URL) pair on preload.
+- [ ] Static media are subclasses of whack.core.EmbeddedContent, which holds an URL.
+- [ ] Optimisation: Image supporting elements will only set a new base-64 url if the last set normalURL is different from the new normalURL.
+- [ ] Optimisation: Large images aren’t expressed by their base64URL and rather by their normalURL.
