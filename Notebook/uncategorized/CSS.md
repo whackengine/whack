@@ -1,2 +1,3 @@
 - [ ] Optimize rules by reusing last base matches
 - [ ] CSS is parsed and verified as a "nested compilation unit".
+- [ ] Implement the `border` style property by translating the border width into `0.25rem` units through a simple regex replace.
